@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <context-param>
+        <param-name>images.directory</param-name>
+        <!-- Tomcat must have write permissions on this folder -->
+        <param-value>C:\xampp\tomcat\webapps\disim_swa-1.0\images</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.outline_template</param-name>
+        <param-value>admin_template/outline.ftl.html</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.outline_template2</param-name>
+        <param-value>user_template/outline.ftl.html</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.date_format</param-name>
+        <param-value>dd/MM/yyyy hh:mm:ss</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.debug</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.template_directory</param-name>
+        <param-value>templates</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.data.static.homepage_url</param-name>
+        <param-value>homepage</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.data.static.homepage_url2</param-name>
+        <param-value>index</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.encoding</param-name>
+        <param-value>UTF-8</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.error_template</param-name>
+        <param-value>/admin_template/500.html</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.error_template2</param-name>
+        <param-value>/user_template/500.html</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.data.filler.timestamp</param-name>
+        <param-value>it.univaq.example.webshop.controller.DummyModelFiller</param-value>
+    </context-param>
+    <context-param>
+        <param-name>security.protect.patterns</param-name>
+        <!-- qui configuriamo i pattern delle URL da proteggere -->
+        <param-value>/orders, /myOrders</param-value>        
+    </context-param>
+    <context-param>
+        <param-name>data.source</param-name>
+        <!-- qui configuriamo il nome della data source da usare nel codice -->
+        <param-value>jdbc/webshopdb</param-value>
+    </context-param>
+    <context-param>
+        <param-name>emailSender</param-name>
+        <param-value>rossofuoco1999@gmail.com</param-value>
+    </context-param>
+    <context-param>
+        <param-name>sendEmail</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>securityCode</param-name>
+        <param-value>vmne carf ozpp qqyd</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>index</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>it.univaq.template.base.RESTApp</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>index</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+    <resource-ref>
+        <res-ref-name>jdbc/webshopdb</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+</web-app>

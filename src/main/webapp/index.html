@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JAX-RS FatturaREST application (JakartaEE 10)</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="res/restest.css"/>
+    </head>
+    <body>
+        <h1>JAX-RS FatturaREST application (JakartaEE 10)</h1>
+        <p>This is a sample web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat 10.1</strong> with <strong>Java 14</strong> or above.</p>
+        <p> The application is configured to expose RESTful resources through the <strong>JAX-RS</strong> reference implementation, <strong>Jersey</strong> (version 3, for Jakarta EE).</p>
+        <p> JAX-RS JSON serialization is handled by the <strong>Jackson</strong> JSON Provider (version 2, for Jakarta EE).</p>
+
+       
+        <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+
+        <table class="restest" width="100%">
+            <thead>
+                <tr>
+                    <th>Path</th>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Payload</th>
+                    <th>Authentication</th>
+                    <th>URL to Try</th>
+                    <th>(Expected) Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>/fatture?from={a}&amp;to={b}</td>
+                    <td>GET</td>
+                    <td>{a},{b}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture?from=1&amp;to=3"><small>GET rest/fatture?from=1&amp;to=3</small></a></td>
+                    <td  class="output">Lista fatture, paginata</td>
+                </tr>
+                            
+                
+                 <tr>
+                    <td>/fatture?pIVA={p}</td>
+                    <td>GET</td>
+                    <td>{p}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture?pIVA=123"><small>GET rest/fatture?pIVA=123</small></a></td>
+                    <td  class="output">Lista fatture, filtrata</td>
+                </tr>
+                
+                     <tr>
+                    <td>/fatture</td>
+                    <td>POST</td>
+                    <td></td>
+                    <td>Fattura (JSON)</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-url="rest/fatture" data-rest-test-method="post"
+                              data-rest-test-content-type="application/json" data-rest-test-status="201"
+                              data-rest-test-payload='{ "numero" : 1, "data" : [2023,9,15], "intestatario" : { "ragioneSociale" : "Pippo", "partitaIVA" : "123456789", "via" : "", "citta" : "", "civico" : "" }, "elementi" : [ { "codice" : "9371cb01-fe19-4b8d-bc96-10533cd2d79b", "descrizione" : "Prodotto inutile", "quantita" : 10, "unita" : "pz", "prezzoUnitario" : 12.0, "prezzoTotale" : 120.0, "iva" : 4 }, { "codice" : "558add18-f353-45ab-8c7a-ee5946562d57", "descrizione" : "Prodotto inutile", "quantita" : 10, "unita" : "pz", "prezzoUnitario" : 12.0, "prezzoTotale" : 120.0, "iva" : 4 } ], "totali" : { "totaleIVAEsclusa" : 0.0, "totaleIVA" : 0.0, "totaleIVAInclusa" : 0.0 } }'></span></td>
+                    <td  class="output">Inserimento fattura</td>
+                </tr>
+                
+                <tr>
+                    <td>/fatture/count</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture/count"><small>GET rest/fatture/count</small></a></td>
+                    <td  class="output">Numero fatture</td>
+                </tr>
+                
+                <tr>
+                    <td>/fatture/count?pIVA={p}</td>
+                    <td>GET</td>
+                    <td>{p}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture/count?pIVA=123"><small>GET rest/fatture/count?pIVA=123</small></a></td>
+                    <td  class="output">Numero fatture per partita IVA</td>
+                </tr>
+                
+                <tr>
+                    <td>fatture/{anno}</td>
+                    <td>GET</td>
+                    <td>{anno}: integer</td>
+                    <td></td>
+                    <td>Bearer token</td>
+                    <td><a data-rest-test data-rest-test-status="401" href="rest/fatture/2020"><small>GET rest/fatture/2020 (without authentication)</small></a><br/>
+                    <a data-rest-test data-rest-test-auth data-rest-test-target href="rest/fatture/2020"><small>GET rest/fatture/2020 (with authentication)</small></a></td>
+                    <td  class="output">Lista fatture di un anno</td>
+                </tr>
+                
+                <tr>
+                    <td>fatture/{anno}/{numero}</td>
+                    <td>GET</td>
+                    <td>{anno},{numero}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture/2020/1"><small>GET rest/fatture/2020/1</small></a></td>
+                    <td  class="output">Fattura completa</td>
+                </tr>
+                
+                  <tr>
+                    <td>fatture/{anno}/{numero}</td>
+                    <td>PUT</td>
+                    <td>{anno},{numero}: integer</td>
+                    <td>Fattura (JSON)</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="put" data-rest-test-url="rest/fatture/2020/1"
+                              data-rest-test-content-type="application/json" data-rest-test-status="204"
+                              data-rest-test-payload='{ "numero" : 1, "data" : [2023,9,15], "intestatario" : { "ragioneSociale" : "Pippo", "partitaIVA" : "123456789", "via" : "", "citta" : "", "civico" : "" }, "elementi" : [ { "codice" : "9371cb01-fe19-4b8d-bc96-10533cd2d79b", "descrizione" : "Prodotto inutile", "quantita" : 10, "unita" : "pz", "prezzoUnitario" : 12.0, "prezzoTotale" : 120.0, "iva" : 4 }, { "codice" : "558add18-f353-45ab-8c7a-ee5946562d57", "descrizione" : "Prodotto inutile", "quantita" : 10, "unita" : "pz", "prezzoUnitario" : 12.0, "prezzoTotale" : 120.0, "iva" : 4 } ], "totali" : { "totaleIVAEsclusa" : 0.0, "totaleIVA" : 0.0, "totaleIVAInclusa" : 0.0 } }'></span></td>
+                    <td  class="output">Fattura completa</td>
+                </tr>
+                
+                  <tr>
+                    <td>fatture/{anno}/{numero}</td>
+                    <td>DELETE</td>
+                    <td>{anno},{numero}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="delete" data-rest-test-status="204" data-rest-test-url="rest/fatture/2020/1"></span></td>
+                    <td  class="output">Fattura completa</td>
+                </tr>
+                
+                <tr>
+                    <td>fatture/{anno}/{numero}/pIVA</td>
+                    <td>GET</td>
+                    <td>{anno},{numero}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture/2020/1/pIVA"><small>GET rest/fatture/2020/1/pIVA</small></a></td>
+                    <td  class="output">Dettaglio partita IVA per fattura</td>
+                </tr>
+                
+                <tr>
+                    <td>fatture/{anno}/{numero}/elementi</td>
+                    <td>GET</td>
+                    <td>{anno},{numero}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture/2020/1/elementi"><small>GET rest/fatture/2020/1/elementi</small></a></td>
+                    <td  class="output">Dettaglio elementi per fattura</td>
+                </tr>
+                
+                <tr>
+                    <td>fatture/{anno}/{numero}/elementi/{e}</td>
+                    <td>GET</td>
+                    <td>{anno},{numero},{e}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/fatture/2020/1/elementi/2"><small>GET rest/fatture/2020/1/elementi/2</small></a></td>
+                    <td  class="output">Dettaglio elemento per fattura</td>
+                </tr>
+                
+                <tr>
+                    <td>fatture/{anno}/{numero}/attachment</td>
+                    <td>GET</td>
+                    <td>{anno},{numero}: integer</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test href="rest/fatture/2020/1/attachment"><small>GET rest/fatture/2020/1/attachment</small></a></td>
+                    <td  class="output">Attachment binario per fattura</td>
+                </tr>
+                
+                <tr>
+                    <td>prodotti/{codice}/fatture</td>
+                    <td>GET</td>
+                    <td>{codice}: [a-z0-9]+</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/prodotti/12abc/fatture"><small>GET rest/prodotti/12abc/fatture</small></a></td>
+                    <td  class="output">Lista fatture per codice prodotto</td>
+                </tr>
+                           
+                                
+                
+               
+                       
+            </tbody>
+        </table>
+
+        <h2>Authentication</h2>
+        <p>To test the login/logout resource <em>(AuthenticationRes)</em>, use the login form below. <strong>Links marked with &#x1f512; on this page call
+                restful endpoints requiring a bearer token and can be clicked only after a successful login.</strong></p>
+
+        <table class="restest" width="100%">
+            <thead>
+                <tr>
+                    <th>Path</th>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Payload</th>
+                    <th>Authentication</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td ><span data-rest-test-token  data-rest-test-url="rest/auth/login" data-rest-test-method="post" data-rest-test-status="200"
+                               data-rest-test-content-type="application/x-www-form-urlencoded" data-rest-test-payload="username=u&password=p">/auth/login</span></td>
+                    <td>POST</td>
+                    <td></td>
+                    <td>form-encoded username and password</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td ><span data-rest-test-auth="1000"  data-rest-test-url="rest/auth/logout" data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
+                    <td>DELETE</td>
+                    <td></td>
+                    <td></td>
+                    <td>Bearer token</td>
+                </tr>
+                <tr>
+                    <td ><span data-rest-test-auth  data-rest-test-url="rest/auth/refresh" data-rest-test-method="get" data-rest-test-status="200">/auth/refresh</span></td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td>Bearer token</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">                        
+                        <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
+                            <p>Username: <input style="width:30%" type="text" value="u" id="username-field" name="username-field"/> 
+                                Password: <input style="width:30%" type="password" value="p" id="password-field" name="password-field"/>
+                                <input type="submit" value="login" name="login-button" id="login-button"/>
+                                <input type="submit" value="logout" name="logout-button" id="logout-button"/></p>      
+                        </form>
+                        <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
+                            <p>Token: <input style="width:80%" type="text" id="token-field" name="token-field"/> <input type="submit" value="refresh" name="refresh-button" id="refresh-button"/></p>
+                        </form>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div style="border: 1px solid gray; margin: 1em auto; padding: 1em">
+            <p>
+                <em>Note that this project includes a Javascript library that automatically checks the above endpoints when this webpage is opened. This library
+                    is not part of the JAX-RS framework and it is not required to implement RESTful resources, and has been developed only as an aid for the
+                    sample resources included in this project.</em>
+            </p>
+            <p>
+                <span class="rest-test-message-error" style="color: red">
+                    Some tested endpoints did not return the expected result
+
+                </span>
+                <span class="rest-test-message-ok" style="color: green">
+                    All tested endpoints returned the correct result
+                </span>
+            </p>
+        </div>
+
+
+
+
+        <script src="res/restest.js">/* */</script>
+        <script>
+            let tester = new Restest();
+        </script>
+    </body>
+</html>
