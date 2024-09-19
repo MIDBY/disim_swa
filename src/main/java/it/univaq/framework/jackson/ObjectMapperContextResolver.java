@@ -4,6 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import it.univaq.example.webshop.model.Category;
+import it.univaq.example.webshop.model.Characteristic;
+import it.univaq.example.webshop.model.Group;
+import it.univaq.example.webshop.model.Image;
+import it.univaq.example.webshop.model.Notification;
+import it.univaq.example.webshop.model.Proposal;
+import it.univaq.example.webshop.model.Request;
+import it.univaq.example.webshop.model.RequestCharacteristic;
+import it.univaq.example.webshop.model.Service;
+import it.univaq.example.webshop.model.User;
 import it.univaq.example.webshop.model2.Fattura;
 
 import java.util.Calendar;
@@ -40,6 +50,36 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
         //
         customSerializer.addSerializer(Fattura.class, new FatturaSerializer());
         customSerializer.addDeserializer(Fattura.class, new FatturaDeserializer());
+        //
+        customSerializer.addSerializer(User.class, new UserSerializer());
+        customSerializer.addDeserializer(User.class, new UserDeserializer());
+        //
+        customSerializer.addSerializer(Group.class, new GroupSerializer());
+        customSerializer.addDeserializer(Group.class, new GroupDeserializer());
+        //
+        customSerializer.addSerializer(Service.class, new ServiceSerializer());
+        customSerializer.addDeserializer(Service.class, new ServiceDeserializer());
+        //
+        customSerializer.addSerializer(Notification.class, new NotificationSerializer());
+        customSerializer.addDeserializer(Notification.class, new NotificationDeserializer());
+        //
+        customSerializer.addSerializer(Category.class, new CategorySerializer());
+        customSerializer.addDeserializer(Category.class, new CategoryDeserializer());
+        //
+        customSerializer.addSerializer(Characteristic.class, new CharacteristicSerializer());
+        customSerializer.addDeserializer(Characteristic.class, new CharacteristicDeserializer());
+        //
+        customSerializer.addSerializer(Image.class, new ImageSerializer());
+        customSerializer.addDeserializer(Image.class, new ImageDeserializer());
+        //
+        customSerializer.addSerializer(RequestCharacteristic.class, new RequestCharacteristicSerializer());
+        customSerializer.addDeserializer(RequestCharacteristic.class, new RequestCharacteristicDeserializer());
+        //
+        customSerializer.addSerializer(Request.class, new RequestSerializer());
+        customSerializer.addDeserializer(Request.class, new RequestDeserializer());
+        //
+        customSerializer.addSerializer(Proposal.class, new ProposalSerializer());
+        customSerializer.addDeserializer(Proposal.class, new ProposalDeserializer());
         //
         mapper.registerModule(customSerializer);
 
