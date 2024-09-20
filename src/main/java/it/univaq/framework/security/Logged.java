@@ -6,11 +6,6 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
-
-/**
- *
- * @author didattica
- */
 @NameBinding
 @Retention(RUNTIME)
 @Target({ElementType.METHOD,ElementType.TYPE})

@@ -1,4 +1,4 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
 import it.univaq.example.webshop.model.Proposal;
 import it.univaq.example.webshop.model.ProposalStateEnum;

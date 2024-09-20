@@ -1,4 +1,4 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
 import it.univaq.example.webshop.model.Category;
 import it.univaq.example.webshop.model.Image;
@@ -103,7 +103,7 @@ public class ImageDAO extends DAO {
 
     
     public List<Image> getImages() throws DataException {
-        List<Image> result = new ArrayList<Image>();
+        List<Image> result = new ArrayList<>();
         try (ResultSet rs = sImages.executeQuery()) {
             while (rs.next()) {
                 result.add(getImage(rs.getInt("id")));

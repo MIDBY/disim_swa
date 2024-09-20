@@ -1,6 +1,6 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
-import it.univaq.example.webshop.dao.CharacteristicDAO;
+import it.univaq.example.webshop.business.CharacteristicDAO;
 import it.univaq.example.webshop.model.Characteristic;
 import it.univaq.framework.data.DAO;
 import it.univaq.framework.data.DataException;

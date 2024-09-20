@@ -1,4 +1,4 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
 import it.univaq.example.webshop.model.Service;
 import it.univaq.framework.data.DAO;
@@ -97,7 +97,7 @@ public class ServiceDAO extends DAO {
 
     
     public List<Service> getServicesByGroup(int group_key) throws DataException {
-        List<Service> result = new ArrayList<Service>();
+        List<Service> result = new ArrayList<>();
         try {
             sServiceByGroup.setInt(1, group_key);
             try (ResultSet rs = sServiceByGroup.executeQuery()) {

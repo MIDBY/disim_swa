@@ -6,8 +6,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+
+import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.User;
-import it.univaq.example.webshop.resources.UserResource;
 import jakarta.ws.rs.core.UriInfo;
 
 /**
@@ -26,7 +27,7 @@ public class AuthHelpers {
     }
     
     public boolean authenticateUser(String email, String password) {
-        User user = UserResource.getUserByEmailData(email);
+        User user = UserResourceDB.getUserByEmail(email);
         try {
             if(checkPasswordHashPBKDF2(password, user.getPassword()))
                 return true;

@@ -10,11 +10,11 @@ import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.security.Principal;
+import it.univaq.example.webshop.business.GroupResourceDB;
+import it.univaq.example.webshop.business.UserResourceDB;
+import it.univaq.example.webshop.model.Group;
+import it.univaq.example.webshop.model.UserRoleEnum;
 
-/**
- *
- * @author didattica
- */
 @Provider
 @Logged
 @Priority(Priorities.AUTHENTICATION)
@@ -38,13 +38,15 @@ public class AuthLoggedFilter implements ContainerRequestFilter {
         if (token != null && !token.isEmpty()) {
             try {
                 //validiamo il token
-                final String username = AuthHelpers.getInstance().validateToken(token);
-                if (username != null) {
+                final String email = AuthHelpers.getInstance().validateToken(token);
+                if (email != null) {
                     //inseriamo nel contesto i risultati dell'autenticazione
                     //per farli usare dai nostri metodi restful
                     //iniettando @Context ContainerRequestContext
+                    int user_key = UserResourceDB.getUserByEmail(email).getKey();
                     requestContext.setProperty("token", token);
-                    requestContext.setProperty("user", username);
+                    requestContext.setProperty("user", email);
+                    requestContext.setProperty("userid", user_key);
                     //OPPURE
                     // https://dzone.com/articles/custom-security-context-injax-rs
                     //mettiamo i dati anche nel securitycontext standard di JAXRS...
@@ -56,15 +58,18 @@ public class AuthLoggedFilter implements ContainerRequestFilter {
                             return new Principal() {
                                 @Override
                                 public String getName() {
-                                    return username;
+                                    return email;
                                 }
                             };
                         }
 
                         @Override
                         public boolean isUserInRole(String role) {
-                            //qui andrebbe verificato se l'utente ha il ruolo richiesto
-                            return true;
+                            Group group = GroupResourceDB.getGroupByUser(user_key);
+                            if(group.getName().equals(UserRoleEnum.valueOf(role)))
+                                return true;
+                            else
+                                return false;
                         }
 
                         @Override

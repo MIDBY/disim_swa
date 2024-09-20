@@ -9,11 +9,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 
-
-/**
- *
- * @author didattica
- */
 @Provider
 @PreMatching
 public class CORSFilter implements ContainerResponseFilter, ContainerRequestFilter {

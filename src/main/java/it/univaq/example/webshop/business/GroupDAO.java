@@ -1,4 +1,4 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
 import it.univaq.example.webshop.model.Group;
 import it.univaq.example.webshop.model.UserRoleEnum;
@@ -118,7 +118,7 @@ public class GroupDAO extends DAO {
 
     
     public List<Group> getGroups() throws DataException {
-        List<Group> result = new ArrayList<Group>();
+        List<Group> result = new ArrayList<>();
         try (ResultSet rs = sGroups.executeQuery()) {
             while (rs.next()) {
                 result.add(getGroup(rs.getInt("id")));

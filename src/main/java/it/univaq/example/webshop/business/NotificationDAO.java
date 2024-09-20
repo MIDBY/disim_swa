@@ -1,4 +1,4 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
 import it.univaq.example.webshop.model.Notification;
 import it.univaq.example.webshop.model.NotificationTypeEnum;
@@ -63,7 +63,7 @@ public class NotificationDAO extends DAO {
         try {
             Notification a = (Notification)createNotification();
             a.setKey(rs.getInt("id"));
-            a.setRecipientKey(rs.getInt("idDestinatario"));
+            a.setRecipient(UserResourceDB.getUser(rs.getInt("idDestinatario")));
             a.setMessage(rs.getString("messaggio"));
             a.setLink(rs.getString("link"));
             a.setType(NotificationTypeEnum.valueOf(rs.getString("tipo")));
@@ -99,7 +99,7 @@ public class NotificationDAO extends DAO {
 
     
     public List<Notification> getNotificationsByUser(int user_key) throws DataException {
-        List<Notification> result = new ArrayList<Notification>();
+        List<Notification> result = new ArrayList<>();
         try {
             sNotificationsByUser.setInt(1, user_key);
             try (ResultSet rs = sNotificationsByUser.executeQuery()) {
@@ -115,7 +115,7 @@ public class NotificationDAO extends DAO {
 
     
     public List<Notification> getNotificationsNotReadByUser(int user_key) throws DataException {
-        List<Notification> result = new ArrayList<Notification>();
+        List<Notification> result = new ArrayList<>();
         try {
             sNotificationsNotReadByUser.setInt(1, user_key);
             try (ResultSet rs = sNotificationsNotReadByUser.executeQuery()) {

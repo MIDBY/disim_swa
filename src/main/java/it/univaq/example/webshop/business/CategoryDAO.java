@@ -1,6 +1,6 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
-import it.univaq.example.webshop.dao.CategoryDAO;
+import it.univaq.example.webshop.business.CategoryDAO;
 import it.univaq.example.webshop.model.Category;
 import it.univaq.framework.data.DAO;
 import it.univaq.framework.data.DataException;
@@ -77,7 +77,7 @@ public class CategoryDAO extends DAO {
             a.setKey(rs.getInt("id"));
             a.setName(rs.getString("nome"));
             a.setFatherCategory(getCategory(rs.getInt("idCategoriaPadre")));
-            a.setImage(ImageDAO.getImage(rs.getInt("idImmagine")));
+            a.setImage(ImageResourceDB.getImage(rs.getInt("idImmagine")));
             a.setDeleted(rs.getBoolean("eliminato"));
             a.setVersion(rs.getLong("versione"));
         } catch (SQLException ex) {
@@ -109,7 +109,7 @@ public class CategoryDAO extends DAO {
 
     
     public List<Category> getFatherCategories() throws DataException {
-        List<Category> result = new ArrayList<Category>();
+        List<Category> result = new ArrayList<>();
         try {
             try (ResultSet rs = sFatherCategories.executeQuery()) {
                 while (rs.next()) {
@@ -124,7 +124,7 @@ public class CategoryDAO extends DAO {
 
     
     public List<Category> getCategories() throws DataException {
-        List<Category> result = new ArrayList<Category>();
+        List<Category> result = new ArrayList<>();
         try (ResultSet rs = sCategories.executeQuery()) {
             while (rs.next()) {
                 result.add((Category) getCategory(rs.getInt("id")));
@@ -137,7 +137,7 @@ public class CategoryDAO extends DAO {
 
     
     public List<Category> getCategoriesByDeleted(boolean deleted) throws DataException {
-        List<Category> result = new ArrayList<Category>();
+        List<Category> result = new ArrayList<>();
         try{
             sCategoriesByDeleted.setBoolean(1, deleted);
             try (ResultSet rs = sCategoriesByDeleted.executeQuery()) {
@@ -153,7 +153,7 @@ public class CategoryDAO extends DAO {
 
     
     public List<Category> getCategoriesSonsOf(int category_key) throws DataException {
-        List<Category> result = new ArrayList<Category>();
+        List<Category> result = new ArrayList<>();
         try {
             sCategoriesSonsOf.setInt(1, category_key);
             try (ResultSet rs = sCategoriesSonsOf.executeQuery()) {
@@ -169,7 +169,7 @@ public class CategoryDAO extends DAO {
 
     
     public List<Category> getMostSoldCategories() throws DataException {
-        List<Category> result = new ArrayList<Category>();
+        List<Category> result = new ArrayList<>();
         try (ResultSet rs = sMostSoldCategories.executeQuery()) {
             while (rs.next()) {
                 result.add((Category) getCategory(rs.getInt("id")));
@@ -182,7 +182,7 @@ public class CategoryDAO extends DAO {
 
     
     public List<Category> getCategoriesByImage(int image_key) throws DataException {
-        List<Category> result = new ArrayList<Category>();
+        List<Category> result = new ArrayList<>();
         try {
             sCategoryByImage.setInt(1, image_key);
             try (ResultSet rs = sCategoryByImage.executeQuery()) {

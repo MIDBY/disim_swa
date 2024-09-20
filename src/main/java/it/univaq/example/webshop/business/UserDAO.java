@@ -1,4 +1,4 @@
-package it.univaq.example.webshop.dao;
+package it.univaq.example.webshop.business;
 
 import it.univaq.example.webshop.model.User;
 import it.univaq.example.webshop.model.UserRoleEnum;
@@ -162,7 +162,7 @@ public class UserDAO extends DAO {
 
     
     public List<User> getUsersBySubscriptionMonth(LocalDate date) throws DataException {
-        List<User> result = new ArrayList<User>();
+        List<User> result = new ArrayList<>();
         try {
             sUsersBySubscriptionMonth.setInt(1, date.getMonthValue());
             sUsersBySubscriptionMonth.setInt(2, date.getYear());
@@ -179,7 +179,7 @@ public class UserDAO extends DAO {
 
     
     public List<User> getUsersByAccepted(boolean accepted) throws DataException {
-        List<User> result = new ArrayList<User>();
+        List<User> result = new ArrayList<>();
         try {
             sUsersByAccepted.setBoolean(1, accepted);
             try ( ResultSet rs = sUsersByAccepted.executeQuery()) {
@@ -195,7 +195,7 @@ public class UserDAO extends DAO {
 
     
     public List<User> getUsersByGroup(int group_key) throws DataException {
-        List<User> result = new ArrayList<User>();
+        List<User> result = new ArrayList<>();
         try {
             sUsersByGroup.setInt(1, group_key);
             try ( ResultSet rs = sUsersByGroup.executeQuery()) {
