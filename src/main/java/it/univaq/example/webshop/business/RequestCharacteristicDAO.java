@@ -63,8 +63,8 @@ public class RequestCharacteristicDAO extends DAO {
         try {
             RequestCharacteristic a = (RequestCharacteristic)createRequestCharacteristic();
             a.setKey(rs.getInt("id"));
-            a.setRequestKey(rs.getInt("idRichiesta"));
-            a.setCharacteristicKey(rs.getInt("idCaratteristica"));
+            a.setRequest(RequestResourceDB.getRequest(rs.getInt("idRichiesta")));
+            a.setCharacteristic(CharacteristicResourceDB.getCharacteristic(rs.getInt("idCaratteristica")));
             a.setValue(rs.getString("valore"));
             a.setVersion(rs.getLong("versione"));
             return a;
@@ -111,10 +111,10 @@ public class RequestCharacteristicDAO extends DAO {
     }
 
     
-    public List<RequestCharacteristic> getRequestCharacteristicsByCharacteristic(int char_key) throws DataException {
+    public List<RequestCharacteristic> getRequestCharacteristicsByCharacteristic(int characteristic_key) throws DataException {
         List<RequestCharacteristic> result = new ArrayList<RequestCharacteristic>();
         try {
-            sRequestCharacteristicsByCharacteristic.setInt(1, char_key);
+            sRequestCharacteristicsByCharacteristic.setInt(1, characteristic_key);
             try (ResultSet rs = sRequestCharacteristicsByCharacteristic.executeQuery()) {
                 while (rs.next()) {
                     result.add(getRequestCharacteristic(rs.getInt("id")));

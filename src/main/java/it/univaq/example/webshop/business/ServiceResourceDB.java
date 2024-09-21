@@ -66,7 +66,7 @@ public class ServiceResourceDB {
             try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sServices)) {
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        l.add(createService(rs));
+                        l.add(getService(rs.getInt("id")));
                     }
                 }
             }

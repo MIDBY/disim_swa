@@ -9,7 +9,7 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import it.univaq.example.webshop.model.Category;
+import it.univaq.example.webshop.model.Characteristic;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.data.OptimisticLockException;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
@@ -30,33 +30,33 @@ public class CharacteristicResourceDB {
         return ds.getConnection();
     }
 
-    public static Category createCategory() {
-        return new Category();
+
+    public static Characteristic createCharacteristic() {
+        return new Characteristic();
     }
 
-    private static Category createCategory(ResultSet rs) throws RESTWebApplicationException {
+    private static Characteristic createCharacteristic(ResultSet rs) throws RESTWebApplicationException {
         try {
-            Category a = createCategory();
+            Characteristic a = createCharacteristic();
             a.setKey(rs.getInt("id"));
             a.setName(rs.getString("nome"));
-            a.setFatherCategory(getCategory(rs.getInt("idCategoriaPadre")));
-            a.setImage(ImageResourceDB.getImage(rs.getInt("idImmagine")));
-            a.setDeleted(rs.getBoolean("eliminato"));
+            a.setCategory(CategoryResourceDB.getCategory(rs.getInt("idCategoria")));
+            a.setDefaultValues(rs.getString("valoriDefault"));
             a.setVersion(rs.getLong("versione"));
             return a;
         } catch (SQLException ex) {
-            throw new RESTWebApplicationException("Unable to create category object form ResultSet: " + ex.getMessage());
+            throw new RESTWebApplicationException("Unable to create characteristic object form ResultSet: " + ex.getMessage());
         }
     }
 
-    public static Category getCategory(int category_key) throws RESTWebApplicationException {
-        Category l = null;
+    public static Characteristic getCharacteristic(int characteristic_key) throws RESTWebApplicationException {
+        Characteristic l = null;
         try {
-            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCategoryByID)) {
-                ps.setInt(1, category_key);
+            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCharacteristicByID)) {
+                ps.setInt(1, characteristic_key);
                 try ( ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        l = createCategory(rs);
+                        l = createCharacteristic(rs);
                     }
                 }
             }
@@ -69,13 +69,14 @@ public class CharacteristicResourceDB {
     }   
 
     
-    public static List<Category> getFatherCategories() throws RESTWebApplicationException {
+    public static List<Characteristic> getCharacteristicsByCategory(int category_key) throws RESTWebApplicationException {
         try {
-            List<Category> l = new ArrayList<>();
-            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sFatherCategories)) {
+            List<Characteristic> l = new ArrayList<>();
+            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCharacteristicsByCategory)) {
+                ps.setInt(1, category_key);
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        l.add(createCategory(rs));
+                        l.add(getCharacteristic(rs.getInt("id")));
                     }
                 }
             }
@@ -87,13 +88,13 @@ public class CharacteristicResourceDB {
         }
     }
         
-    public static List<Category> getCategories() throws RESTWebApplicationException {
+    public static List<Characteristic> getCharacteristics() throws RESTWebApplicationException {
         try {
-            List<Category> l = new ArrayList<>();
-            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCategories)) {
+            List<Characteristic> l = new ArrayList<>();
+            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCharacteristics)) {
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        l.add(createCategory(rs));
+                        l.add(getCharacteristic(rs.getInt("id")));
                     }
                 }
             }
@@ -105,127 +106,52 @@ public class CharacteristicResourceDB {
         }
     }
 
-    public static List<Category> getCategoriesByDeleted(boolean deleted) throws RESTWebApplicationException {
-        List<Category> result = new ArrayList<>();
-        try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCategoriesByDeleted)) {
-            ps.setBoolean(1, deleted);
-            try ( ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(getCategory(rs.getInt("id")));
-                }
-            }
-        } catch (SQLException ex) {
-            throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-        } catch (NamingException ex) {
-            throw new RESTWebApplicationException("DB: " + ex.getMessage());
-        }
-        return result;
-    }
-    
-    public static List<Category> getCategoriesSonsOf(int category_key) throws RESTWebApplicationException {
-        List<Category> result = new ArrayList<>();
-        try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCategoriesSonsOf)) {
-            ps.setInt(1, category_key);
-            try ( ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(getCategory(rs.getInt("id")));
-                }
-            }
-        } catch (SQLException ex) {
-            throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-        } catch (NamingException ex) {
-            throw new RESTWebApplicationException("DB: " + ex.getMessage());
-        }
-        return result;
-    }
-
-    public static List<Category> getMostSoldCategories() throws RESTWebApplicationException {
-        List<Category> result = new ArrayList<>();
-        try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sMostSoldCategories)) {
-            try ( ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(getCategory(rs.getInt("id")));
-                }
-            }
-        } catch (SQLException ex) {
-            throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-        } catch (NamingException ex) {
-            throw new RESTWebApplicationException("DB: " + ex.getMessage());
-        }
-        return result;
-    }
-
-    public static List<Category> getCategoriesByImage(int image_key) throws RESTWebApplicationException {
-        List<Category> result = new ArrayList<>();
-        try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCategoryByImage)) {
-            ps.setInt(1, image_key);
-            try ( ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(getCategory(rs.getInt("id")));
-                }
-            }
-        } catch (SQLException ex) {
-            throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-        } catch (NamingException ex) {
-            throw new RESTWebApplicationException("DB: " + ex.getMessage());
-        }
-        return result;
-    }
-
-    public static Category setCategory(Category category) throws RESTWebApplicationException {
+    public static Characteristic setCharacteristic(Characteristic characteristic) throws RESTWebApplicationException {
         try {
-            if (category.getKey() != null && category.getKey() > 0) { //update
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(uCategory)) {
-                    ps.setString(1, category.getName());
-                    if (category.getFatherCategory() != null) {
-                        ps.setInt(2, category.getFatherCategory().getKey());
+            if (characteristic.getKey() != null && characteristic.getKey() > 0) { //update
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(uCharacteristic)) {
+                    ps.setString(1, characteristic.getName());
+                    if (characteristic.getCategory() != null) {
+                        ps.setInt(2, characteristic.getCategory().getKey());
                     } else {
                         ps.setNull(2, java.sql.Types.INTEGER);
                     }                
-                    if (category.getImage() != null) {
-                        ps.setInt(3, category.getImage().getKey());
-                    } else {
-                        ps.setNull(3, java.sql.Types.INTEGER);
-                    }       
-                    ps.setBoolean(4, category.isDeleted());
+                    ps.setString(3, characteristic.getDefaultValues());
 
-                    long current_version = category.getVersion();
+                    long current_version = characteristic.getVersion();
                     long next_version = current_version + 1;
 
-                    ps.setLong(5, next_version);
-                    ps.setInt(6, category.getKey());
-                    ps.setLong(7, current_version);
+                    ps.setLong(4, next_version);
+                    ps.setInt(5, characteristic.getKey());
+                    ps.setLong(6, current_version);
 
                     if (ps.executeUpdate() == 0) {
-                        throw new RESTWebApplicationException("Category not updated");
+                        throw new RESTWebApplicationException("Characteristic not updated");
                     } else {
-                        category.setVersion(next_version);
+                        characteristic.setVersion(next_version);
                     }
                 }
             } else { //insert
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iCategory)) {
-                    ps.setString(1, category.getName());
-                    if (category.getFatherCategory() != null) {
-                        ps.setInt(2, category.getFatherCategory().getKey());
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iCharacteristic)) {
+                    ps.setString(1, characteristic.getName());
+                    if (characteristic.getCategory() != null) {
+                        ps.setInt(2, characteristic.getCategory().getKey());
                     } else {
                         ps.setNull(2, java.sql.Types.INTEGER);
                     }
-                    if (category.getImage() != null) {
-                        ps.setInt(3, category.getImage().getKey());
-                    } else {
-                        ps.setNull(3, java.sql.Types.INTEGER);
-                    }
+                    ps.setString(3, characteristic.getDefaultValues());
+
                     if (ps.executeUpdate() == 1) {
                         try ( ResultSet keys = ps.getGeneratedKeys()) {
                             if (keys.next()) {
                                 int key = keys.getInt(1);
-                                category.setKey(key);
+                                characteristic.setKey(key);
                             }
                         }
                     }
                 }
             }
-            return category;
+            return characteristic;
         } catch (SQLException ex) {
             throw new RESTWebApplicationException("SQL: " + ex.getMessage());
         } catch (NamingException ex) {
@@ -233,13 +159,13 @@ public class CharacteristicResourceDB {
         }
     }
 
-    public static void deleteCategory(Category category) throws DataException {
+    public static void deleteCharacteristic(Characteristic characteristic) throws DataException {
         try {
-            if (category.getKey() != null && category.getKey() > 0) { //delete
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(dCategory)) {
-                    ps.setInt(1, category.getKey());
+            if (characteristic.getKey() != null && characteristic.getKey() > 0) { //delete
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(dCharacteristic)) {
+                    ps.setInt(1, characteristic.getKey());
                     if (ps.executeUpdate() == 0) {
-                        throw new OptimisticLockException(category);
+                        throw new OptimisticLockException(characteristic);
                     }
                 }
             }

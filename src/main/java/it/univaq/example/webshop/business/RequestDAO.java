@@ -79,9 +79,9 @@ public class RequestDAO extends DAO {
             a.setKey(rs.getInt("id"));
             a.setTitle(rs.getString("titolo"));
             a.setDescription(rs.getString("descrizione"));
-            a.setCategory(CategoryDAO.getCategory(rs.getInt("idCategoria")));
-            a.setOrdering(UserDAO.getUser(rs.getInt("idOrdinante")));
-            a.setTechnician(UserDAO.getUser(rs.getInt("idTecnico")));
+            a.setCategory(CategoryResourceDB.getCategory(rs.getInt("idCategoria")));
+            a.setOrdering(UserResourceDB.getUser(rs.getInt("idOrdinante")));
+            a.setTechnician(UserResourceDB.getUser(rs.getInt("idTecnico")));
             a.setCreationDate(rs.getObject("dataCreazione", LocalDate.class));
             a.setRequestState(RequestStateEnum.valueOf(rs.getString("statoRichiesta")));
             a.setOrderState(OrderStateEnum.valueOf(rs.getString("statoOrdine")));

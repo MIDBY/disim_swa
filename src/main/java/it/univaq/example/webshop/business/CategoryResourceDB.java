@@ -79,7 +79,7 @@ public class CategoryResourceDB {
             try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sFatherCategories)) {
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        l.add(createCategory(rs));
+                        l.add(getCategory(rs.getInt("id")));
                     }
                 }
             }
@@ -97,7 +97,7 @@ public class CategoryResourceDB {
             try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sCategories)) {
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        l.add(createCategory(rs));
+                        l.add(getCategory(rs.getInt("id")));
                     }
                 }
             }

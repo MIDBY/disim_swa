@@ -65,7 +65,7 @@ public class CharacteristicDAO extends DAO {
         try {
             a.setKey(rs.getInt("id"));
             a.setName(rs.getString("nome"));
-            a.setCategoryKey(rs.getInt("idCategoria"));
+            a.setCategory(CategoryResourceDB.getCategory(rs.getInt("idCategoria")));
             a.setDefaultValues(rs.getString("valoriDefault"));
             a.setVersion(rs.getLong("versione"));
         } catch (SQLException ex) {

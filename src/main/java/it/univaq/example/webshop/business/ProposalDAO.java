@@ -69,8 +69,8 @@ public class ProposalDAO extends DAO {
         Proposal a = (Proposal) createProposal();
         try {
             a.setKey(rs.getInt("id"));
-            a.setRequestKey(rs.getInt("idRichiesta"));
-            a.setTechnicianKey(rs.getInt("idTecnico"));
+            a.setRequest(RequestResourceDB.getRequest(rs.getInt("idRichiesta")));
+            a.setTechnician(UserResourceDB.getUser(rs.getInt("idTecnico")));
             a.setProductName(rs.getString("nomeProdotto"));
             a.setProducerName(rs.getString("nomeProduttore"));
             a.setProductDescription(rs.getString("descrizioneProdotto"));

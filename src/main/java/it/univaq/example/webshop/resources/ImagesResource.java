@@ -17,8 +17,8 @@ public class ImagesResource {
     @Logged
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() throws RESTWebApplicationException {
-        List<Image> l = ImageResourceDB.getAll();
+    public Response getImages() throws RESTWebApplicationException {
+        List<Image> l = ImageResourceDB.getImages();
         return Response.ok(l).build();
     }
 }

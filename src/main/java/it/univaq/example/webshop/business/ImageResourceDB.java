@@ -48,24 +48,6 @@ public class ImageResourceDB {
         }
     }
 
-    public static List<Image> getAll() throws RESTWebApplicationException {
-        try {
-            List<Image> l = new ArrayList<>();
-            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(SQL_SELECT_ALL)) {
-                try ( ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        l.add(createImage(rs));
-                    }
-                }
-            }
-            return l;
-        } catch (SQLException ex) {
-            throw new RESTWebApplicationException("SQL: " + ex.getMessage());
-        } catch (NamingException ex) {
-            throw new RESTWebApplicationException("DB: " + ex.getMessage());
-        }
-    }
-
     public static Image getImage(int image_key) throws RESTWebApplicationException {
         Image l = null;
         try {
@@ -84,6 +66,24 @@ public class ImageResourceDB {
         }
         return l;
     }   
+
+    public static List<Image> getImages() throws RESTWebApplicationException {
+        try {
+            List<Image> l = new ArrayList<>();
+            try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(SQL_SELECT_ALL)) {
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        l.add(getImage(rs.getInt("id")));
+                    }
+                }
+            }
+            return l;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException("SQL: " + ex.getMessage());
+        } catch (NamingException ex) {
+            throw new RESTWebApplicationException("DB: " + ex.getMessage());
+        }
+    }
     
     public static Image getImageByCategory(int category_key) throws RESTWebApplicationException {
         try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sImageByCategory)) {

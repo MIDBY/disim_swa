@@ -68,7 +68,7 @@ public class GroupResourceDB {
             try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sGroups)) {
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        l.add(createGroup(rs));
+                        l.add(getGroup(rs.getInt("id")));
                     }
                 }
             }
