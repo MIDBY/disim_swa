@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.naming.InitialContext;
@@ -124,7 +125,7 @@ public class ImageResourceDB {
                     }
                 }
             } else { //insert
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iImage)) {
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iImage, Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, image.getCaption());
                     ps.setString(2, image.getImageType());
                     ps.setString(3, image.getFilename());

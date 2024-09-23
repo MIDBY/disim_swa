@@ -7,8 +7,10 @@ import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.User;
+import it.univaq.example.webshop.model.UserRoleEnum;
 import jakarta.ws.rs.core.UriInfo;
 
 /**
@@ -35,6 +37,14 @@ public class AuthHelpers {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean authorize(String email) {
+        User user = UserResourceDB.getUserByEmail(email);
+        if(GroupResourceDB.getGroupByUser(user.getKey()).getName().equals(UserRoleEnum.ORDINANTE))
+            return user.isAccepted();
+        else
+            return true;
     }
     
     public String issueToken(UriInfo context, String username) {

@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class JavaCalendarDeserializer extends JsonDeserializer<Calendar> {
 
-    private final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     public Calendar deserialize(JsonParser jsonParser,

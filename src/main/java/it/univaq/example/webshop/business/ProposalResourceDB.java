@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -210,7 +211,7 @@ public class ProposalResourceDB {
                     }
                 }
             } else { //insert
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iProposal)) {
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iProposal, Statement.RETURN_GENERATED_KEYS)) {
                     if (proposal.getRequest() != null) {
                         ps.setInt(1, proposal.getRequest().getKey());
                     } else {

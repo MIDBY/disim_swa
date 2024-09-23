@@ -38,9 +38,9 @@ public class ImageResource {
     
     @Logged
     @GET
-    @Path("{idcategoria: [0-9]+}")
+    @Path("categoria/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getImageByCategory(@PathParam("idcategoria") int category_key) throws RESTWebApplicationException {
+    public Response getImageByCategory(@PathParam("id") int category_key) throws RESTWebApplicationException {
         Image l = ImageResourceDB.getImageByCategory(category_key);
         return Response.ok(l).build();
     }   

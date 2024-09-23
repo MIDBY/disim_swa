@@ -18,18 +18,18 @@ public class ProposalsResource {
 
     @Logged
     @GET
-    @Path("{idrichiesta: [0-9]+")
+    @Path("richiesta/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProposalsByRequest(@PathParam("idrichiesta") int request_key) throws RESTWebApplicationException {
+    public Response getProposalsByRequest(@PathParam("id") int request_key) throws RESTWebApplicationException {
         List<Proposal> result = ProposalResourceDB.getProposalsByRequest(request_key);
         return Response.ok(result).build();
     }
 
     @Logged
     @GET
-    @Path("{idtecnico: [0-9]+}")
+    @Path("tecnico/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProposalsByTechnician(@PathParam("idtecnico") int user_key) throws RESTWebApplicationException {
+    public Response getProposalsByTechnician(@PathParam("id") int user_key) throws RESTWebApplicationException {
         List<Proposal> result = ProposalResourceDB.getProposalsByTechnician(user_key);
         return Response.ok(result).build();
     }

@@ -45,18 +45,18 @@ public class GroupResource {
 
     @Logged
     @GET
-    @Path("{idutente: [0-9]+}")
+    @Path("utente/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroupByUser(@PathParam("idutente") int user_key) throws RESTWebApplicationException {
+    public Response getGroupByUser(@PathParam("id") int user_key) throws RESTWebApplicationException {
         Group l = GroupResourceDB.getGroupByUser(user_key);
         return Response.ok(l).build();
     }
 
     @Logged
     @GET
-    @Path("{idservizio: [0-9]+}")
+    @Path("servizio/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroupByService(@PathParam("idservizio") int service_key) throws RESTWebApplicationException {
+    public Response getGroupByService(@PathParam("id") int service_key) throws RESTWebApplicationException {
         Group result = GroupResourceDB.getGroupByService(service_key);
         return Response.ok(result).build();
     }

@@ -12,8 +12,8 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import static jakarta.ws.rs.core.Response.Status.CONFLICT;
 import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
-
 import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.User;
 import it.univaq.example.webshop.resources.UserResource;
@@ -32,11 +32,13 @@ public class AuthenticationRes {
         try {
             
             if (AuthHelpers.getInstance().authenticateUser(email, password)) {
-                String authToken = AuthHelpers.getInstance().issueToken(uriinfo, email);
-                //Restituiamolo in tutte le modalità, giusto per fare un esempio...
-                return Response.ok(authToken)
-                        .cookie(new NewCookie.Builder("token").value(authToken).build())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
+                if(AuthHelpers.getInstance().authorize(email)) {
+                    String authToken = AuthHelpers.getInstance().issueToken(uriinfo, email);
+                    return Response.ok(authToken)
+                            .cookie(new NewCookie.Builder("token").value(authToken).build())
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
+                } else
+                    return Response.status(CONFLICT).build();
             }
         } catch (Exception e) {
             //logging dell'errore 
@@ -46,7 +48,6 @@ public class AuthenticationRes {
     
     @DELETE
     @Path("logout")
-    @Logged
     public Response logout(@Context ContainerRequestContext req) {
         //proprietà estratta dall'authorization header 
         //e iniettata nella request dal filtro di autenticazione
@@ -61,8 +62,7 @@ public class AuthenticationRes {
     @POST
     @Path("register")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response register(@Context UriInfo uriinfo,
-            //un altro modo per ricevere e iniettare i parametri con JAX-RS...
+    public Response register(
             @FormParam("username") String username,
             @FormParam("email") String email,
             @FormParam("password") String password,
@@ -80,11 +80,13 @@ public class AuthenticationRes {
                 user.setAddress(address + ", " + number + ", " + city + ", " + cap + ", " + country);
                 UserResourceDB.setUser(user);
                 
-                return Response.ok().build();
+                return Response.ok("success").build();
+            } else {
+                return Response.status(CONFLICT).build();
             }
 
         } catch (Exception e) {
-            //registration error 
+            e.printStackTrace();
         }
         return Response.status(UNAUTHORIZED).build();
     }

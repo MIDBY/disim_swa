@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -216,7 +217,7 @@ public class UserResourceDB {
                     }
                 }
             } else { //insert
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iUser)) {
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iUser, Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, user.getUsername());
                     ps.setString(2, user.getEmail());
                     ps.setString(3, user.getPassword());

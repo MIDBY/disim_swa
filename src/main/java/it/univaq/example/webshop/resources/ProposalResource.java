@@ -34,9 +34,9 @@ public class ProposalResource {
 
     @Logged
     @GET
-    @Path("last/{idrichiesta: [0-9]+}")
+    @Path("last/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLastProposalByRequest(@PathParam("idrichiesta") int request_key) throws RESTWebApplicationException {
+    public Response getLastProposalByRequest(@PathParam("id") int request_key) throws RESTWebApplicationException {
         Proposal l = ProposalResourceDB.getLastProposalByRequest(request_key);
         return Response.ok(l).build();
     }   

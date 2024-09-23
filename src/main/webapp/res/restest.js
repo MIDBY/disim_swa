@@ -1,10 +1,3 @@
-/*
- * Web engineering course - University of L'Aquila
- * RESTful resources testing code
- *  
- */
-
-
 "use strict";
 
 function Restest(testall = true) {
@@ -107,6 +100,12 @@ function Restest(testall = true) {
 
     ///////////////////// public object methods
 
+    function getCookie(name) {
+        function escape(s) { return s.replace(/([.*+?\^$(){}|\[\]\/\\])/g, '\\$1'); }
+        var match = document.cookie.match(RegExp('(?:^|;\\s*)' + escape(name) + '=([^;]*)'));
+        return match ? match[1] : null;
+    }
+
     this.makeRESTcall = function (params, responseCallback = null, async = true) {
         if (responseCallback === null) {
             //default response callback
@@ -164,19 +163,26 @@ function Restest(testall = true) {
     /////////////////////
 
     let handleLoginButton = function () {
-        let u = document.getElementById("username-field").value;
+        let e = document.getElementById("email-field").value;
         let p = document.getElementById("password-field").value;
         sendRestRequest(
                 "post", "rest/auth/login",
                 function (callResponse, callStatus, callAuthHeader) {
                     if (callStatus === 200) {
                         setToken(extractTokenFromHeader(callAuthHeader));
+                        if(!document.location.href.includes("index.html"))
+                            document.location.href = "index.html";
                     } else {
-                        setToken(null);
+                        if(callStatus === 409)
+                            Swal.fire({title: "Sorry", text: "You're not allowed yet to enter. Wait for cofirmation email", icon: "warning"})
+                        else {
+                            setToken(null);
+                            document.getElementById("wrong_credentials").removeAttribute("hidden");
+                        }
                     }
                 },
                 null,
-                "username=" + u + "&password=" + p, "application/x-www-form-urlencoded",
+                "email=" + e + "&password=" + p, "application/x-www-form-urlencoded",
                 null);
 
     };
@@ -187,9 +193,43 @@ function Restest(testall = true) {
                 function (callResponse, callStatus) {
                     if (callStatus === 204) {
                         setToken(null);
+                        document.location.href = "login.html";
                     }
                 },
                 null, null, null, bearer_token);
+    };
+
+    let handleRegisterButton = function () {
+        let u = document.getElementById("username").value;
+        let e = document.getElementById("email").value;
+        let p = document.getElementById("password").value;
+        let a = document.getElementById("address").value;
+        let n = document.getElementById("number").value;
+        let c = document.getElementById("city").value;
+        let k = document.getElementById("cap").value;
+        let o = document.getElementById("country").value;
+        if(u || e || p || a || n || c || k || o) {
+            sendRestRequest(
+                "post", "rest/auth/register",
+                function (callResponse, callStatus) {
+                    if (callStatus === 200) {
+                        Swal.fire({title: "Congrats", text: "Registration with success. You'll receive an e-mail when authorized to enter!", icon: "success"}).then(() => {
+                            document.location.href = "login.html";
+                        });
+                    } else {
+                        if(callStatus === 409)
+                            document.getElementById("email_error").removeAttribute("hidden");
+                        else
+                            setToken(null);
+                    }
+                },
+                null,
+                "username=" + u + "&email=" + e + "&password=" + p + "&address=" + a + "&number=" + n + "&city=" + c + "&cap=" + k + "&country=" + o, "application/x-www-form-urlencoded",
+                null);
+        } else {
+            document.getElementById("parameters_error").removeAttribute("hidden");
+        }
+
     };
 
     let handleRefreshButton = function () {
@@ -209,7 +249,7 @@ function Restest(testall = true) {
     /////////////////////
 
     let init = function () {
-        //bind login/logout/refresh buttons, if present
+        //bind login/logout/register/refresh buttons, if present
         let loginb = document.getElementById("login-button");
         if (loginb)
             loginb.addEventListener("click", function (e) {
@@ -220,6 +260,12 @@ function Restest(testall = true) {
         if (logoutb)
             logoutb.addEventListener("click", function (e) {
                 handleLogoutButton();
+                e.preventDefault();
+            });
+        let registerb = document.getElementById("register-button");
+        if (registerb)
+            registerb.addEventListener("click", function (e) {
+                handleRegisterButton();
                 e.preventDefault();
             });
         let refreshb = document.getElementById("refresh-button");

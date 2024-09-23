@@ -24,18 +24,18 @@ public class RequestCharacteristicsResource {
 
     @Logged
     @GET
-    @Path("{idrichiesta: [0-9]+}")
+    @Path("richiesta/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestCharacteristicsByRequest(@PathParam("idrichiesta") int request_key) throws RESTWebApplicationException {
+    public Response getRequestCharacteristicsByRequest(@PathParam("id") int request_key) throws RESTWebApplicationException {
         List<RequestCharacteristic> result = RequestCharacteristicResourceDB.getRequestCharacteristicsByRequest(request_key);
         return Response.ok(result).build();
     }
 
     @Logged
     @GET
-    @Path("{idcaratteristica: [0-9]+}")
+    @Path("caratteristica/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestCharacteristicsByCharacteristic(@PathParam("idcaratteristica") int characteristic_key) throws RESTWebApplicationException {
+    public Response getRequestCharacteristicsByCharacteristic(@PathParam("id") int characteristic_key) throws RESTWebApplicationException {
         List<RequestCharacteristic> result = RequestCharacteristicResourceDB.getRequestCharacteristicsByCharacteristic(characteristic_key);
         return Response.ok(result).build();
     }

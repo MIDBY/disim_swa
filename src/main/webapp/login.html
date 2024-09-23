@@ -1,0 +1,85 @@
+﻿<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+<title>WebShop</title>
+<!-- Favicon-->
+<link rel="icon" href="res/icon.ico" type="image/x-icon">
+<!-- Custom Css -->
+<link rel="stylesheet" href="res/assets/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="res/assets/css/style.min.css">    
+</head>
+
+<body class="theme-blush">
+<div class="authentication">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12">
+                <form class="card auth_form" id="loginForm" method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded" autocomplete="on"> 
+                    <input type="hidden" id="status" value="">
+                    <div class="header">
+                        <img class="logo" src="res/assets/images/logo2.svg" alt=""><br>
+                        <img class="max-width-50" src="res/assets/images/slogan3.svg" alt="">
+                        <h5>Log in</h5>
+                    </div>
+                    <div class="body">
+                        <div class="input-group mb-3">
+                            <input type="email" name="email-field" id="email-field" class="form-control" placeholder="Email" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="zmdi zmdi-account-circle"></i></span>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" name="password-field" id="password-field" class="form-control" placeholder="Password" required>
+                            <div class="input-group-append">                                
+                                <span class="input-group-text"><a href="#" class="forgot" onclick="showPassword('lock','password-field')"><i id="lock" class="zmdi zmdi-lock"></i></a></span>
+                            </div>                            
+                        </div>
+                        <span id="wrong_credentials" class="input-group text-danger mb-3" hidden>Wrong email or password</span>
+                        <input class="btn btn-primary btn-block waves-effect waves-light" value="SIGN IN" name="login-button" id="login-button" type="submit"/>
+                        
+                        <div class="signin_with mt-3">
+                            <p class="mb-0">Did you not have an account?</p>
+                            <p><a href="register.html">Sign Up</a></p>
+                        </div>
+                    </div>
+                </form>
+                <div class="copyright text-center">
+                    &copy;
+                    <script>document.write(new Date().getFullYear())</script>,
+                    <span>Templates Point</span>
+                </div>
+            </div>
+            <div class="col-lg-8 col-sm-12">
+                <div class="card">
+                    <img src="res/assets/images/signin.png" alt="Sign In"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jquery Core Js -->
+<script src="res/assets/bundles/libscripts.bundle.js"></script>
+<script src="res/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="res/assets/js/custom.js"></script>
+<script type="text/javascript">
+    var status = document.getElementById("status").value;
+    if(status == "registrationSuccess") {
+        Swal.fire({title: "Congrats", text: "Registration with success. You'll receive an e-mail when authorized to enter!", icon: "success"});
+    } else if(status == "userNotAllowed") {
+        Swal.fire({title: "Sorry", text: "You're not allowed yet to enter. Wait for cofirmation email", icon: "warning"})
+    }
+</script>
+<script src="res/restest.js">/* */</script>
+<script>
+    let tester = new Restest();
+</script>
+</body>
+</html>

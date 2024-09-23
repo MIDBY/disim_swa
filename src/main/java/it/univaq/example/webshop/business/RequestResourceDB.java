@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -275,7 +276,7 @@ public class RequestResourceDB {
                     }
                 }
             } else { //insert
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iRequest)) {
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iRequest, Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, request.getTitle());
                     ps.setString(2, request.getDescription());
                     if (request.getCategory() != null) {

@@ -11,6 +11,7 @@ import it.univaq.example.webshop.model.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.format.DateTimeFormatter;
 
 public class UserDeserializer extends JsonDeserializer<User> {
 
@@ -38,7 +39,8 @@ public class UserDeserializer extends JsonDeserializer<User> {
         }
 
         if (node.has("data_iscrizione")) {
-            f.setSubscriptionDate(jp.getCodec().treeToValue(node.get("data_iscrizione"), LocalDate.class));
+            LocalDate ld = LocalDate.parse(node.get("data_iscrizione").asText(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));      
+            f.setSubscriptionDate(ld);
         }
 
         if (node.has("accettato")) {

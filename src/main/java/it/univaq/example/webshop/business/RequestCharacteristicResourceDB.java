@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.naming.InitialContext;
@@ -156,7 +157,7 @@ public class RequestCharacteristicResourceDB {
                     }
                 }
             } else { //insert
-                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iRequestCharacteristic)) {
+                try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(iRequestCharacteristic, Statement.RETURN_GENERATED_KEYS)) {
                     if (requestCharacteristic.getRequest() != null) {
                         ps.setInt(1, requestCharacteristic.getRequest().getKey());
                     } else {

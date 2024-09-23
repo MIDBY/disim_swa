@@ -49,45 +49,45 @@ public class RequestsResource {
 
     @Logged
     @GET
-    @Path("{idcategoria: [0-9]+")
+    @Path("categoria/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestsByCategory(@PathParam("idcategoria") int category_key) throws RESTWebApplicationException {
+    public Response getRequestsByCategory(@PathParam("id") int category_key) throws RESTWebApplicationException {
         List<Request> result = RequestResourceDB.getRequestsByCategory(category_key);
         return Response.ok(result).build();
     }
 
     @Logged
     @GET
-    @Path("{idordinante: [0-9]+}")
+    @Path("ordinante/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestsByOrdering(@PathParam("idordinante") int user_key) throws RESTWebApplicationException {
+    public Response getRequestsByOrdering(@PathParam("id") int user_key) throws RESTWebApplicationException {
         List<Request> result = RequestResourceDB.getRequestsByOrdering(user_key);
         return Response.ok(result).build();
     }
 
     @Logged
     @GET
-    @Path("{idtecnico: [0-9]+}")
+    @Path("tecnico/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestsByTechnician(@PathParam("idtecnico") int user_key) throws RESTWebApplicationException {
+    public Response getRequestsByTechnician(@PathParam("id") int user_key) throws RESTWebApplicationException {
         List<Request> result = RequestResourceDB.getRequestsByTechnician(user_key);
         return Response.ok(result).build();
     }
 
     @Logged
     @GET
-    @Path("{statorichiesta: [a-zA-Z]+}")
+    @Path("{stato: [a-zA-Z]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestsByRequestState(@PathParam("statorichiesta") String value) throws RESTWebApplicationException {
+    public Response getRequestsByRequestState(@PathParam("stato") String value) throws RESTWebApplicationException {
         List<Request> result = RequestResourceDB.getRequestsByRequestState(RequestStateEnum.valueOf(value));
         return Response.ok(result).build();
     }
 
     @Logged
     @GET
-    @Path("{statoordine: [a-zA-Z]+}")
+    @Path("ordine/{stato: [a-zA-Z]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestsByOrderState(@PathParam("statoordine") String value) throws RESTWebApplicationException {
+    public Response getRequestsByOrderState(@PathParam("stato") String value) throws RESTWebApplicationException {
         List<Request> result = RequestResourceDB.getRequestsByOrderState(OrderStateEnum.valueOf(value));
         return Response.ok(result).build();
     }

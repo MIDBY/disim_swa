@@ -48,9 +48,9 @@ public class ServiceResource {
 
     @Logged
     @GET
-    @Path("{idgruppo: [0-9]+}")
+    @Path("gruppo/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getServicesByGroup(@PathParam("idgruppo") int group_key) throws RESTWebApplicationException {
+    public Response getServicesByGroup(@PathParam("id") int group_key) throws RESTWebApplicationException {
         List<Service> result = ServiceResourceDB.getServicesByGroup(group_key);
         return Response.ok(result).build();
     }

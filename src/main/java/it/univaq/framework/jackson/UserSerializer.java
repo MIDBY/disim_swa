@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import it.univaq.example.webshop.model.User;
+import java.time.format.DateTimeFormatter;
+
 
 public class UserSerializer extends JsonSerializer<User> {
 
@@ -18,7 +20,8 @@ public class UserSerializer extends JsonSerializer<User> {
         jgen.writeStringField("username", item.getUsername());
         jgen.writeStringField("email", item.getEmail());
         jgen.writeStringField("indirizzo", item.getAddress());
-        jgen.writeObjectField("data_iscrizione", item.getSubscriptionDate());
+        String dateAsString = item.getSubscriptionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        jgen.writeStringField("data_iscrizione", dateAsString);
         jgen.writeBooleanField("accettato", item.isAccepted());
         jgen.writeObjectField("notifiche", item.getNotifications());
         jgen.writeEndObject(); // }

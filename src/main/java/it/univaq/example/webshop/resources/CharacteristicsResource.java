@@ -25,7 +25,7 @@ public class CharacteristicsResource {
 
     @Logged
     @GET
-    @Path("{idcategoria: [0-9]+")
+    @Path("categoria/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCharacteristicsByCategory(@PathParam("id") int category_key) throws RESTWebApplicationException {
         List<Characteristic> result = CharacteristicResourceDB.getCharacteristicsByCategory(category_key);

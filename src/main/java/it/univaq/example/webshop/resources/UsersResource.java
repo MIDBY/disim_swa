@@ -49,18 +49,18 @@ public class UsersResource {
 
     @Logged
     @GET
-    @Path("{idgruppo: [0-9]+}")
+    @Path("gruppo/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersByGroup(@PathParam("idgruppo") int group_key) throws RESTWebApplicationException {
+    public Response getUsersByGroup(@PathParam("id") int group_key) throws RESTWebApplicationException {
         List<User> result = UserResourceDB.getUsersByGroup(group_key);
         return Response.ok(result).build();
     }
 
     @Logged
     @GET
-    @Path("{gruppo: [a-zA-Z]+}")
+    @Path("gruppo/{nome: [a-zA-Z]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersByGroup(@PathParam("gruppo") String group) throws RESTWebApplicationException {
+    public Response getUsersByGroup(@PathParam("nome") String group) throws RESTWebApplicationException {
         List<User> result = UserResourceDB.getUsersByGroup(UserRoleEnum.valueOf(group));
         return Response.ok(result).build();
     }
