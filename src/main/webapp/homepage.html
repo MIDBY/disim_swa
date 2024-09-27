@@ -1,0 +1,445 @@
+﻿<!doctype html>
+<html class="no-js " lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>WebShop</title>
+    <link rel="icon" href="res/icon.ico" type="image/x-icon"> <!-- Favicon-->
+    <link rel="stylesheet" href="res/assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="res/assets/plugins/dropify/css/dropify.min.css">
+    <!-- JQuery DataTable Css -->
+    <link rel="stylesheet" href="res/assets/plugins/jquery-treetable/jquery.treeTable.css" />
+    <link rel="stylesheet" href="res/assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="res/assets/plugins/morrisjs/morris.min.css" />
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="res/assets/css/style.min.css">
+    <link rel="stylesheet" href="res/restest.css"/>
+</head>
+
+<body class="theme-blush">
+
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="m-t-30"><img class="zmdi-hc-spin" src="res/assets/images/loader.svg" width="48" height="48" alt="Aero"></div>
+            <p>Please wait...</p>
+        </div>
+    </div>
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <!-- Left Sidebar -->
+    <aside id="leftsidebar" class="sidebar">
+        <div class="navbar-brand">
+            <button class="btn-menu ls-toggle-btn" type="button"><i class="zmdi zmdi-menu"></i></button>
+            <a href="#"><img src="res/assets/images/logo2.svg" width="25" alt="Aero"><span class="m-l-10">WebShop</span></a>
+        </div>
+        <div class="menu">
+            <ul class="list">
+                <li>
+                    <div class="user-info">
+                        <a class="image" href="#">
+                            <img id="user_image" alt="User">
+                        </a>
+                        <div class="detail">
+                            <h4 id="username-text"></h4>
+                            <small id="role-text"></small>   
+                            <input type="hidden" id="token-field" name="token-field"/>                 
+                        </div>
+                    </div>
+                </li>
+                <li><a type="submit" class="mega-menu" name="refresh-button" id="refresh-button">Refresh <i class="zmdi zmdi-refresh"></i></a></li>
+                <li><a type="submit" class="mega-menu" name="logout-button" id="logout-button">Logout <i class="zmdi zmdi-power"></i></a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="content">
+        <div class="body_scroll">
+            <div class="block-header">
+                <div class="row">
+                    <div class="col-lg-7 col-md-6 col-sm-12">
+                        <h2>Home</h2>
+                        <button class="btn btn-primary btn-icon mobile_menu" type="button"><i class="zmdi zmdi-sort-amount-desc"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2><strong>Resurces</strong> checker</h2>
+                            </div>
+                            <div class="body">
+                                <p><em>Note: In this project is included a Javascript library that automatically checks the under endpoints when this webpage is opened.</em></p>
+                                <p>
+                                    <span class="rest-test-message-error alert alert-danger">
+                                        Some tested endpoints did not return the expected result
+                    
+                                    </span>
+                                    <span class="rest-test-message-ok alert alert-success">
+                                        All tested endpoints returned the correct result
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2><strong>RESTful</strong> resurces</h2>
+                                <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+                            </div>
+                            <div class="body">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs p-0 mb-3 nav-tabs-success" role="tablist">
+                                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#users"> <i class="zmdi zmdi-account"></i> USERS </a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#categories"><i class="zmdi zmdi-shopping-cart"></i> CATEGORIES </a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#messages_with_icon_title"><i class="zmdi zmdi-email"></i> MESSAGES </a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings_with_icon_title"><i class="zmdi zmdi-settings"></i> SETTINGS </a></li>
+                                </ul>
+                                
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane in active" id="users"> <b>Users resource</b>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="sorting_asc_disabled sorting_desc_disabled">Path</th>
+                                                        <th>Method</th>
+                                                        <th>Parameters</th>
+                                                        <th>Payload</th>
+                                                        <th>Authentication</th>
+                                                        <th>URL to Try</th>
+                                                        <th class="sorting_asc_disabled sorting_desc_disabled">(Expected) Result</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>                                       
+                                                        <th>Path</th>
+                                                        <th>Method</th>
+                                                        <th>Parameters</th>
+                                                        <th>Payload</th>
+                                                        <th>Authentication</th>
+                                                        <th>URL to Try</th>
+                                                        <th>(Expected) Result</th>
+                                                    </tr>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>utenti</td>
+                                                        <td>GET</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/utenti"><small>GET rest/utenti</small></a></td>
+                                                        <td  class="output">Informazioni profilo utente</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti/{id}</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/utenti/33"><small>GET rest/utenti/33</small></a></td>
+                                                        <td  class="output">Informazioni utente attraverso id</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti?email={email}</td>
+                                                        <td>GET</td>
+                                                        <td>{email}: String</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/utenti?email=pippo@gmail.com"><small>GET rest/utenti?email=pippo@gmail.com</small></a></td>
+                                                        <td  class="output">Informazioni utente attraverso email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti?username={username}</td>
+                                                        <td>GET</td>
+                                                        <td>{username}: String</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/utenti?username=Pippo"><small>GET rest/utenti?username=Pippo</small></a></td>
+                                                        <td  class="output">Informazioni utente attraverso username</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti?accettato={accettato}</td>
+                                                        <td>GET</td>
+                                                        <td>{accettato}: Integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/utenti?accettato=1"><small>GET rest/utenti?accettato=1</small></a></td>
+                                                        <td  class="output">Informazioni utente attraverso username</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti?username={username}&amp;accettato={accettato}</td>
+                                                        <td>GET</td>
+                                                        <td>{username}: String, {accettato}: Integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/utenti?username=Pippo&accettato=1"><small>GET rest/utenti?username=Pippo&accettato=1</small></a></td>
+                                                        <td  class="output">Informazioni utente attraverso username</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti?username={username}&amp;email={email}</td>
+                                                        <td>GET</td>
+                                                        <td>{username}, {email}: String</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/utenti?username=Pippo&email=pippo@gmail.com"><small>GET rest/utenti?username=Pippo&email=pippo@gmail.com</small></a></td>
+                                                        <td  class="output">Informazioni utente attraverso username</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti</td>
+                                                        <td>PUT</td>
+                                                        <td></td>
+                                                        <td>Utente (JSON)</td>
+                                                        <td></td>
+                                                        <td><span data-rest-test-target data-rest-test-url="rest/utenti" data-rest-test-method="put" 
+                                                            data-rest-test-content-type="application/json" data-rest-test-status="204"
+                                                            data-rest-test-payload='{ "id" : 65, "username" : "Gino", "email" : "gino@gmail.com", "password" : "gino", "indirizzo" : "Via da Cane, 1, Barisciano, 24582, Spain(ES)", "data_iscrizione" : "27/9/2024", "accettato" : false, "versione" : 1 }'></span></td>
+                                                        <td  class="output">Utente aggiornato</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti/{anno}/{mese}</td>
+                                                        <td>GET</td>
+                                                        <td>{anno}, {mese}: Integer</td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/utenti/2024/9"><small>GET rest/utenti/2024/9</small></a></td>
+                                                        <td  class="output">Lista utenti ordinanti accettati</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti/gruppo/{id}</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/utenti/gruppo/2"><small>GET rest/utenti/gruppo/3</small></a></td>
+                                                        <td  class="output">Lista utenti attraverso id gruppo</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti/gruppo/{nome}</td>
+                                                        <td>GET</td>
+                                                        <td>{nome}: String</td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/utenti/gruppo/ORDINANTE"><small>GET rest/utenti/gruppo/ORDINANTE</small></a></td>
+                                                        <td  class="output">Lista utenti attraverso nome gruppo</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti/gruppo?id={id}&amp;ruolo={nome}</td>
+                                                        <td>PUT</td>
+                                                        <td>{id}: Integer, {nome}: String</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test data-rest-test-target  href="rest/utenti/gruppo?id=65&ruolo=ORDINANTE" data-rest-test-method="put" 
+                                                             data-rest-test-status="204"><small>PUT rest/utenti/gruppo?id=65&ruolo=ORDINANTE</small></a></td>
+                                                        <td  class="output">Utente con ruolo modificato</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="categories"> <b>Categories resource</b>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover dataTable js-exportable c_table theme-color">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="sorting_asc_disabled sorting_desc_disabled">Path</th>
+                                                        <th>Method</th>
+                                                        <th>Parameters</th>
+                                                        <th>Payload</th>
+                                                        <th>Authentication</th>
+                                                        <th>URL to Try</th>
+                                                        <th class="sorting_asc_disabled sorting_desc_disabled">(Expected) Result</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>                                       
+                                                        <th>Path</th>
+                                                        <th>Method</th>
+                                                        <th>Parameters</th>
+                                                        <th>Payload</th>
+                                                        <th>Authentication</th>
+                                                        <th>URL to Try</th>
+                                                        <th>(Expected) Result</th>
+                                                    </tr>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>categoria/{id}</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/categoria/15"><small>GET rest/categoria/15</small></a></td>
+                                                        <td  class="output">Informazioni categoria attraverso id</td>
+                                                    </tr>                 
+                                                    <tr>
+                                                        <td>categoria</td>
+                                                        <td>PUT</td>
+                                                        <td></td>
+                                                        <td>Categoria (JSON)</td>
+                                                        <td>Bearer token</td>
+                                                        <td><span data-rest-test-target data-rest-test-method="put" data-rest-test-url="rest/categoria/15"
+                                                                  data-rest-test-content-type="application/json" data-rest-test-status="204"
+                                                                  data-rest-test-payload='{ "key" : 15, "name" : "Computer", "fatherCategory" : "null", "image" : 14, "characteristics" : [{ "key" : 15, "name" : "Stile", "category" : 15, "defaultValues" : "Classico,Vintage,Futuristico,RGB,Indifferent"}], "deleted"" : false, "version" : 2 }'></span></td>
+                                                        <td  class="output">Categoria aggiornata</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>categoria/{id}</td>
+                                                        <td>DELETE</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><span data-rest-test-auth data-rest-test-target data-rest-test-method="delete" data-rest-test-status="204" data-rest-test-url="rest/categoria/20"></span></td>
+                                                        <td  class="output">Categoria eliminata</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>categorie</td>
+                                                        <td>GET</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/categorie"><small>GET rest/categorie</small></a></td>
+                                                        <td  class="output">Lista categorie</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>categorie/genitori</td>
+                                                        <td>GET</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/categorie/genitori"><small>GET rest/categorie/genitori</small></a></td>
+                                                        <td  class="output">Lista categorie senza genitori</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>categorie/figlidi/{id}</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/categorie/figlidi/15"><small>GET rest/categorie/figlidi/15</small></a></td>
+                                                        <td  class="output">Lista categorie figlie della categoria con id 15</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>categorie/categoriepiuvendute</td>
+                                                        <td>GET</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>Bearer token</td>
+                                                        <td><a data-rest-test data-rest-test-target href="rest/categorie/categoriepiuvendute"><small>GET rest/categorie/categoriepiuvendute</small></a></td>
+                                                        <td  class="output">Lista 3 categorie più vendute</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="messages_with_icon_title"> <b>Message Content</b>
+                                        <p> Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+                                            Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+                                            pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+                                            sadipscing mel. </p>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="settings_with_icon_title"> <b>Settings Content</b>
+                                        <p> Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+                                            Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+                                            pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+                                            sadipscing mel. </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2><strong>Forms</strong> for input operations</h2>
+                            </div>
+                            <div class="body">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs p-0 mb-3 nav-tabs-success" role="tablist">
+                                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home_with_icon_title"> <i class="zmdi zmdi-home"></i> HOME </a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile_with_icon_title"><i class="zmdi zmdi-account"></i> PROFILE </a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#messages_with_icon_title"><i class="zmdi zmdi-email"></i> MESSAGES </a></li>
+                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#settings_with_icon_title"><i class="zmdi zmdi-settings"></i> SETTINGS </a></li>
+                                </ul>
+                                
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane in active" id="home_with_icon_title"> <b>Home Content</b>
+                                        <span data-rest-test-auth  data-rest-test-url="rest/auth/refresh" data-rest-test-method="get" data-rest-test-status="200">/auth/refresh</span>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="profile_with_icon_title"> <b>Profile Content</b>
+                                        <p> Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+                                            Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+                                            pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+                                            sadipscing mel. </p>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="messages_with_icon_title"> <b>Message Content</b>
+                                        <p> Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+                                            Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+                                            pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+                                            sadipscing mel. </p>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="settings_with_icon_title"> <b>Settings Content</b>
+                                        <p> Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+                                            Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+                                            pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+                                            sadipscing mel. </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jquery Core Js -->
+    <script src="res/assets/bundles/libscripts.bundle.js"></script>
+    <!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) -->
+    <script src="res/assets/bundles/vendorscripts.bundle.js"></script>
+    <!-- JVectorMap Plugin Js -->
+    <script src="res/assets/bundles/sparkline.bundle.js"></script>
+    <!-- Sparkline Plugin Js -->
+    <script src="res/assets/bundles/mainscripts.bundle.js"></script>
+    <script src="res/assets/js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Dropify Plugin Js -->
+    <script src="res/assets/plugins/dropify/js/dropify.min.js"></script>
+    <script src="res/assets/js/pages/forms/dropify.js"></script>
+    <!-- Jquery DataTable Plugin Js --> 
+    <script src="res/assets/plugins/jquery-treetable/jquery.treeTable.js"></script>
+    <script src="res/assets/bundles/datatablescripts.bundle.js"></script>
+    <script src="res/assets/plugins/jquery-datatable/buttons/dataTables.buttons.min.js"></script>
+    <script src="res/assets/plugins/jquery-datatable/buttons/buttons.bootstrap4.min.js"></script>
+    <script src="res/assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js"></script>
+    <script src="res/assets/plugins/jquery-datatable/buttons/buttons.flash.min.js"></script>
+    <script src="res/assets/plugins/jquery-datatable/buttons/buttons.html5.min.js"></script>
+    <script src="res/assets/plugins/jquery-datatable/buttons/buttons.print.min.js"></script>
+    <script src="res/assets/js/pages/tables/jquery-datatable.js"></script>
+    
+    <script src="res/restest.js">/* */</script>
+    <script>
+        let tester = new Restest();
+    </script>
+</body>
+
+
+</html>

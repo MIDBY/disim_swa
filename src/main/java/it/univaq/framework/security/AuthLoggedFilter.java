@@ -13,7 +13,7 @@ import java.security.Principal;
 import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.Group;
-import it.univaq.example.webshop.model.UserRoleEnum;
+import it.univaq.example.webshop.model.User;
 
 @Provider
 @Logged
@@ -43,10 +43,12 @@ public class AuthLoggedFilter implements ContainerRequestFilter {
                     //inseriamo nel contesto i risultati dell'autenticazione
                     //per farli usare dai nostri metodi restful
                     //iniettando @Context ContainerRequestContext
-                    int user_key = UserResourceDB.getUserByEmail(email).getKey();
+                    User u = UserResourceDB.getUserByEmail(email);
+                    Group group = GroupResourceDB.getGroupByUser(u.getKey());
+
                     requestContext.setProperty("token", token);
                     requestContext.setProperty("user", email);
-                    requestContext.setProperty("userid", user_key);
+                    requestContext.setProperty("userid", u.getKey());
                     //OPPURE
                     // https://dzone.com/articles/custom-security-context-injax-rs
                     //mettiamo i dati anche nel securitycontext standard di JAXRS...
@@ -65,8 +67,7 @@ public class AuthLoggedFilter implements ContainerRequestFilter {
 
                         @Override
                         public boolean isUserInRole(String role) {
-                            Group group = GroupResourceDB.getGroupByUser(user_key);
-                            if(group.getName().equals(UserRoleEnum.valueOf(role)))
+                            if(group.getName().toString().equals(role))
                                 return true;
                             else
                                 return false;

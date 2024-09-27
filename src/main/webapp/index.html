@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>JAX-RS WebShop</title>
+        <title>WebShop</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" href="res/icon.ico" type="image/x-icon"> <!-- Favicon-->
         <link rel="stylesheet" href="res/assets/plugins/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="res/assets/plugins/dropify/css/dropify.min.css">
+        <link rel="stylesheet" href="res/assets/plugins/jquery-treetable/jquery.treeTable.css" />
+        <link rel="stylesheet" href="res/assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="res/assets/plugins/morrisjs/morris.min.css" />
         <link rel="stylesheet" href="res/assets/css/style.min.css">    
         <link rel="stylesheet" href="res/restest.css"/>
     </head>
@@ -176,27 +180,6 @@
                     <td><a data-rest-test data-rest-test-target href="rest/prodotti/12abc/fatture"><small>GET rest/prodotti/12abc/fatture</small></a></td>
                     <td  class="output">Lista fatture per codice prodotto</td>
                 </tr>
-                           
-                <tr>
-                    <td>utenti</td>
-                    <td>GET</td>
-                    <td></td>
-                    <td></td>
-                    <td>Bearer token</td>
-                    <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/utenti"><small>GET rest/utenti (with authentication)</small></a></td>
-                    <td  class="output">Lista fatture per codice prodotto</td>
-                </tr>                 
-                
-                <tr>
-                    <td>utenti/{accettato}</td>
-                    <td>GET</td>
-                    <td>{accettato}: (true,false)</td>
-                    <td></td>
-                    <td>Bearer token</td>
-                    <td><a data-rest-test data-rest-test-auth data-rest-test-target href="rest/utenti/true"><small>GET rest/utenti/true</small></a></td>
-                    <td  class="output">Lista utenti ordinanti accettati</td>
-                </tr>
-                       
             </tbody>
         </table>
 

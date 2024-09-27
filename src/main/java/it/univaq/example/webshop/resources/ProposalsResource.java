@@ -45,7 +45,7 @@ public class ProposalsResource {
 
     @Logged
     @GET
-    @Path("{mese: [1]?[0-9]}/{anno: [1-9][0-9][0-9][0-9]}")
+    @Path("{anno: [1-9][0-9][0-9][0-9]}/{mese: [1]?[0-9]}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProposalsByCreationMonth(@PathParam("mese") int month, @PathParam("anno") int year) throws RESTWebApplicationException {
         List<Proposal> result = ProposalResourceDB.getProposalsByCreationMonth(month, year);

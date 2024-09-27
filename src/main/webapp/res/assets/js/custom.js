@@ -347,3 +347,29 @@ function toggle(source) {
     checkboxes[i].checked = source.checked;
   }
 }
+
+$(document).ready(function() {
+  loadPage();
+});
+
+function loadPage() {
+  if(document.location.href.includes("homepage.html")) {
+    let username = getCookie("username");
+    let role = getCookie("role");
+    if(role === "AMMINISTRATORE")
+      document.getElementById("user_image").src = "res/assets/images/xs/boss.png";
+    else
+      if(role === "TECNICO")
+        document.getElementById("user_image").src = "res/assets/images/xs/developer.png";
+      else
+        document.getElementById("user_image").src = "res/assets/images/xs/client.png";
+    document.getElementById("username-text").innerHTML = username;
+    document.getElementById("role-text").innerHTML = role;
+  }
+}
+
+function getCookie(name) {
+  function escape(s) { return s.replace(/([.*+?\^$(){}|\[\]\/\\])/g, '\\$1'); }
+  var match = document.cookie.match(RegExp('(?:^|;\\s*)' + escape(name) + '=([^;]*)'));
+  return match ? match[1] : null;
+}

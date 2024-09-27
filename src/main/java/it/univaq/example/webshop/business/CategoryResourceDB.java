@@ -12,7 +12,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import it.univaq.example.webshop.model.Category;
 import it.univaq.framework.data.DataException;
-import it.univaq.framework.data.OptimisticLockException;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
 
 public class CategoryResourceDB {
@@ -238,14 +237,12 @@ public class CategoryResourceDB {
         }
     }
 
-    public static void deleteCategory(Category category) throws DataException {
+    public static void deleteCategory(int category_key) throws DataException {
         try {
-            if (category.getKey() != null && category.getKey() > 0) { //delete
+            if (category_key > 0) { //delete
                 try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(dCategory)) {
-                    ps.setInt(1, category.getKey());
-                    if (ps.executeUpdate() == 0) {
-                        throw new OptimisticLockException(category);
-                    }
+                    ps.setInt(1, category_key);
+                    ps.executeUpdate();
                 }
             }
         } catch (SQLException ex) {

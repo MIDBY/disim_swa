@@ -94,7 +94,7 @@ public class RequestsResource {
 
     @Logged
     @GET
-    @Path("{mese: [1]?[0-9]}/{anno: [1-9][0-9][0-9][0-9]}")
+    @Path("{anno: [1-9][0-9][0-9][0-9]}/{mese: [1]?[0-9]}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRequestsByCreationMonth(@PathParam("mese") int month, @PathParam("anno") int year) throws RESTWebApplicationException {
         List<Request> result = RequestResourceDB.getRequestsByCreationMonth(month, year);

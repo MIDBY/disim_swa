@@ -1,6 +1,9 @@
 package it.univaq.framework.jackson;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -8,6 +11,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.univaq.example.webshop.model.Notification;
 import it.univaq.example.webshop.model.User;
+import it.univaq.framework.security.AuthHelpers;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +39,30 @@ public class UserDeserializer extends JsonDeserializer<User> {
             f.setEmail(node.get("email").asText());
         }
 
+        if (node.has("password")) {
+            try {
+                f.setPassword(AuthHelpers.getPasswordHashPBKDF2(node.get("password").asText()));
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+                f.setPassword(node.get("password").asText());
+                e.printStackTrace();
+            }
+        }
+
         if (node.has("indirizzo")) {
-            f.setEmail(node.get("indirizzo").asText());
+            f.setAddress(node.get("indirizzo").asText());
         }
 
         if (node.has("data_iscrizione")) {
-            LocalDate ld = LocalDate.parse(node.get("data_iscrizione").asText(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));      
+            LocalDate ld = LocalDate.parse(node.get("data_iscrizione").asText(), DateTimeFormatter.ofPattern("d/M/yyyy"));      
             f.setSubscriptionDate(ld);
         }
 
         if (node.has("accettato")) {
             f.setAccepted(node.get("accettato").asBoolean());
+        }
+
+        if (node.has("versione")) {
+            f.setVersion(node.get("versione").asLong());
         }
 
         if (node.has("notifiche")) {

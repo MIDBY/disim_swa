@@ -100,12 +100,6 @@ function Restest(testall = true) {
 
     ///////////////////// public object methods
 
-    function getCookie(name) {
-        function escape(s) { return s.replace(/([.*+?\^$(){}|\[\]\/\\])/g, '\\$1'); }
-        var match = document.cookie.match(RegExp('(?:^|;\\s*)' + escape(name) + '=([^;]*)'));
-        return match ? match[1] : null;
-    }
-
     this.makeRESTcall = function (params, responseCallback = null, async = true) {
         if (responseCallback === null) {
             //default response callback
@@ -170,8 +164,8 @@ function Restest(testall = true) {
                 function (callResponse, callStatus, callAuthHeader) {
                     if (callStatus === 200) {
                         setToken(extractTokenFromHeader(callAuthHeader));
-                        if(!document.location.href.includes("index.html"))
-                            document.location.href = "index.html";
+                        if(!document.location.href.includes("homepage.html"))
+                            document.location.href = "homepage.html";
                     } else {
                         if(callStatus === 409)
                             Swal.fire({title: "Sorry", text: "You're not allowed yet to enter. Wait for cofirmation email", icon: "warning"})
@@ -250,6 +244,7 @@ function Restest(testall = true) {
 
     let init = function () {
         //bind login/logout/register/refresh buttons, if present
+        let token_field = document.getElementById("token-field");
         let loginb = document.getElementById("login-button");
         if (loginb)
             loginb.addEventListener("click", function (e) {
@@ -269,11 +264,14 @@ function Restest(testall = true) {
                 e.preventDefault();
             });
         let refreshb = document.getElementById("refresh-button");
-        if (refreshb)
+        if (refreshb || (token_field != null && token_field.value))
             refreshb.addEventListener("click", function (e) {
                 handleRefreshButton();
                 e.preventDefault();
             });
+        if (token_field != null && !token_field.value) {
+            handleRefreshButton();
+        };
 
 
         //modify the <a> links that need an authorization header

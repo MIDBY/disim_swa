@@ -14,9 +14,10 @@ import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import static jakarta.ws.rs.core.Response.Status.CONFLICT;
 import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
+
+import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.User;
-import it.univaq.example.webshop.resources.UserResource;
 import jakarta.ws.rs.core.UriInfo;
 
 @Path("auth")
@@ -33,15 +34,18 @@ public class AuthenticationRes {
             
             if (AuthHelpers.getInstance().authenticateUser(email, password)) {
                 if(AuthHelpers.getInstance().authorize(email)) {
+                    User user = UserResourceDB.getUserByEmail(email);
                     String authToken = AuthHelpers.getInstance().issueToken(uriinfo, email);
                     return Response.ok(authToken)
                             .cookie(new NewCookie.Builder("token").value(authToken).build())
+                            .cookie(new NewCookie.Builder("username").value(user.getUsername()).build())
+                            .cookie(new NewCookie.Builder("role").value(GroupResourceDB.getGroupByUser(user.getKey()).getName().toString()).build())
                             .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
                 } else
                     return Response.status(CONFLICT).build();
             }
         } catch (Exception e) {
-            //logging dell'errore 
+            e.printStackTrace();
         }
         return Response.status(UNAUTHORIZED).build();
     }
@@ -56,6 +60,8 @@ public class AuthenticationRes {
         return Response.noContent()
                 //eliminaimo anche il cookie con il token
                 .cookie(new NewCookie.Builder("token").value("").maxAge(0).build())
+                .cookie(new NewCookie.Builder("username").value("").maxAge(0).build())
+                .cookie(new NewCookie.Builder("role").value("").maxAge(0).build())
                 .build();
     }
 
@@ -73,7 +79,7 @@ public class AuthenticationRes {
             @FormParam("country") String country) {
         try {
             if(UserResourceDB.getUserByEmail(email) == null) {
-                User user = UserResource.createUser();
+                User user = new User();
                 user.setUsername(username);
                 user.setEmail(email);
                 user.setPassword(AuthHelpers.getPasswordHashPBKDF2(password));

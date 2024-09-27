@@ -29,10 +29,7 @@ import it.univaq.framework.jackson.ObjectMapperContextResolver;
 import it.univaq.framework.security.AuthLoggedFilter;
 import it.univaq.framework.security.AuthenticationRes;
 import it.univaq.framework.security.CORSFilter;
-/**
- *
- * @author didattica
- */
+
 @ApplicationPath("rest")
 public class RESTApp extends Application {
 
@@ -57,7 +54,6 @@ public class RESTApp extends Application {
         c.add(RequestCharacteristicsResource.class);
         c.add(RequestResource.class);
         c.add(RequestsResource.class);
-        c.add(UsersResource.class);
         c.add(UsersResource.class);
         c.add(ServiceResource.class);
 

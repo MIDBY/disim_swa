@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import it.univaq.example.webshop.model.Notification;
+import java.time.format.DateTimeFormatter;
 
 public class NotificationSerializer extends JsonSerializer<Notification> {
 
@@ -19,7 +20,8 @@ public class NotificationSerializer extends JsonSerializer<Notification> {
         jgen.writeStringField("messaggio", item.getMessage());
         jgen.writeStringField("link", item.getLink());
         jgen.writeStringField("tipo", item.getType().toString());
-        jgen.writeObjectField("data_creazione", item.getCreationDate());
+        String dateAsString = item.getCreationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm"));
+        jgen.writeObjectField("data_creazione", dateAsString);
         jgen.writeBooleanField("letto", item.isRead());
         jgen.writeEndObject(); // }
     }

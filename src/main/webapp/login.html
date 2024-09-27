@@ -21,7 +21,6 @@
         <div class="row">
             <div class="col-lg-4 col-sm-12">
                 <form class="card auth_form" id="loginForm" method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded" autocomplete="on"> 
-                    <input type="hidden" id="status" value="">
                     <div class="header">
                         <img class="logo" src="res/assets/images/logo2.svg" alt=""><br>
                         <img class="max-width-50" src="res/assets/images/slogan3.svg" alt="">
@@ -69,14 +68,6 @@
 <script src="res/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="res/assets/js/custom.js"></script>
-<script type="text/javascript">
-    var status = document.getElementById("status").value;
-    if(status == "registrationSuccess") {
-        Swal.fire({title: "Congrats", text: "Registration with success. You'll receive an e-mail when authorized to enter!", icon: "success"});
-    } else if(status == "userNotAllowed") {
-        Swal.fire({title: "Sorry", text: "You're not allowed yet to enter. Wait for cofirmation email", icon: "warning"})
-    }
-</script>
 <script src="res/restest.js">/* */</script>
 <script>
     let tester = new Restest();
