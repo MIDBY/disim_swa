@@ -47,7 +47,7 @@ function requiredField(Field1ID, Field2ID){
     }
 }
 
-function convertTechToUser(event, userId){
+function convertTechToUser(event, iduser){
   event.preventDefault();
   Swal.fire({
       title: "Are you sure to convert technician to customer?",
@@ -64,13 +64,13 @@ function convertTechToUser(event, userId){
           text: "Your technician has been promoted to customer.",
           icon: "success"
         }).then(() => {
-          $("#converter"+userId).submit();
+          $("#converter"+iduser).submit();
         });
       }
     });
 }
 
-function convertUserToTech(event, userId, userName){
+function convertUserToTech(event, iduser, userName){
   event.preventDefault();
   Swal.fire({
       title: "Are you sure to convert customer "+userName+" to technician?",
@@ -87,14 +87,14 @@ function convertUserToTech(event, userId, userName){
           text: "Customer has been promoted to technician.",
           icon: "success"
         }).then(() => {
-          document.getElementById(userId).setAttribute("name", "assume");
-          $("#converter"+userId).submit();
+          document.getElementById(iduser).setAttribute("name", "assume");
+          $("#converter"+iduser).submit();
         });
       }
     });
 }
 
-function convertUserToClient(event, userId, userName, userEmail){
+function convertUserToClient(event, iduser, userName, userEmail){
   event.preventDefault();
   Swal.fire({
       title: "Are you sure to accept user: "+userName+" with email: "+userEmail+" in our system as customer?",
@@ -111,15 +111,15 @@ function convertUserToClient(event, userId, userName, userEmail){
           text: "Your site has a new client.",
           icon: "success"
         }).then(() => {
-          document.getElementById(userId).setAttribute("name", "verify");
-          document.getElementById(userId).setAttribute("value", "1");
-          $("#converter"+userId).submit();
+          document.getElementById(iduser).setAttribute("name", "verify");
+          document.getElementById(iduser).setAttribute("value", "1");
+          $("#converter"+iduser).submit();
         });
       }
     });
 }
 
-function convertClientToUser(event, userId, userName, userEmail){
+function convertClientToUser(event, iduser, userName, userEmail){
   event.preventDefault();
   Swal.fire({
       title: "Are you sure to refuse user: "+userName+" with email: "+userEmail+" in our system as customer?",
@@ -136,9 +136,9 @@ function convertClientToUser(event, userId, userName, userEmail){
           text: "Your site has lost a client.",
           icon: "success"
         }).then(() => {
-          document.getElementById(userId).setAttribute("name", "verify");
-          document.getElementById(userId).setAttribute("value", "0");
-          $("#converter"+userId).submit();
+          document.getElementById(iduser).setAttribute("name", "verify");
+          document.getElementById(iduser).setAttribute("value", "0");
+          $("#converter"+iduser).submit();
         });
       }
     });
@@ -346,30 +346,4 @@ function toggle(source) {
   for(var i=0, n=checkboxes.length;i<n;i++) {
     checkboxes[i].checked = source.checked;
   }
-}
-
-$(document).ready(function() {
-  loadPage();
-});
-
-function loadPage() {
-  if(document.location.href.includes("homepage.html")) {
-    let username = getCookie("username");
-    let role = getCookie("role");
-    if(role === "AMMINISTRATORE")
-      document.getElementById("user_image").src = "res/assets/images/xs/boss.png";
-    else
-      if(role === "TECNICO")
-        document.getElementById("user_image").src = "res/assets/images/xs/developer.png";
-      else
-        document.getElementById("user_image").src = "res/assets/images/xs/client.png";
-    document.getElementById("username-text").innerHTML = username;
-    document.getElementById("role-text").innerHTML = role;
-  }
-}
-
-function getCookie(name) {
-  function escape(s) { return s.replace(/([.*+?\^$(){}|\[\]\/\\])/g, '\\$1'); }
-  var match = document.cookie.match(RegExp('(?:^|;\\s*)' + escape(name) + '=([^;]*)'));
-  return match ? match[1] : null;
 }

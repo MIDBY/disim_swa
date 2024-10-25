@@ -1,6 +1,8 @@
 package it.univaq.framework.jackson;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -20,7 +22,8 @@ public class RequestSerializer extends JsonSerializer<Request> {
         jgen.writeObjectField("categoria", item.getCategory());
         jgen.writeObjectField("ordinante", item.getOrdering());
         jgen.writeObjectField("tecnico", item.getTechnician());
-        jgen.writeObjectField("data_creazione", item.getCreationDate());
+        String dateAsString = item.getCreationDate().format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+        jgen.writeObjectField("data_creazione", dateAsString);
         jgen.writeStringField("stato_richiesta", item.getRequestState().toString());
         jgen.writeStringField("stato_ordine", item.getOrderState().toString());
         jgen.writeObjectField("caratteristiche", item.getRequestCharacteristics());

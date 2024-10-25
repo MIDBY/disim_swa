@@ -27,7 +27,7 @@ public class CategoryDAO extends DAO {
         try {
             super.init();
             sCategoryByID = connection.prepareStatement("SELECT * FROM categoria WHERE id=?");
-            sFatherCategories = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=NULL");
+            sFatherCategories = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre IS NULL");
             sCategories = connection.prepareStatement("SELECT id FROM categoria ORDER BY idCategoriaPadre,id;");
             sCategoriesByDeleted = connection.prepareStatement("SELECT id FROM categoria WHERE eliminato=?");
             sCategoriesSonsOf = connection.prepareStatement("SELECT id FROM categoria WHERE idCategoriaPadre=?");

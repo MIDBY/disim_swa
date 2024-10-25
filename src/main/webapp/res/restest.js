@@ -98,6 +98,49 @@ function Restest(testall = true) {
         }
     };
 
+    let loadCredentials = function(string1) {
+        if(document.location.href.includes("homepage.html")) {
+          let username = string1.split(",")[0];
+          let role = string1.split(",")[1];
+          if(role === "AMMINISTRATORE")
+            document.getElementById("user_image").src = "res/assets/images/xs/boss.png";
+          else
+            if(role === "TECNICO")
+              document.getElementById("user_image").src = "res/assets/images/xs/developer.png";
+            else
+              document.getElementById("user_image").src = "res/assets/images/xs/client.png";
+          document.getElementById("username-text").innerHTML = username;
+          document.getElementById("role-text").innerHTML = role;
+        }
+        sendRestRequest(
+            "get", "rest/utenti/me",
+            function (callResponse, callStatus) {
+                if (callStatus === 200) {
+                    const user = JSON.parse(callResponse);
+                    document.getElementById("idUser").value = user.id;
+                    document.getElementById("idUser2").value = user.id;
+                    document.getElementById("usernameUser").value = user.username;
+                    var indirizzo = user.indirizzo.split(", ");
+                    document.getElementById("indirizzoUser").value = indirizzo[0];
+                    document.getElementById("numeroUser").value = indirizzo[1];
+                    document.getElementById("cittaUser").value = indirizzo[2];
+                    document.getElementById("capUser").value = indirizzo[3];
+                    let tag = document.querySelector("option[value=\""+indirizzo[4]+"\"]");
+                    tag.setAttribute("selected", true);
+                }
+            },
+            null,
+            null,
+            null,
+            bearer_token, false);
+    };
+/*
+    let loadServices = function() {
+        sendRestRequest(
+            "get", "rest/servizio"
+        )
+    }*/
+    
     ///////////////////// public object methods
 
     this.makeRESTcall = function (params, responseCallback = null, async = true) {
@@ -232,8 +275,220 @@ function Restest(testall = true) {
                 function (callResponse, callStatus, callAuthHeader) {
                     if (callStatus === 200) {
                         setToken(extractTokenFromHeader(callAuthHeader));
+                        loadCredentials(callResponse);
                     } else {
+                        if (callStatus === 401) {
+                            Swal.fire({title: "Sorry", text: "Login losed. Retry to access!", icon: "error"}).then(() => {
+                                document.location.href = "login.html";
+                            });
+                        }
                         setToken(null);
+                    }
+                },
+                null, null, null, bearer_token);
+
+    };
+    
+    let handleEditProfileButton = function () {
+        let id = document.getElementById("idUser").value;
+        let username = document.getElementById("usernameUser").value;
+        let indirizzo = document.getElementById("indirizzoUser").value;
+        let numero = document.getElementById("numeroUser").value;
+        let citta = document.getElementById("cittaUser").value;
+        let cap = document.getElementById("capUser").value;
+        let nazione = document.getElementById("nazioneUser").value;
+        if(id && username && indirizzo && numero && cap && nazione) {
+            sendRestRequest(
+                "post", "rest/utenti/modifica",
+                function (callResponse, callStatus) {
+                    if (callStatus === 204) {
+                        Swal.fire({title: "Congrats", text: "Le informazioni dell'account sono state aggiornate con successo", icon: "success"}).then(() => {
+                            handleRefreshButton;
+                        });
+                    } else {
+                        Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                    }
+                },
+                null,
+                "id=" + id + "&username=" + username + "&indirizzo=" + indirizzo + "&numero=" + numero + "&citta=" + citta + "&cap=" + cap + "&nazione=" + nazione + "&tipo=1", 
+                "application/x-www-form-urlencoded",
+                bearer_token);
+        } else {
+            Swal.fire({title: "Sorry", text: "I dati del profilo sono mancanti", icon: "warning"});
+        }
+    };
+
+    let handleEditProfile2Button = function () {
+        let id = document.getElementById("idUser2").value;
+        let email = document.getElementById("emailUser").value;
+        let password = document.getElementById("passwordUser").value;
+        let password2 = document.getElementById("passwordUser2").value;
+        if(password != password2) {
+            if(id && (email || password || password2)) {
+                sendRestRequest(
+                    "post", "rest/utenti/modifica",
+                    function (callResponse, callStatus) {
+                        if (callStatus === 204) {
+                            Swal.fire({title: "Congrats", text: "Le credenziali di sicurezza sono state cambiate con successo! \nOra verrai scollegato per ripetere l'accesso", icon: "success"}).then(() => {
+                                handleLogoutButton;
+                            });
+                        } else {
+                            Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                        }
+                    },
+                    null, "id=" + id + "&email=" + email + "&currentPassword=" + password + "&newPassword=" + password2 + "&tipo=2", "application/x-www-form-urlencoded", bearer_token);
+            } else {
+                Swal.fire({title: "Sorry", text: "Nessun parametro da cambiare", icon: "warning"});
+            }
+        } else
+            Swal.fire({title: "Sorry", text: "Le password corrispondono, cambia la nuova password", icon: "warning"});
+    };
+
+    let handleSeeNotifications = function () {
+        sendRestRequest(
+                "get", "rest/utenti/me/notifiche",
+                function (callResponse, callStatus) {
+                    if (callStatus === 200) {
+                        const table = document.getElementById("notificationsTable");
+                        table.innerHTML = "";
+                        var notifications = JSON.parse(callResponse);
+                        for(let i=0; i < notifications.length; i++) {
+                            var row = document.createElement("tr");
+                            var cell = document.createElement("td");
+                            if(!notifications[i].letto) {
+                                var lettura = document.createElement("button");
+                                lettura.addEventListener("click", () => {    
+                                    sendRestRequest(
+                                    "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
+                                    function (callResponse, callStatus) {
+                                        if (callStatus === 204) {
+                                            Swal.fire({title: "Congrats", text: "La notifica è stata segnata come letta", icon: "success"}).then(() => {
+                                                handleSeeNotifications;
+                                            });
+                                        } else {
+                                            Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                                        }
+                                    },
+                                    null,
+                                    null,
+                                    null,
+                                    bearer_token);
+                                });
+                                var letturaIcon = document.createElement("i");
+                                letturaIcon.classList.add("zmdi", "zmdi-markunread-mailbox");
+                                lettura.appendChild(letturaIcon);
+                                cell.appendChild(lettura);
+                            } else {
+                                var lettura = document.createElement("button");
+                                lettura.addEventListener("click", () => {    
+                                    sendRestRequest(
+                                    "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
+                                    function (callResponse, callStatus) {
+                                        if (callStatus === 204) {
+                                            Swal.fire({title: "Congrats", text: "La notifica è stata segnata come non letta", icon: "success"}).then(() => {
+                                                handleSeeNotifications;
+                                            });
+                                        } else {
+                                            Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                                        }
+                                    },
+                                    null,
+                                    null,
+                                    null,
+                                    bearer_token);
+                                });
+                                var letturaIcon = document.createElement("i");
+                                letturaIcon.classList.add("zmdi", "zmdi-eye-off");
+                                lettura.appendChild(letturaIcon);
+                                cell.appendChild(lettura);
+                            }
+                            row.appendChild(cell);
+
+                            var cell2 = document.createElement("td");
+                            var cancellazione = document.createElement("button");
+                            cancellazione.addEventListener("click", () => {    
+                                sendRestRequest(
+                                "delete", "rest/utenti/me/notifiche?id=" + notifications[i].id,
+                                function (callResponse, callStatus) {
+                                    if (callStatus === 204) {
+                                        Swal.fire({title: "Congrats", text: "La notifica è stata cancellata", icon: "success"}).then(() => {
+                                            handleSeeNotifications;
+                                        });
+                                    } else {
+                                        Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                                    }
+                                },
+                                null,
+                                null,
+                                null,
+                                bearer_token);
+                            });
+                            var cancellazioneIcon = document.createElement("i");
+                            cancellazioneIcon.classList.add("zmdi", "zmdi-delete");
+                            cancellazione.appendChild(cancellazioneIcon);
+                            cell2.appendChild(cancellazione);
+                            row.appendChild(cell2);
+
+                            var cell3 = document.createElement("td");
+                            var tipo = document.createElement("span");
+                            switch(notifications[i].tipo) {
+                                case "INFO":
+                                    tipo.classList.add("icon-circle", "bg-blue", "waves-effect", "waves-float", "btn-sm", "waves-blue");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-account");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "NUOVO":
+                                    tipo.classList.add("icon-circle", "bg-green", "waves-effect", "waves-float", "btn-sm", "waves-green");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-comment-text-alt");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "MODIFICATO":
+                                    tipo.classList.add("icon-circle", "bg-amber", "waves-effect", "waves-float", "btn-sm", "waves-amber");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-edit");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "CHISO":
+                                    tipo.classList.add("icon-circle", "bg-purple", "waves-effect", "waves-float", "btn-sm", "waves-purple");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-shopping-chart");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "ANNULLATO":
+                                    tipo.classList.add("icon-circle", "bg-red", "waves-effect", "waves-float", "btn-sm", "waves-red");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-delete");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                            }
+                            cell3.appendChild(tipo);
+                            row.appendChild(cell3);
+
+                            var cell4 = document.createElement("td");
+                            var testo = document.createTextNode(notifications[i].messaggio);
+                            cell4.appendChild(testo);
+                            row.appendChild(cell4);
+
+                            var cell5 = document.createElement("td");
+                            var dataIcon = document.createElement("i");
+                            dataIcon.classList.add("zmdi", "zmdi-time");
+                            cell5.appendChild(dataIcon);
+                            var data = document.createTextNode(" " + notifications[i].data_creazione);
+                            cell5.appendChild(data);
+                            row.appendChild(cell5);
+
+                            var cell6 = document.createElement("td");
+                            var link = document.createTextNode(notifications[i].link);
+                            cell6.appendChild(link);
+                            row.appendChild(cell6);
+
+                            table.appendChild(row);
+                        }
+
+                    } else {
+                        Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
                     }
                 },
                 null, null, null, bearer_token);
@@ -245,6 +500,8 @@ function Restest(testall = true) {
     let init = function () {
         //bind login/logout/register/refresh buttons, if present
         let token_field = document.getElementById("token-field");
+        let username_field = document.getElementById("username-text");
+
         let loginb = document.getElementById("login-button");
         if (loginb)
             loginb.addEventListener("click", function (e) {
@@ -269,7 +526,26 @@ function Restest(testall = true) {
                 handleRefreshButton();
                 e.preventDefault();
             });
-        if (token_field != null && !token_field.value) {
+        let editProfileb = document.getElementById("editProfile-button");
+        if (editProfileb)
+            editProfileb.addEventListener("click", function (e) {
+                handleEditProfileButton();
+                e.preventDefault();
+            });
+        let editProfileb2 = document.getElementById("editProfile-button2");
+        if (editProfileb2)
+            editProfileb2.addEventListener("click", function (e) {
+                handleEditProfile2Button();
+                e.preventDefault();
+            });
+        let getNotifications = document.getElementById("notificationsView");
+        if (getNotifications)
+            getNotifications.addEventListener("click", function (e) {
+                handleSeeNotifications();
+                e.preventDefault();
+            });
+        if ((token_field != null && !token_field.value) ||
+            (username_field != null && !username_field.value)) {
             handleRefreshButton();
         };
 
@@ -283,17 +559,17 @@ function Restest(testall = true) {
                         "get", anchor.href,
                         function (callResponse, callStatus) {
                             if (callStatus === 200) {
-                                document.body.innerText = callResponse;
+                                let myWindow = window.open('data:application/json,'+encodeURIComponent(callResponse), "_blank");
+                                myWindow.focus();
                             } else {
-                                document.body.innerText = "Status code: " + callStatus;
+                                Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
                             }
                         },
-                        null, null, null, bearer_token);
-                e.preventDefault();
+                        null, null, null, bearer_token, false);
+               e.preventDefault();
             });
         }
 
-        //
         if (testall) {
             THIS.testAllItems();
         }

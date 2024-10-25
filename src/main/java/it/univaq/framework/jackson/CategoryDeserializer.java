@@ -45,6 +45,14 @@ public class CategoryDeserializer extends JsonDeserializer<Category> {
             }  
             f.setCharacteristics(caratteristiche);
         }
+
+        if (node.has("cancellato")) {
+            f.setDeleted(node.get("cancellato").asBoolean());
+        }
+
+        if (node.has("versione")) {
+            f.setVersion(node.get("versione").asLong());
+        }
         
         return f;
     }

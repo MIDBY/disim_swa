@@ -2,62 +2,57 @@ package it.univaq.example.webshop.resources;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.model.Group;
-import it.univaq.example.webshop.model.UserRoleEnum;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
 import it.univaq.framework.security.Logged;
 
-@Path("gruppo")
 public class GroupResource {
 
+    private Group group;
+
+    private void setGroup(int userId) {
+        this.group = GroupResourceDB.getGroupByUser(userId);
+    }
+
     @Logged
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGroup(@Context ContainerRequestContext req) throws RESTWebApplicationException {
+        setGroup(Integer.parseInt(req.getProperty("userid").toString()));
+        return Response.ok(group).build();
+    }
+
+    @Logged
+    @GET
+    @Path("nome")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGroupName(@Context ContainerRequestContext req) throws RESTWebApplicationException {
+        setGroup(Integer.parseInt(req.getProperty("userid").toString()));
+        return Response.ok(group.getName()).build();
+    }
+
+    @Logged
+    @GET
+    @Path("tutti")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGroups() throws RESTWebApplicationException {
-        List<Group> l = GroupResourceDB.getGroups();
-        return Response.ok(l).build();
+        List<Group> groups = GroupResourceDB.getGroups();
+        if(groups.size() > 0)
+            return Response.ok(groups).build();
+        else
+            return Response.status(Response.Status.NOT_FOUND).entity("Nessun gruppo trovato").build();
     }
 
-    @Logged
-    @GET
-    @Path("{id: [0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroup(@PathParam("id") int group_key) throws RESTWebApplicationException {
-        Group l = GroupResourceDB.getGroup(group_key);
-        return Response.ok(l).build();
-    }   
-    
-    @Logged
-    @GET
-    @Path("{nome: [a-zA-Z0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroupByName(@PathParam("nome") UserRoleEnum value) throws RESTWebApplicationException {
-        Group l = GroupResourceDB.getGroupByName(value);
-        return Response.ok(l).build();
-    }
-
-    @Logged
-    @GET
-    @Path("utente/{id: [0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroupByUser(@PathParam("id") int user_key) throws RESTWebApplicationException {
-        Group l = GroupResourceDB.getGroupByUser(user_key);
-        return Response.ok(l).build();
-    }
-
-    @Logged
-    @GET
-    @Path("servizio/{id: [0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroupByService(@PathParam("id") int service_key) throws RESTWebApplicationException {
-        Group result = GroupResourceDB.getGroupByService(service_key);
-        return Response.ok(result).build();
+    @Path("servizi")
+    public ServiceResource getSericesByGroup() throws RESTWebApplicationException {
+        return new ServiceResource();
     }
 }

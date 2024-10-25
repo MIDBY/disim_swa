@@ -18,7 +18,7 @@ public class CategoryResourceDB {
 
     private static final String DS_NAME = "java:comp/env/jdbc/webshopdb";
     private static final String sCategoryByID = "SELECT * FROM categoria WHERE id=?";
-    private static final String sFatherCategories = "SELECT id FROM categoria WHERE idCategoriaPadre=NULL";
+    private static final String sFatherCategories = "SELECT id FROM categoria WHERE idCategoriaPadre IS NULL";
     private static final String sCategories = "SELECT id FROM categoria ORDER BY idCategoriaPadre,id;";
     private static final String sCategoriesByDeleted = "SELECT id FROM categoria WHERE eliminato=?";
     private static final String sCategoriesSonsOf = "SELECT id FROM categoria WHERE idCategoriaPadre=?";

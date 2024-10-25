@@ -2,6 +2,8 @@ package it.univaq.example.webshop.model;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.model.User;
 import it.univaq.framework.data.DataItemImpl;
 
@@ -116,7 +118,7 @@ public class User extends DataItemImpl<Integer> {
 
 
     public void setNotifications(List<Notification> notifications) {
-        this.notifications.addAll(notifications);
+        this.notifications = notifications;
     }
 
     public void addNotification(Notification notification) {
@@ -129,6 +131,10 @@ public class User extends DataItemImpl<Integer> {
 
     public void readNotification(Notification notification) {
         notifications.get(notifications.indexOf(notification)).setRead(true);
+    }
+
+    public UserRoleEnum getRole() {
+        return GroupResourceDB.getGroupByUser(this.getKey()).getName();
     }
 
 }

@@ -19,6 +19,8 @@ public class CategorySerializer extends JsonSerializer<Category> {
         jgen.writeObjectField("immagine", item.getImage());
         jgen.writeObjectField("categoria_padre", item.getFatherCategory());
         jgen.writeObjectField("caratteristiche", item.getCharacteristics());
+        jgen.writeBooleanField("cancellato", item.isDeleted());
+        jgen.writeNumberField("versione", item.getVersion());
         jgen.writeEndObject(); // }
     }
 }

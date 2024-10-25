@@ -20,7 +20,7 @@ public class NotificationSerializer extends JsonSerializer<Notification> {
         jgen.writeStringField("messaggio", item.getMessage());
         jgen.writeStringField("link", item.getLink());
         jgen.writeStringField("tipo", item.getType().toString());
-        String dateAsString = item.getCreationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm"));
+        String dateAsString = item.getCreationDate().format(DateTimeFormatter.ofPattern("d/M/yyyy  HH:mm"));
         jgen.writeObjectField("data_creazione", dateAsString);
         jgen.writeBooleanField("letto", item.isRead());
         jgen.writeEndObject(); // }

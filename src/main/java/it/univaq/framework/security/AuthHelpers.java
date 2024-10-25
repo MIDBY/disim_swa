@@ -7,7 +7,6 @@ import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.User;
 import it.univaq.example.webshop.model.UserRoleEnum;
@@ -41,7 +40,7 @@ public class AuthHelpers {
 
     public boolean authorize(String email) {
         User user = UserResourceDB.getUserByEmail(email);
-        if(GroupResourceDB.getGroupByUser(user.getKey()).getName().equals(UserRoleEnum.ORDINANTE))
+        if(user.getRole().equals(UserRoleEnum.ORDINANTE))
             return user.isAccepted();
         else
             return true;
@@ -64,6 +63,10 @@ public class AuthHelpers {
             instance = new AuthHelpers();
         }
         return instance;
+    }
+
+    public static String sanitizeFilename(String name) {
+        return name.replaceAll("[^a-zA-Z0-9_.-]", "_");
     }
 
      //--------- PASSWORD SECURITY ------------

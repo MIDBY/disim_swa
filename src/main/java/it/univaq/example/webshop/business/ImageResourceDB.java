@@ -20,7 +20,7 @@ public class ImageResourceDB {
     private static final String DS_NAME = "java:comp/env/jdbc/webshopdb";
     private static final String SQL_SELECT_ALL = "SELECT * FROM immagine";
     private static final String sImageByID = "SELECT * FROM immagine WHERE id=?";
-    private static final String sImageByCategory = "SELECT id_immagine FROM categoria WHERE id=?";
+    private static final String sImageByCategory = "SELECT idImmagine FROM categoria WHERE id=?";
     private static final String iImage = "INSERT INTO immagine (titolo,tipo,nomeFile,grandezza) VALUES(?,?,?,?)";
     private static final String uImage = "UPDATE immagine SET titolo=?,tipo=?,nomeFile=?,grandezza=?,versione=? WHERE id=? and versione=?";
     private static final String dImage = "DELETE FROM immagine WHERE id=?";
@@ -91,7 +91,7 @@ public class ImageResourceDB {
             ps.setInt(1, category_key);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return getImage(rs.getInt("id_immagine"));
+                    return getImage(rs.getInt("idImmagine"));
                 }
             }
         } catch (SQLException ex) {

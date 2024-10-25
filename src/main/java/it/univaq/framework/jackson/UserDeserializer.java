@@ -48,8 +48,13 @@ public class UserDeserializer extends JsonDeserializer<User> {
             }
         }
 
-        if (node.has("indirizzo")) {
+        if (node.has("indirizzo") && !node.has("numero")) {
             f.setAddress(node.get("indirizzo").asText());
+        }
+
+        if(node.has("numero")) {
+            f.setAddress(node.get("indirizzo").asText() + ", " + node.get("numero").asText() + ", " +
+                        node.get("citta").asText() + ", " + node.get("cap") + ", " + node.get("nazione"));
         }
 
         if (node.has("data_iscrizione")) {

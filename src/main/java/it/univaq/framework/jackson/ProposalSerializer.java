@@ -1,6 +1,8 @@
 package it.univaq.framework.jackson;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -23,7 +25,8 @@ public class ProposalSerializer extends JsonSerializer<Proposal> {
         jgen.writeNumberField("prezzo_prodotto", item.getProductPrice());
         jgen.writeStringField("url", item.getUrl());
         jgen.writeStringField("note", item.getNotes());
-        jgen.writeObjectField("data_creazione", item.getCreationDate());
+        String dateAsString = item.getCreationDate().format(DateTimeFormatter.ofPattern("d/M/yyyy  HH:mm"));
+        jgen.writeStringField("data_creazione", dateAsString);
         jgen.writeStringField("stato_proposta", item.getProposalState().toString());
         jgen.writeStringField("motivazione", item.getMotivation());
         jgen.writeEndObject(); // }

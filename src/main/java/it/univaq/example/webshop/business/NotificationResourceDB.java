@@ -13,8 +13,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import it.univaq.example.webshop.model.Notification;
 import it.univaq.example.webshop.model.NotificationTypeEnum;
-import it.univaq.framework.data.DataException;
-import it.univaq.framework.data.OptimisticLockException;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
 
 public class NotificationResourceDB {
@@ -74,8 +72,8 @@ public class NotificationResourceDB {
         return l;
     }   
 
-    public static List<Notification> getNotificationsByUser(int user_key) throws DataException {
-        List<Notification> result = new ArrayList<>();
+    public static List<Notification> getNotificationsByUser(int user_key) throws RESTWebApplicationException {
+        List<Notification> result = new ArrayList<Notification>();
         try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(sNotificationsByUser)) {
             ps.setInt(1, user_key);
             try ( ResultSet rs = ps.executeQuery()) {
@@ -184,14 +182,12 @@ public class NotificationResourceDB {
         }
     }
 
-    public static void deleteNotification(Notification notification) throws DataException {
+    public static void deleteNotification(Notification notification) throws RESTWebApplicationException {
         try {
             if (notification.getKey() != null && notification.getKey() > 0) { //delete
                 try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(dNotification)) {
                     ps.setInt(1, notification.getKey());
-                    if (ps.executeUpdate() == 0) {
-                        throw new OptimisticLockException(notification);
-                    }
+                    ps.executeUpdate();
                 }
             }
         } catch (SQLException ex) {

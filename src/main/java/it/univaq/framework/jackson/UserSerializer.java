@@ -21,7 +21,7 @@ public class UserSerializer extends JsonSerializer<User> {
         jgen.writeStringField("email", item.getEmail());
         jgen.writeStringField("password", item.getPassword());
         jgen.writeStringField("indirizzo", item.getAddress());
-        String dateAsString = item.getSubscriptionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String dateAsString = item.getSubscriptionDate().format(DateTimeFormatter.ofPattern("d/M/yyyy"));
         jgen.writeStringField("data_iscrizione", dateAsString);
         jgen.writeBooleanField("accettato", item.isAccepted());
         jgen.writeNumberField("versione", item.getVersion());
