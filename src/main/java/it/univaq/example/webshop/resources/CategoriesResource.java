@@ -35,6 +35,7 @@ import java.util.Map;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import it.univaq.example.webshop.business.CategoryResourceDB;
+import it.univaq.example.webshop.business.CharacteristicResourceDB;
 import it.univaq.example.webshop.business.ImageResourceDB;
 import it.univaq.example.webshop.model.Category;
 import it.univaq.example.webshop.model.Image;
@@ -51,6 +52,11 @@ public class CategoriesResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCategories(@Context UriInfo uriinfo) throws RESTWebApplicationException {
         List<Category> categories =  CategoryResourceDB.getCategoriesByDeleted(false);
+        for(Category c : categories) {
+            c.setCharacteristics(CharacteristicResourceDB.getCharacteristicsByCategory(c.getKey()));
+        }
+
+        /*
         List<Map<String,Object>> result = new ArrayList<>();
         for(Category c : categories) {
             Map<String, Object> e = new LinkedHashMap<>();
@@ -70,9 +76,9 @@ public class CategoriesResource {
             e.put("immagine", uri2);
             e.put("versione", c.getVersion());
             result.add(e);
-        }
-        if(result.size() > 0)
-            return Response.ok(result).build();
+        }*/
+        if(categories.size() > 0)
+            return Response.ok(categories).build();
         else
             return Response.status(Response.Status.NOT_FOUND).entity("Nessuna categoria trovata").build();
     }

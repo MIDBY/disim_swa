@@ -492,7 +492,182 @@ function Restest(testall = true) {
                     }
                 },
                 null, null, null, bearer_token);
+    };
 
+    let handleSeeCategories = function () {
+        sendRestRequest(
+                "get", "rest/categorie",
+                function (callResponse, callStatus) {
+                    if (callStatus === 200) {
+                        const table = document.getElementById("categoriesTable");
+                        table.innerHTML = "";
+                        var categories = JSON.parse(callResponse);
+                        for(let i=0; i < categories.length; i++) {
+                            var row = document.createElement("tr");
+                            row.id = "node-" + categories[i].id;
+                            if(categories[i].categoria_padre != null && categories[i].categoria_padre.id > 0)
+                                row.classList.add("child-of-node-" + categories[i].categoria_padre.id);
+                            var cell = document.createElement("td");
+                            row.appendChild(cell);
+
+                            var cell2 = document.createElement("td");
+                            var immagine = document.createElement("img");
+                            immagine.classList.add("width-50");
+                            immagine.src = "rest/immagini/download?id=" + categories[i].immagine.id;
+                            row.appendChild(cell2);
+
+                            var cell3 = document.createElement("td");
+                            var title = document.createTextNode(categories[i].nome);
+                            row.appendChild(cell3);
+
+                            var cell4 = document.createElement("td");
+                            var characteristics = document.createElement("span");
+                            characteristics.classList.add("text-muted");
+                            for(let j=0; j < categories[i].caratteristiche.length; j++) {
+                                characteristics.textContent.concat(categories[i].caratteristiche[j].nome, ": ", categories[i].caratteristiche[j].valori_default.replace(",", ", "));
+                                if(j < categories[i].caratteristiche.length)
+                                    characteristics.textContent.concat("<br>");
+                            }
+                            cell4.appendChild(characteristics);
+                            row.appendChild(cell4);
+
+                            var cell5 = document.createElement("td");
+                            var edita = document.createElement("button");
+                            edita.addEventListener("click", () => {    
+                                sendRestRequest(
+                                "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
+                                function (callResponse, callStatus) {
+                                    if (callStatus === 204) {
+                                        Swal.fire({title: "Congrats", text: "La notifica è stata segnata come letta", icon: "success"}).then(() => {
+                                            handleSeeNotifications;
+                                        });
+                                    } else {
+                                        Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                                    }
+                                },
+                                null,
+                                null,
+                                null,
+                                bearer_token);
+                            });
+                                var letturaIcon = document.createElement("i");
+                                letturaIcon.classList.add("zmdi", "zmdi-markunread-mailbox");
+                                lettura.appendChild(letturaIcon);
+                                cell.appendChild(lettura);
+                            } else {
+                                var lettura = document.createElement("button");
+                                lettura.addEventListener("click", () => {    
+                                    sendRestRequest(
+                                    "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
+                                    function (callResponse, callStatus) {
+                                        if (callStatus === 204) {
+                                            Swal.fire({title: "Congrats", text: "La notifica è stata segnata come non letta", icon: "success"}).then(() => {
+                                                handleSeeNotifications;
+                                            });
+                                        } else {
+                                            Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                                        }
+                                    },
+                                    null,
+                                    null,
+                                    null,
+                                    bearer_token);
+                                });
+                                var letturaIcon = document.createElement("i");
+                                letturaIcon.classList.add("zmdi", "zmdi-eye-off");
+                                lettura.appendChild(letturaIcon);
+                                cell.appendChild(lettura);
+                            }
+                            row.appendChild(cell);
+
+                            var cell2 = document.createElement("td");
+                            var cancellazione = document.createElement("button");
+                            cancellazione.addEventListener("click", () => {    
+                                sendRestRequest(
+                                "delete", "rest/utenti/me/notifiche?id=" + notifications[i].id,
+                                function (callResponse, callStatus) {
+                                    if (callStatus === 204) {
+                                        Swal.fire({title: "Congrats", text: "La notifica è stata cancellata", icon: "success"}).then(() => {
+                                            handleSeeNotifications;
+                                        });
+                                    } else {
+                                        Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                                    }
+                                },
+                                null,
+                                null,
+                                null,
+                                bearer_token);
+                            });
+                            var cancellazioneIcon = document.createElement("i");
+                            cancellazioneIcon.classList.add("zmdi", "zmdi-delete");
+                            cancellazione.appendChild(cancellazioneIcon);
+                            cell2.appendChild(cancellazione);
+                            row.appendChild(cell2);
+
+                            var cell3 = document.createElement("td");
+                            var tipo = document.createElement("span");
+                            switch(notifications[i].tipo) {
+                                case "INFO":
+                                    tipo.classList.add("icon-circle", "bg-blue", "waves-effect", "waves-float", "btn-sm", "waves-blue");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-account");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "NUOVO":
+                                    tipo.classList.add("icon-circle", "bg-green", "waves-effect", "waves-float", "btn-sm", "waves-green");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-comment-text-alt");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "MODIFICATO":
+                                    tipo.classList.add("icon-circle", "bg-amber", "waves-effect", "waves-float", "btn-sm", "waves-amber");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-edit");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "CHISO":
+                                    tipo.classList.add("icon-circle", "bg-purple", "waves-effect", "waves-float", "btn-sm", "waves-purple");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-shopping-chart");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                                case "ANNULLATO":
+                                    tipo.classList.add("icon-circle", "bg-red", "waves-effect", "waves-float", "btn-sm", "waves-red");
+                                    var tipoIcon = document.createElement("i");
+                                    tipoIcon.classList.add("zmdi", "zmdi-delete");
+                                    tipo.appendChild(tipoIcon);
+                                break;
+                            }
+                            cell3.appendChild(tipo);
+                            row.appendChild(cell3);
+
+                            var cell4 = document.createElement("td");
+                            var testo = document.createTextNode(notifications[i].messaggio);
+                            cell4.appendChild(testo);
+                            row.appendChild(cell4);
+
+                            var cell5 = document.createElement("td");
+                            var dataIcon = document.createElement("i");
+                            dataIcon.classList.add("zmdi", "zmdi-time");
+                            cell5.appendChild(dataIcon);
+                            var data = document.createTextNode(" " + notifications[i].data_creazione);
+                            cell5.appendChild(data);
+                            row.appendChild(cell5);
+
+                            var cell6 = document.createElement("td");
+                            var link = document.createTextNode(notifications[i].link);
+                            cell6.appendChild(link);
+                            row.appendChild(cell6);
+
+                            table.appendChild(row);
+                        }
+
+                    } else {
+                        Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                    }
+                },
+                null, null, null, bearer_token);
     };
 
     /////////////////////
@@ -538,10 +713,16 @@ function Restest(testall = true) {
                 handleEditProfile2Button();
                 e.preventDefault();
             });
-        let getNotifications = document.getElementById("notificationsView");
-        if (getNotifications)
-            getNotifications.addEventListener("click", function (e) {
+        let seeNotifications = document.getElementById("notificationsView");
+        if (seeNotifications)
+            seeNotifications.addEventListener("click", function (e) {
                 handleSeeNotifications();
+                e.preventDefault();
+            });
+        let seeCategories = document.getElementById("categoriesView");
+        if (seeCategories)
+            seeCategories.addEventListener("click", function (e) {
+                handleSeeCategories();
                 e.preventDefault();
             });
         if ((token_field != null && !token_field.value) ||
