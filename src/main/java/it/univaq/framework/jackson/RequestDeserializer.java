@@ -14,6 +14,7 @@ import it.univaq.example.webshop.model.RequestCharacteristic;
 import it.univaq.example.webshop.model.RequestStateEnum;
 import it.univaq.example.webshop.model.User;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class RequestDeserializer extends JsonDeserializer<Request> {
         }
 
         if (node.has("data_creazione")) {
-            f.setCreationDate(jp.getCodec().treeToValue(node.get("data_creazione"), LocalDate.class));
+            f.setCreationDate(LocalDate.parse(node.get("data_creazione").asText(), DateTimeFormatter.ofPattern("d/M/yyyy")));
         }
 
         if (node.has("stato_richiesta")) {
@@ -55,7 +56,10 @@ public class RequestDeserializer extends JsonDeserializer<Request> {
         }
 
         if (node.has("stato_ordine")) {
-            f.setOrderState(OrderStateEnum.valueOf(node.get("stato_ordine").asText()));
+            if(node.get("stato_ordine").asText() == "")
+                f.setOrderState(OrderStateEnum.EMPTY);
+            else
+                f.setOrderState(OrderStateEnum.valueOf(node.get("stato_ordine").asText()));
         }
 
         if (node.has("caratteristiche")) {

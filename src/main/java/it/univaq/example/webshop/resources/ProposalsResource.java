@@ -15,12 +15,14 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import it.univaq.example.webshop.business.ProposalResourceDB;
+import it.univaq.example.webshop.business.RequestResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.Proposal;
 import it.univaq.example.webshop.model.ProposalStateEnum;
@@ -99,15 +101,19 @@ public class ProposalsResource {
     public Response addProposal(Proposal proposal2, @Context ContainerRequestContext req) throws RESTWebApplicationException {
         int user_key = Integer.parseInt(req.getProperty("userid").toString());
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.TECNICO.toString())) {
-            if(proposal2.getKey() == 0) {
+            if(proposal2.getKey() == null || proposal2.getKey() == 0) {
                 if(proposals.size() > 0) {
                     Proposal support = getLastProposal();
                     proposal2.setTechnician(support.getTechnician());
                     proposal2.setRequest(support.getRequest());
                 } else {
                     proposal2.setTechnician(UserResourceDB.getUser(user_key));
-                    //proposal2.setRequest(null);??
+                    proposal2.setRequest(RequestResourceDB.getRequest(proposal2.getRequest().getKey()));
                 }
+                proposal2.setCreationDate(LocalDateTime.now());
+                proposal2.setProposalState(ProposalStateEnum.INATTESA);
+                proposal2.setVersion(0);
+                
                 if(user_key == proposal2.getTechnician().getKey()) {
                     try {
                         ProposalResourceDB.setProposal(proposal2);

@@ -14,7 +14,6 @@ import it.univaq.example.webshop.model.Request;
 import it.univaq.example.webshop.model.RequestCharacteristic;
 import it.univaq.example.webshop.model.Service;
 import it.univaq.example.webshop.model.User;
-import it.univaq.example.webshop.model2.Fattura;
 
 import java.util.Calendar;
 import jakarta.ws.rs.ext.ContextResolver;
@@ -47,9 +46,6 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
         //configuriamo i nostri serializzatori custom
         customSerializer.addSerializer(Calendar.class, new JavaCalendarSerializer());
         customSerializer.addDeserializer(Calendar.class, new JavaCalendarDeserializer());
-        //
-        customSerializer.addSerializer(Fattura.class, new FatturaSerializer());
-        customSerializer.addDeserializer(Fattura.class, new FatturaDeserializer());
         //
         customSerializer.addSerializer(User.class, new UserSerializer());
         customSerializer.addDeserializer(User.class, new UserDeserializer());

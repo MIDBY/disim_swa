@@ -14,14 +14,18 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import java.net.URI;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.business.NotificationResourceDB;
+import it.univaq.example.webshop.business.RequestResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
+import it.univaq.example.webshop.model.Request;
+import it.univaq.example.webshop.model.RequestStateEnum;
 import it.univaq.example.webshop.model.User;
 import it.univaq.example.webshop.model.UserRoleEnum;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
@@ -38,24 +42,39 @@ public class UsersResource {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.AMMINISTRATORE.toString())) {
             List<Map<String, Object>> result = new ArrayList<>();
             List<User> l = UserResourceDB.getUsers();
-            if(!email.isEmpty())
-                l.removeIf(u -> (!u.getEmail().equals(email)));
-            if(!username.isEmpty())
-                l.removeIf(u -> (!u.getUsername().equals(username)));
-            if(!accepted.isEmpty() && (accepted.equals("0") || accepted.equals("1"))) 
-                l.removeIf(u -> (u.isAccepted() != accepted.equals("1")?true:false));
+            if(email != null)
+                if(!email.isEmpty())
+                    l.removeIf(u -> (!u.getEmail().equals(email)));
+            if(username != null)
+                if(!username.isEmpty())
+                    l.removeIf(u -> (!u.getUsername().equals(username)));
+            if(accepted != null)
+                if(!accepted.isEmpty() && (accepted.equals("0") || accepted.equals("1"))) 
+                    l.removeIf(u -> (u.isAccepted() != accepted.equals("1")?true:false));
                 
             for(User u : l){
+                UserRoleEnum ruolo = GroupResourceDB.getGroupByUser(u.getKey()).getName();
+                int activeRequests = 0;
+                List<Request> requests;
+                if(ruolo == UserRoleEnum.ORDINANTE)    
+                    requests = RequestResourceDB.getRequestsByOrdering(u.getKey());
+                else
+                    requests = RequestResourceDB.getRequestsByTechnician(u.getKey());
+
+                for(Request r : requests)
+                    if(r.getRequestState().equals(RequestStateEnum.NUOVO) || r.getRequestState().equals(RequestStateEnum.PRESOINCARICO) || r.getRequestState().equals(RequestStateEnum.ORDINATO))
+                        activeRequests++;
+                
                 Map<String, Object> e = new LinkedHashMap<>();
                 e.put("id", u.getKey());
+                e.put("ruolo", ruolo);
                 e.put("username", u.getUsername());
                 e.put("email", u.getEmail());
-                e.put("accepted", u.isAccepted());
-                URI uri = uriinfo.getBaseUriBuilder()
-                    .path(getClass())
-                    .path(getClass(), "getUser")
-                    .build(u.getKey());
-                e.put("url", uri.toString());
+                e.put("indirizzo", u.getAddress());
+                e.put("richieste_attive", activeRequests);
+                e.put("data_iscrizione", u.getSubscriptionDate().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+                e.put("accettato", u.isAccepted());
+
                 result.add(e);
             }
             if(result.size() > 0)

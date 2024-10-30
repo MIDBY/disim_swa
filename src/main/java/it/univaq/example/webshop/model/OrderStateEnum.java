@@ -9,7 +9,7 @@ public enum OrderStateEnum {
     }
 
     public static boolean isValidEnumValue(String value) {
-        for (NotificationTypeEnum enumValue : NotificationTypeEnum.values()) {
+        for (OrderStateEnum enumValue : OrderStateEnum.values()) {
             if (enumValue.name().equals(value)) {
                 return true;
             }

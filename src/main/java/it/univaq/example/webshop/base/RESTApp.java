@@ -7,9 +7,7 @@ import java.util.Set;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import it.univaq.example.webshop.resources.CategoriesResource;
-import it.univaq.example.webshop.resources.FattureResource;
 import it.univaq.example.webshop.resources.ImagesResource;
-import it.univaq.example.webshop.resources.ProdottiResource;
 import it.univaq.example.webshop.resources.RequestsResource;
 import it.univaq.example.webshop.resources.UsersResource;
 import it.univaq.framework.jackson.ObjectMapperContextResolver;
@@ -31,8 +29,6 @@ public class RESTApp extends Application {
         c.add(RequestsResource.class);
         c.add(UsersResource.class);
 
-        c.add(FattureResource.class);
-        c.add(ProdottiResource.class);
         c.add(AuthenticationRes.class);
 
         //aggiungiamo il provider Jackson per poter

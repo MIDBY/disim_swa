@@ -10,7 +10,9 @@ import it.univaq.example.webshop.model.Proposal;
 import it.univaq.example.webshop.model.ProposalStateEnum;
 import it.univaq.example.webshop.model.Request;
 import it.univaq.example.webshop.model.User;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ProposalDeserializer extends JsonDeserializer<Proposal> {
 
@@ -58,7 +60,7 @@ public class ProposalDeserializer extends JsonDeserializer<Proposal> {
         }
 
         if (node.has("data_creazione")) {
-            f.setCreationDate(jp.getCodec().treeToValue(node.get("data_creazione"), LocalDateTime.class));
+            f.setCreationDate(LocalDateTime.parse(node.get("data_creazione").asText(), DateTimeFormatter.ofPattern("d/M/yyyy  HH:mm")));
         }
 
         if (node.has("stato_proposta")) {

@@ -1,11 +1,15 @@
 package it.univaq.example.webshop.resources;
 
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -16,6 +20,12 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import it.univaq.example.webshop.business.ImageResourceDB;
@@ -23,9 +33,14 @@ import it.univaq.example.webshop.model.Image;
 import it.univaq.example.webshop.model.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
+import it.univaq.framework.security.AuthHelpers;
 import it.univaq.framework.security.Logged;
 
 @Path("immagini")
+@MultipartConfig(
+    maxFileSize = 20848820,
+    maxRequestSize = 418018841
+)
 public class ImagesResource {
 
     @GET
@@ -61,14 +76,36 @@ public class ImagesResource {
     }   
     
     @Logged
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setImage(Image image, @Context ContainerRequestContext req) throws RESTWebApplicationException {
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response setImage(//@FormDataParam("immagine") InputStream q, @FormDataParam("immagine") FormDataContentDisposition file_detail,
+                            @Context HttpServletRequest request,
+                            @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException, ServletException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.AMMINISTRATORE.toString())) {
             try {
-                ImageResourceDB.setImage(image);
-                return Response.noContent().build();
-            } catch (NotFoundException ex) {
+                Part file_da_caricare = request.getPart("immagine");
+                if(file_da_caricare != null && file_da_caricare.getSubmittedFileName() != "") {
+                    Image image = new Image();
+                    
+                    image.setFilename(AuthHelpers.sanitizeFilename(((Part) file_da_caricare).getSubmittedFileName()));
+                    image.setImageType(((Part) file_da_caricare).getContentType());
+                    image.setImageSize(((Part) file_da_caricare).getSize());
+                    image.setCaption("Image");
+                    if(image.getImageSize() > 0 && !image.getFilename().isEmpty()) {
+                        java.nio.file.Path target = Paths.get(sc.getInitParameter("images.directory") + File.separator + image.getFilename());
+                        int guess = 0;
+                        while(Files.exists(target, LinkOption.NOFOLLOW_LINKS))
+                            target = Paths.get(sc.getInitParameter("images.directory") + File.separator + (++guess) + "_" + image.getFilename());
+                        try (InputStream temp_upload = ((Part) file_da_caricare).getInputStream()) {
+                            Files.copy(temp_upload, target, StandardCopyOption.REPLACE_EXISTING);
+                        }
+                        image.setImageData(((Part) file_da_caricare).getInputStream());
+                    }
+                    image = ImageResourceDB.setImage(image);
+                    return Response.ok(image.getKey()).build();
+                } else
+                    return Response.status(Response.Status.NOT_FOUND).entity("Image not found").build();
+            } catch (NotFoundException | DataException | IOException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Image not found").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()

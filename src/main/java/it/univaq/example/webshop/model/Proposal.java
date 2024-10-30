@@ -94,10 +94,12 @@ public class Proposal extends DataItemImpl<Integer> {
     
     public boolean setUrl(String url) {
         if(url.length() > 0) {
-            try {
+            try {                
+                if(!url.contains("http"))
+                    url = "https://" + url;
                 URL u = new URL(url);
                 u.toURI();
-            } catch (MalformedURLException|URISyntaxException e) {
+            } catch (MalformedURLException | URISyntaxException e) {
                 e.printStackTrace();
                 return false;
             }

@@ -1,7 +1,6 @@
 package it.univaq.example.webshop.resources;
 
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.Part;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.FormParam;
@@ -19,30 +18,18 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import it.univaq.example.webshop.business.CategoryResourceDB;
 import it.univaq.example.webshop.business.CharacteristicResourceDB;
 import it.univaq.example.webshop.business.ImageResourceDB;
 import it.univaq.example.webshop.model.Category;
+import it.univaq.example.webshop.model.Characteristic;
 import it.univaq.example.webshop.model.Image;
 import it.univaq.example.webshop.model.UserRoleEnum;
 import it.univaq.framework.data.DataException;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
-import it.univaq.framework.security.AuthHelpers;
 import it.univaq.framework.security.Logged;
 
 @Path("categorie")
@@ -146,9 +133,10 @@ public class CategoriesResource {
 
     @Logged
     @POST
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.MULTIPART_FORM_DATA})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response editCategory(@FormParam("id") int id, @FormParam("nome") String nome, @FormParam("idCategoriaPadre") int idCategoriaPadre,
-                                @FormDataParam("immagine") Part file_da_caricare, @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException, IOException {
+                                @FormParam("immagine") int immagine, 
+                                @FormParam("caratteristiche") String characteristics, @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException, IOException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.AMMINISTRATORE.toString())) {
             try {
                 Category category = CategoryResourceDB.getCategory(id);
@@ -160,34 +148,35 @@ public class CategoriesResource {
                 else
                     category.setFatherCategory(CategoryResourceDB.getCategory(idCategoriaPadre));
 
-                if(file_da_caricare.getSubmittedFileName() != "") {
-                    Image image;
-                    if(category.getImage() != null)
-                        image = category.getImage();
-                    else
-                        image = new Image();
-                    
-                    image.setFilename(AuthHelpers.sanitizeFilename(file_da_caricare.getSubmittedFileName()));
-                    image.setImageType(file_da_caricare.getContentType());
-                    image.setImageSize(file_da_caricare.getSize());
-                    image.setCaption(category.getName() + " image");
-                    if(image.getImageSize() > 0 && !image.getFilename().isEmpty()) {
-                        java.nio.file.Path target = Paths.get(sc.getInitParameter("images.directory") + File.separator + image.getFilename());
-                        int guess = 0;
-                        while(Files.exists(target, LinkOption.NOFOLLOW_LINKS))
-                            target = Paths.get(sc.getInitParameter("images.directory") + File.separator + (++guess) + "_" + image.getFilename());
-                        try (InputStream temp_upload = file_da_caricare.getInputStream()) {
-                            Files.copy(temp_upload, target, StandardCopyOption.REPLACE_EXISTING);
-                        }
-                        image.setImageData(file_da_caricare.getInputStream());
-                    }
-                    ImageResourceDB.setImage(image);
+                if(immagine > 0) {
+                    Image image = ImageResourceDB.getImage(immagine);
                     category.setImage(image);
                 }
+                if(!characteristics.isBlank()) {
+                    String[] parts = characteristics.split("§");
+                    for(String s : parts){
+                        String[] sub = s.split("ç");
+
+                        Characteristic characteristic = CharacteristicResourceDB.getCharacteristic(Integer.parseInt(sub[0]));
+                        if(characteristic == null) {
+                            characteristic = new Characteristic();
+                            characteristic.setKey(Integer.parseInt(sub[0]));
+                        }
+                        characteristic.setName(sub[1]);
+                        if(sub[2] != "0")
+                            characteristic.setCategory(CategoryResourceDB.getCategory(Integer.parseInt(sub[2])));
+                        else
+                            characteristic.setCategory(null);
+                        if(!sub[3].contains("Indifferent") && !sub[3].contains("indifferent"))
+                            sub[3] += ",Indifferent"; 
+                        characteristic.setDefaultValues(sub[3]);
+                        
+                        CharacteristicResourceDB.setCharacteristic(characteristic);
+                    }
+                }
+
                 CategoryResourceDB.setCategory(category);
                 return Response.noContent().build();
-            } catch(DataException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Category not updated").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!

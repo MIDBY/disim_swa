@@ -14,15 +14,24 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.univaq.example.webshop.business.CategoryResourceDB;
+import it.univaq.example.webshop.business.CharacteristicResourceDB;
+import it.univaq.example.webshop.business.ProposalResourceDB;
+import it.univaq.example.webshop.business.RequestCharacteristicResourceDB;
 import it.univaq.example.webshop.business.RequestResourceDB;
+import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.OrderStateEnum;
+import it.univaq.example.webshop.model.Proposal;
 import it.univaq.example.webshop.model.Request;
+import it.univaq.example.webshop.model.RequestCharacteristic;
 import it.univaq.example.webshop.model.RequestStateEnum;
 import it.univaq.example.webshop.model.UserRoleEnum;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
@@ -63,13 +72,20 @@ public class RequestsResource {
         for(Request r : requests) {
             Map<String, Object> e = new LinkedHashMap<>();
             e.put("id", r.getKey());
+            e.put("categoria", r.getCategory());
             e.put("titolo", r.getTitle());
             e.put("descrizione", r.getDescription());
-            URI uri = uriinfo.getBaseUriBuilder()
-                .path(getClass())
-                .path(getClass(), "getRequest")
-                .build(r.getKey());
-            e.put("url", uri.toString());
+            e.put("ordinante", r.getOrdering().getUsername());
+            if(r.getTechnician() != null)
+                e.put("tecnico", r.getTechnician().getUsername());
+            e.put("data_creazione", r.getCreationDate().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+            e.put("stato_richiesta", r.getRequestState());
+            e.put("stato_ordine", r.getOrderState().toString());
+            e.put("caratteristiche", RequestCharacteristicResourceDB.getRequestCharacteristicsByRequest(r.getKey()));
+            Proposal proposal = ProposalResourceDB.getLastProposalByRequest(r.getKey());
+            if(proposal != null)
+                e.put("proposta", proposal);
+            e.put("proposte", ProposalResourceDB.getProposalsByRequest(r.getKey()));
             result.add(e);
         }
         if(result.size() > 0)
@@ -78,6 +94,7 @@ public class RequestsResource {
             return Response.status(Response.Status.NOT_FOUND).entity("Nessuna richiesta trovata").build();
     }
 
+    @Logged
     @GET
     @Path("{anno: [1-9][0-9][0-9][0-9]}/{mese: [1]?[0-9]}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -100,6 +117,8 @@ public class RequestsResource {
     public Response getUnassignedRequests(@Context ContainerRequestContext req) throws RESTWebApplicationException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.TECNICO.toString())) {
             List<Request> result = RequestResourceDB.getUnassignedRequests();
+            for(Request r : result)
+                r.setRequestCharacteristics(RequestCharacteristicResourceDB.getRequestCharacteristicsByRequest(r.getKey()));
             if(result.size() > 0)
                 return Response.ok(result).build();
             else
@@ -113,12 +132,27 @@ public class RequestsResource {
         return new RequestResource(RequestResourceDB.getRequest(request_key));
     }   
     
+    @Logged
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addRequest(Request request, @Context ContainerRequestContext req) throws RESTWebApplicationException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.ORDINANTE.toString())) {
             try {
-                RequestResourceDB.setRequest(request);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+                String title = LocalDateTime.now().format(formatter);
+                request.setTitle("Request#" + title);
+                request.setCreationDate(LocalDate.now());
+                request.setCategory(CategoryResourceDB.getCategory(request.getCategory().getKey()));
+                request.setOrdering(UserResourceDB.getUser(Integer.parseInt(req.getProperty("userid").toString())));
+                request = RequestResourceDB.setRequest(request);
+
+                if(request.getRequestCharacteristics() != null) {
+                    for (RequestCharacteristic rc : request.getRequestCharacteristics()) {
+                        rc.setCharacteristic(CharacteristicResourceDB.getCharacteristic(rc.getCharacteristic().getKey()));
+                        rc.setRequest(request);
+                        RequestCharacteristicResourceDB.setRequestCharacteristic(rc);
+                    }
+                }
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
