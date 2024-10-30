@@ -1,5 +1,6 @@
 package it.univaq.framework.security;
 
+import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.FormParam;
@@ -17,6 +18,7 @@ import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 import it.univaq.example.webshop.business.UserResourceDB;
 import it.univaq.example.webshop.model.User;
+import it.univaq.example.webshop.model.Utility;
 import jakarta.ws.rs.core.UriInfo;
 
 @Path("auth")
@@ -70,7 +72,7 @@ public class AuthenticationRes {
             @FormParam("number") int number,
             @FormParam("city") String city,
             @FormParam("cap") int cap,
-            @FormParam("country") String country) {
+            @FormParam("country") String country, @Context ServletContext sc) {
         try {
             if(UserResourceDB.getUserByEmail(email) == null) {
                 User user = new User();
@@ -79,6 +81,8 @@ public class AuthenticationRes {
                 user.setPassword(AuthHelpers.getPasswordHashPBKDF2(password));
                 user.setAddress(address + ", " + number + ", " + city + ", " + cap + ", " + country);
                 UserResourceDB.setUser(user);
+
+                Utility.sendMail(sc,email, "Hi "+username+",\n welcome to WebShop! \nAnother email will arrive as soon as possible confirming acceptance of your account in our shop!");
                 
                 return Response.ok("success").build();
             } else {

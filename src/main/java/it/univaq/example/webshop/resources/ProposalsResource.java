@@ -1,5 +1,6 @@
 package it.univaq.example.webshop.resources;
 
+import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -24,9 +25,11 @@ import java.util.Map;
 import it.univaq.example.webshop.business.ProposalResourceDB;
 import it.univaq.example.webshop.business.RequestResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
+import it.univaq.example.webshop.model.NotificationTypeEnum;
 import it.univaq.example.webshop.model.Proposal;
 import it.univaq.example.webshop.model.ProposalStateEnum;
 import it.univaq.example.webshop.model.UserRoleEnum;
+import it.univaq.example.webshop.model.Utility;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
 import it.univaq.framework.security.Logged;
 
@@ -98,7 +101,7 @@ public class ProposalsResource {
     @Logged
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addProposal(Proposal proposal2, @Context ContainerRequestContext req) throws RESTWebApplicationException {
+    public Response addProposal(Proposal proposal2, @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException {
         int user_key = Integer.parseInt(req.getProperty("userid").toString());
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.TECNICO.toString())) {
             if(proposal2.getKey() == null || proposal2.getKey() == 0) {
@@ -117,6 +120,8 @@ public class ProposalsResource {
                 if(user_key == proposal2.getTechnician().getKey()) {
                     try {
                         ProposalResourceDB.setProposal(proposal2);
+                        Utility.sendMail(sc,proposal2.getRequest().getOrdering().getEmail(), "Info mail: \nYour request: "+proposal2.getRequest().getTitle()+" has received a new proposal, go to check it!");
+                        Utility.sendNotification(proposal2.getRequest().getOrdering(), "Request: "+proposal2.getRequest().getTitle()+".\n Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, "requests"); 
                         return Response.noContent().build();
                     } catch (NotFoundException ex) {
                         return Response.status(Response.Status.NOT_FOUND).entity("Proposal not found").build();

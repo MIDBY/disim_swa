@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="res/restest.css"/>
 </head>
 
-<body class="theme-blush">
+<body class="theme-blue">
 
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
@@ -140,7 +140,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target data-rest-test-auth="" href="rest/utenti"><small>GET rest/utenti</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti"><small>GET rest/utenti</small></a></td>
                                                         <td  class="output">Informazioni profilo utenti</td>
                                                     </tr>
                                                     <tr>
@@ -149,7 +149,7 @@
                                                         <td>{id}: Integer</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/utenti/33"><small>GET rest/utenti/33</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/33"><small>GET rest/utenti/33</small></a></td>
                                                         <td  class="output">Informazioni utente attraverso id</td>
                                                     </tr>
                                                     <tr>
@@ -158,7 +158,7 @@
                                                         <td>{email}: String</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/utenti?email=pippo@gmail.com"><small>GET rest/utenti?email=pippo@gmail.com</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?email=pippo@gmail.com"><small>GET rest/utenti?email=pippo@gmail.com</small></a></td>
                                                         <td  class="output">Informazioni utente attraverso email</td>
                                                     </tr>
                                                     <tr>
@@ -167,7 +167,7 @@
                                                         <td>{username}: String</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/utenti?username=Pippo"><small>GET rest/utenti?username=Pippo</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?username=Pippo"><small>GET rest/utenti?username=Pippo</small></a></td>
                                                         <td  class="output">Informazioni utente attraverso username</td>
                                                     </tr>
                                                     <tr>
@@ -176,7 +176,7 @@
                                                         <td>{accettato}: Integer</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/utenti?accettato=1"><small>GET rest/utenti?accettato=1</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?accettato=1"><small>GET rest/utenti?accettato=1</small></a></td>
                                                         <td  class="output">Informazioni utente attraverso username</td>
                                                     </tr>
                                                     <tr>
@@ -185,7 +185,7 @@
                                                         <td>{username}: String, {accettato}: Integer</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a  data-rest-test-target href="rest/utenti?username=Pippo&accettato=1"><small>GET rest/utenti?username=Pippo&accettato=1</small></a></td>
+                                                        <td><a  data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?username=Pippo&accettato=1"><small>GET rest/utenti?username=Pippo&accettato=1</small></a></td>
                                                         <td  class="output">Informazioni utente attraverso username</td>
                                                     </tr>
                                                     <tr>
@@ -215,7 +215,7 @@
                                                         <td>{anno}, {mese}: Integer</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/utenti/2024/9"><small>GET rest/utenti/2024/9</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/2024/9"><small>GET rest/utenti/2024/9</small></a></td>
                                                         <td  class="output">Lista utenti ordinanti accettati</td>
                                                     </tr>
                                                     <tr>
@@ -224,7 +224,7 @@
                                                         <td>{id}: Integer</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/utenti/gruppo/2"><small>GET rest/utenti/gruppo/3</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/gruppo/2"><small>GET rest/utenti/gruppo/3</small></a></td>
                                                         <td  class="output">Lista utenti attraverso id gruppo</td>
                                                     </tr>
                                                     <tr>
@@ -233,7 +233,7 @@
                                                         <td>{nome}: String</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/utenti/gruppo/ORDINANTE"><small>GET rest/utenti/gruppo/ORDINANTE</small></a></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/gruppo/ORDINANTE"><small>GET rest/utenti/gruppo/ORDINANTE</small></a></td>
                                                         <td  class="output">Lista utenti attraverso nome gruppo</td>
                                                     </tr>
                                                     <tr>
@@ -409,9 +409,9 @@
                             <div class="body">
                                 <!-- Nav tabs -->
                                 <ul class="nav nav-tabs p-0 mb-3 nav-tabs-success" role="tablist">
-                                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#profileActions"><i class="zmdi zmdi-account"></i> PROFILO </a></li>
-                                    <li class="nav-item"><a id="notificationsView" class="nav-link" data-toggle="tab" href="#notificationsActions"><i class="zmdi zmdi-email"></i> NOTIFICHE </a></li>
-                                    <li class="nav-item"><a id="usersView" class="nav-link" data-toggle="tab" href="#usersActions"><i class="zmdi zmdi-assignment-account"></i> UTENTI </a></li>
+                                    <li class="nav-item" id="profileService" hidden><a class="nav-link active" data-toggle="tab" href="#profileActions"><i class="zmdi zmdi-account"></i> PROFILO </a></li>
+                                    <li class="nav-item" id="notificationsService" hidden><a id="notificationsView" class="nav-link" data-toggle="tab" href="#notificationsActions"><i class="zmdi zmdi-email"></i> NOTIFICHE </a></li>
+                                    <li class="nav-item" id="usersService" hidden><a id="usersView" class="nav-link" data-toggle="tab" href="#usersActions"><i class="zmdi zmdi-assignment-account"></i> UTENTI </a></li>
                                     <li class="nav-item"><a id="categoriesView" class="nav-link" data-toggle="tab" href="#categoriesActions"><i class="zmdi zmdi-shopping-cart"></i> CATEGORIE </a></li>
                                     <li class="nav-item"><a id="requestsView" class="nav-link" data-toggle="tab" href="#requestsActions"><i class="zmdi zmdi-file-text"></i> RICHIESTE </a></li>
                                 </ul>
@@ -774,7 +774,6 @@
                                                     <thead>
                                                         <tr>             
                                                             <th class="sorting_asc_disabled sorting_desc_disabled" width="10px"></th>                          
-                                                            <th class="sorting_asc_disabled sorting_desc_disabled" width="10px"></th>
                                                             <th>Type</th>
                                                             <th>Message</th>                                        
                                                             <th>Sent on</th>

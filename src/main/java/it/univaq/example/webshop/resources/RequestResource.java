@@ -1,5 +1,6 @@
 package it.univaq.example.webshop.resources;
 
+import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -19,11 +20,13 @@ import it.univaq.example.webshop.business.ProposalResourceDB;
 import it.univaq.example.webshop.business.RequestCharacteristicResourceDB;
 import it.univaq.example.webshop.business.RequestResourceDB;
 import it.univaq.example.webshop.business.UserResourceDB;
+import it.univaq.example.webshop.model.NotificationTypeEnum;
 import it.univaq.example.webshop.model.OrderStateEnum;
 import it.univaq.example.webshop.model.Request;
 import it.univaq.example.webshop.model.RequestCharacteristic;
 import it.univaq.example.webshop.model.RequestStateEnum;
 import it.univaq.example.webshop.model.UserRoleEnum;
+import it.univaq.example.webshop.model.Utility;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
 import it.univaq.framework.security.Logged;
 
@@ -61,7 +64,7 @@ public class RequestResource {
     @Logged
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setRequest(Request request2, @Context ContainerRequestContext req) throws RESTWebApplicationException {
+    public Response setRequest(Request request2, @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException {
         int key = Integer.parseInt(req.getProperty("userid").toString());
         if(key == request.getOrdering().getKey() || key == request.getTechnician().getKey()) {
             try {
@@ -81,6 +84,10 @@ public class RequestResource {
                 }
                 request.setNotes(request2.getNotes());
                 RequestResourceDB.setRequest(request);
+                if(key == request.getOrdering().getKey()) {
+                    Utility.sendMail(sc, request.getTechnician().getEmail(), "WebShop: \nUser has edited the request.\nGo to check now!");
+                    Utility.sendNotification(request.getTechnician(), "User has updated own request!", NotificationTypeEnum.MODIFICATO, "requests");
+                }
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
@@ -97,13 +104,15 @@ public class RequestResource {
     @POST
     @Path("assegna")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setRequestTechnician(@Context ContainerRequestContext req) throws RESTWebApplicationException {
+    public Response setRequestTechnician(@Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException {
         int key = Integer.parseInt(req.getProperty("userid").toString());
         if(GroupResourceDB.getGroupByUser(key).getName().equals(UserRoleEnum.TECNICO)) {
             try {
                 request.setTechnician(UserResourceDB.getUser(key));
                 request.setRequestState(RequestStateEnum.PRESOINCARICO);
                 RequestResourceDB.setRequest(request);
+                Utility.sendMail(sc,request.getOrdering().getEmail(), "Info mail: \nYour request: "+request.getTitle()+"\n has been taken in charge by one of our operators. \nYou will soon receive a proposal from our operator.");
+                Utility.sendNotification(request.getOrdering(), "Great news! Your request "+request.getTitle()+" has been taken in charge by one of our operators!", NotificationTypeEnum.INFO, "homepage");
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
@@ -119,7 +128,7 @@ public class RequestResource {
     @Logged
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setRequestOrderState(@QueryParam("stato_ordine") String order_state, @Context ContainerRequestContext req) throws RESTWebApplicationException {
+    public Response setRequestOrderState(@QueryParam("stato_ordine") String order_state, @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException {
         int key = Integer.parseInt(req.getProperty("userid").toString());
         if(key == request.getOrdering().getKey() || key == request.getTechnician().getKey()) {
             try {
@@ -127,6 +136,10 @@ public class RequestResource {
                     request.setOrderState(OrderStateEnum.valueOf(order_state));
                     if(OrderStateEnum.valueOf(order_state) != OrderStateEnum.SPEDITO)
                         request.setRequestState(RequestStateEnum.CHIUSO);
+                    else {
+                        Utility.sendMail(sc,request.getOrdering().getEmail(), "Info mail: \nYour request: "+request.getTitle()+" has been shipped! \nThank you for purchasing on our site.");
+                        Utility.sendNotification(request.getOrdering(), "Great news! Your purchase of request "+request.getTitle()+" has been shipped!", NotificationTypeEnum.CHIUSO, "homepage");
+                    }
                     RequestResourceDB.setRequest(request);
                     return Response.noContent().build();
                 } else

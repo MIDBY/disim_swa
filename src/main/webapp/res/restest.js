@@ -134,6 +134,31 @@ function Restest(testall = true) {
             null,
             null,
             bearer_token, false);
+
+        sendRestRequest(
+            "get", "rest/utenti/me/gruppo/servizi",
+            function (callResponse, callStatus) {
+                if (callStatus === 200) {
+                    const servizi = JSON.parse(callResponse);
+                    servizi.map(element => {
+                        if(element.script === "profile")
+                            document.getElementById("profileService").removeAttribute("hidden");
+
+                        if(element.script == "notifications")
+                            document.getElementById("notificationsService").removeAttribute("hidden");
+
+                        if(element.script == "users")
+                            document.getElementById("usersService").removeAttribute("hidden");
+
+                        if(element.script == "newCategory")
+                            document.getElementById("createCategory").removeAttribute("hidden");
+                    })
+                }
+            },
+            null,
+            null,
+            null,
+            bearer_token, false);
     };
 
     let createCategory = function() {
@@ -1384,50 +1409,36 @@ function Restest(testall = true) {
                 Swal.fire({
                     title: request.titolo,
                     html: 
-                        `<table>
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th width="50px"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            ${proposals.map(element => {
-                                return `<tr>
-                                            <td><h5>Tecnico: ${request.tecnico}</h5></td>
-                                            <td>
-                                                <small>${element.data_creazione}</small><br>
-                                                <small>${element.stato_proposta === "INATTESA"?'IN ATTESA':element.stato_proposta}</small>
-                                            </td>
-                                        </tr>
-                                        <tr style="border-bottom:1px solid #000">
-                                            <td><strong>Prodotto: </strong></td>
-                                            <td>${element.nome_prodotto}</td>
-                                        </tr>
-                                        <tr style="border-bottom:1px solid #000">
-                                            <td><strong>Produttore: </strong></td>
-                                            <td>${element.nome_produttore}</td>
-                                        </tr>
-                                        <tr style="border-bottom:1px solid #000">
-                                            <td><strong>Descrizione: </strong></td>
-                                            <td>${element.descrizione_prodotto}</td>
-                                        </tr>
-                                        <tr style="border-bottom:1px solid #000">
-                                            <td><strong>Prezzo: </strong></td>
-                                            <td>${element.prezzo_prodotto} €</td>
-                                        </tr>
-                                        <tr style="border-bottom:1px solid #000">
-                                            <td><strong>Url: </strong></td>
-                                            <td><textarea class="swal2-textarea" rows="4" spellcheck="false" class="not-split-text" disabled>${element.url?element.url:''}</textarea></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Note: </strong></td>
-                                            <td>${element.note}</td>
-                                        </tr>
-                                ${element.motivazione && element.motivazione.length > 0?'<tr><td colspan="2" height="10px"></td></tr><tr style="border:2px solid #000"><td><h5>Ordinante: '+request.ordinante+'</h5></td><td>'+element.motivazione+'</td></tr>':''}`
-                            }).join('')}
-                            </tbody>
-                        </table>`,
+                    `<ul class="comment-reply list-unstyled">
+                        ${proposals.map(element => {
+                            return `
+                                <li>
+                                    <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="res/assets/images/xs/developer.png" alt="Awesome Tech"></div>
+                                    <div class="text-box">
+                                        <h5>${request.tecnico}</h5>
+                                        <span class="comment-date mr-3">${element.data_creazione}</span>
+                                        ${element.stato_proposta === "INATTESA"?'<span class="replybutton badge mr-3 badge-warning">IN ATTESA</span>':''}
+                                        ${element.stato_proposta === "APPROVATO"?'<span class="replybutton badge mr-3 badge-success">'+element.stato_proposta+'</span>':''}
+                                        ${element.stato_proposta === "RESPINTO"?'<span class="replybutton badge mr-3 badge-danger">'+element.stato_proposta+'</span>':''}
+                                        <p><Strong>Prodotto: </Strong> ${element.nome_prodotto}</p>
+                                        <p><Strong>Produttore: </Strong> ${element.nome_produttore}</p>
+                                        <p><Strong>Descrizione: </Strong> ${element.descrizione_prodotto}</p>
+                                        <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto} €</p>
+                                        <p><Strong>Url: </Strong> ${element.url}</p>
+                                        <p><Strong>Note: </Strong> ${element.note}</p>
+                                    </div>
+                                </li>
+                                <hr>
+                                ${element.motivazione && element.motivazione.length > 0?
+                                    `<li>
+                                        <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="res/assets/images/xs/client.png" alt="Awesome Client"></div>
+                                        <div class="text-box">
+                                            <h5>${request.ordinante}</h5>
+                                            <p>${element.motivazione}</p>
+                                        </div>
+                                    </li>`:''}`
+                        }).join('<hr>')}
+                    </ul>`,
                     width: 'auto',  
                     showDenyButton: true, 
                     showCancelButton: true,
@@ -1454,50 +1465,36 @@ function Restest(testall = true) {
                         Swal.fire({
                             title: request.titolo,
                             html: 
-                                `<table>
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th width="50px"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    ${proposals.map(element => {
-                                        return `<tr>
-                                                    <td><h5>Tecnico: ${request.tecnico}</h5></td>
-                                                    <td>
-                                                        <small>${element.data_creazione}</small><br>
-                                                        <small>${element.stato_proposta === "INATTESA"?'IN ATTESA':element.stato_proposta}</small>
-                                                    </td>
-                                                </tr>
-                                                <tr style="border-bottom:1px solid #000">
-                                                    <td><strong>Prodotto: </strong></td>
-                                                    <td>${element.nome_prodotto}</td>
-                                                </tr>
-                                                <tr style="border-bottom:1px solid #000">
-                                                    <td><strong>Produttore: </strong></td>
-                                                    <td>${element.nome_produttore}</td>
-                                                </tr>
-                                                <tr style="border-bottom:1px solid #000">
-                                                    <td><strong>Descrizione: </strong></td>
-                                                    <td>${element.descrizione_prodotto}</td>
-                                                </tr>
-                                                <tr style="border-bottom:1px solid #000">
-                                                    <td><strong>Prezzo: </strong></td>
-                                                    <td>${element.prezzo_prodotto} €</td>
-                                                </tr>
-                                                <tr style="border-bottom:1px solid #000">
-                                                    <td><strong>Url: </strong></td>
-                                                    <td><textarea class="swal2-textarea" rows="4" spellcheck="false" class="not-split-text" disabled>${element.url?element.url:''}</textarea></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Note: </strong></td>
-                                                    <td>${element.note}</td>
-                                                </tr>
-                                        ${element.motivazione && element.motivazione.length > 0?'<tr><td colspan="2" height="10px"></td></tr><tr style="border:2px solid #000"><td><h5>Ordinante: '+request.ordinante+'</h5></td><td>'+element.motivazione+'</td></tr>':''}`
-                                    }).join('')}
-                                    </tbody>
-                                </table>`,
+                            `<ul class="comment-reply list-unstyled">
+                                ${proposals.map(element => {
+                                    return `
+                                        <li>
+                                            <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="res/assets/images/xs/developer.png" alt="Awesome Tech"></div>
+                                            <div class="text-box">
+                                                <h5>${request.tecnico}</h5>
+                                                <span class="comment-date mr-3">${element.data_creazione}</span>
+                                                ${element.stato_proposta === "INATTESA"?'<span class="replybutton badge mr-3 badge-warning">IN ATTESA</span>':''}
+                                                ${element.stato_proposta === "APPROVATO"?'<span class="replybutton badge mr-3 badge-success">'+element.stato_proposta+'</span>':''}
+                                                ${element.stato_proposta === "RESPINTO"?'<span class="replybutton badge mr-3 badge-danger">'+element.stato_proposta+'</span>':''}
+                                                <p><Strong>Prodotto: </Strong> ${element.nome_prodotto}</p>
+                                                <p><Strong>Produttore: </Strong> ${element.nome_produttore}</p>
+                                                <p><Strong>Descrizione: </Strong> ${element.descrizione_prodotto}</p>
+                                                <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto} €</p>
+                                                <p><Strong>Url: </Strong> ${element.url}</p>
+                                                <p><Strong>Note: </Strong> ${element.note}</p>
+                                            </div>
+                                        </li>
+                                        <hr>
+                                        ${element.motivazione && element.motivazione.length > 0?
+                                            `<li>
+                                                <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="res/assets/images/xs/client.png" alt="Awesome Client"></div>
+                                                <div class="text-box">
+                                                    <h5>${request.ordinante}</h5>
+                                                    <p>${element.motivazione}</p>
+                                                </div>
+                                            </li>`:''}`
+                                }).join('<hr>')}
+                            </ul>`,
                             width: 'auto',   
                             showDenyButton: true,
                             showCancelButton: true,
@@ -1543,51 +1540,37 @@ function Restest(testall = true) {
             Swal.fire({
                 title: request.titolo,
                 html: 
-                    `<table>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th width="50px"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    `<ul class="comment-reply list-unstyled">
                         ${proposals.map(element => {
-                            return `<tr>
-                                        <td><h5>Tecnico: ${request.tecnico}</h5></td>
-                                        <td>
-                                            <small>${element.data_creazione}</small><br>
-                                            <small>${element.stato_proposta === "INATTESA"?'IN ATTESA':element.stato_proposta}</small>
-                                        </td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid #000">
-                                        <td><strong>Prodotto: </strong></td>
-                                        <td>${element.nome_prodotto}</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid #000">
-                                        <td><strong>Produttore: </strong></td>
-                                        <td>${element.nome_produttore}</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid #000">
-                                        <td><strong>Descrizione: </strong></td>
-                                        <td>${element.descrizione_prodotto}</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid #000">
-                                        <td><strong>Prezzo: </strong></td>
-                                        <td>${element.prezzo_prodotto} €</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid #000">
-                                        <td><strong>Url: </strong></td>
-                                        <td><textarea class="swal2-textarea" rows="4" spellcheck="false" class="not-split-text" disabled>${element.url?element.url:''}</textarea></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Note: </strong></td>
-                                        <td>${element.note}</td>
-                                    </tr>
-                            ${element.motivazione && element.motivazione.length > 0?'<tr><td colspan="2" height="10px"></td></tr><tr style="border:2px solid #000"><td><h5>Ordinante: '+request.ordinante+'</h5></td><td>'+element.motivazione+'</td></tr>':''}`
-                        }).join('')}
-                        </tbody>
-                    </table>`,
-                width: 'auto',  
+                            return `
+                                <li>
+                                    <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="res/assets/images/xs/developer.png" alt="Awesome Tech"></div>
+                                    <div class="text-box">
+                                        <h5>${request.tecnico}</h5>
+                                        <span class="comment-date mr-3">${element.data_creazione}</span>
+                                        ${element.stato_proposta === "INATTESA"?'<span class="replybutton badge mr-3 badge-warning">IN ATTESA</span>':''}
+                                        ${element.stato_proposta === "APPROVATO"?'<span class="replybutton badge mr-3 badge-success">'+element.stato_proposta+'</span>':''}
+                                        ${element.stato_proposta === "RESPINTO"?'<span class="replybutton badge mr-3 badge-danger">'+element.stato_proposta+'</span>':''}
+                                        <p><Strong>Prodotto: </Strong> ${element.nome_prodotto}</p>
+                                        <p><Strong>Produttore: </Strong> ${element.nome_produttore}</p>
+                                        <p><Strong>Descrizione: </Strong> ${element.descrizione_prodotto}</p>
+                                        <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto} €</p>
+                                        <p><Strong>Url: </Strong> ${element.url}</p>
+                                        <p><Strong>Note: </Strong> ${element.note}</p>
+                                    </div>
+                                </li>
+                                <hr>
+                                ${element.motivazione && element.motivazione.length > 0?
+                                    `<li>
+                                        <div class="icon-box mr-3"><img class="img-fluid img-thumbnail" src="res/assets/images/xs/client.png" alt="Awesome Client"></div>
+                                        <div class="text-box">
+                                            <h5>${request.ordinante}</h5>
+                                            <p>${element.motivazione}</p>
+                                        </div>
+                                    </li>`:''}`
+                        }).join('<hr>')}
+                    </ul>`,
+                width: "50%",
                 showCancelButton: true,
                 confirmButtonColor: "#008000",
                 cancelButtonColor: "#d33",
@@ -1730,13 +1713,6 @@ function Restest(testall = true) {
             }
         });
     }
-
-/*
-    let loadServices = function() {
-        sendRestRequest(
-            "get", "rest/servizio"
-        )
-    }*/
     
     ///////////////////// public object methods
 
@@ -1954,6 +1930,7 @@ function Restest(testall = true) {
                             var cell = document.createElement("td");
                             if(!notifications[i].letto) {
                                 var lettura = document.createElement("button");
+                                lettura.classList.add("btn", "btn-success", "waves-effect", "waves-float", "btn-sm", "waves-green");
                                 lettura.addEventListener("click", () => {    
                                     sendRestRequest(
                                     "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
@@ -1977,6 +1954,7 @@ function Restest(testall = true) {
                                 cell.appendChild(lettura);
                             } else {
                                 var lettura = document.createElement("button");
+                                lettura.classList.add("btn", "btn-warning", "waves-effect", "waves-float", "btn-sm", "waves-amber");
                                 lettura.addEventListener("click", () => {    
                                     sendRestRequest(
                                     "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
@@ -1999,10 +1977,8 @@ function Restest(testall = true) {
                                 lettura.appendChild(letturaIcon);
                                 cell.appendChild(lettura);
                             }
-                            row.appendChild(cell);
-
-                            var cell2 = document.createElement("td");
                             var cancellazione = document.createElement("button");
+                            cancellazione.classList.add("btn", "btn-danger", "waves-effect", "waves-float", "btn-sm", "waves-red");
                             cancellazione.addEventListener("click", () => {    
                                 sendRestRequest(
                                 "delete", "rest/utenti/me/notifiche?id=" + notifications[i].id,
@@ -2023,8 +1999,8 @@ function Restest(testall = true) {
                             var cancellazioneIcon = document.createElement("i");
                             cancellazioneIcon.classList.add("zmdi", "zmdi-delete");
                             cancellazione.appendChild(cancellazioneIcon);
-                            cell2.appendChild(cancellazione);
-                            row.appendChild(cell2);
+                            cell.appendChild(cancellazione);
+                            row.appendChild(cell);
 
                             var cell3 = document.createElement("td");
                             var tipo = document.createElement("span");
@@ -2333,9 +2309,9 @@ function Restest(testall = true) {
                           });
                         $(document).ready(function(){
                             $('#tree').DataTable();
-                        });
+                        });/*
                         if(document.getElementById("role-text").textContent == "AMMINISTRATORE")
-                            document.getElementById("createCategory").removeAttribute("hidden");
+                            document.getElementById("createCategory").removeAttribute("hidden");*/
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
                     }

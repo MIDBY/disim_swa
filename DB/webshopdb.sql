@@ -125,22 +125,14 @@ CREATE TABLE `gruppo_servizio` (
 INSERT INTO `gruppo_servizio` (`idGruppo`, `idServizio`) VALUES
 (1, 1),
 (1, 2),
-(1, 3),
 (1, 4),
-(1, 5),
-(1, 8),
-(1, 9),
 (1, 10),
-(1, 11),
-(2, 12),
+(2, 1),
+(2, 2),
+(2, 11),
 (2, 13),
-(2, 14),
-(2, 15),
-(2, 16),
 (3, 1),
 (3, 2),
-(3, 6),
-(3, 7),
 (3, 11);
 
 -- --------------------------------------------------------
@@ -307,20 +299,10 @@ CREATE TABLE `servizio` (
 INSERT INTO `servizio` (`id`, `script`) VALUES
 (1, 'homepage'),
 (2, 'profile'),
-(3, 'staff'),
-(4, 'clients'),
-(5, 'requests'),
-(6, 'orders'),
-(7, 'orderDetail'),
-(8, 'files'),
-(9, 'categories'),
-(10, 'categoryDetail'),
+(4, 'users'),
+(10, 'newCategory'),
 (11, 'notifications'),
-(12, 'index'),
-(13, 'newRequest'),
-(14, 'requestDetail'),
-(15, 'myProfile'),
-(16, 'myNotifications');
+(13, 'newRequest');
 
 -- --------------------------------------------------------
 
