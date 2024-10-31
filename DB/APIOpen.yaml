@@ -1,0 +1,655 @@
+openapi: 3.0.0
+info:
+  title: API di Gestione Utenti e Richieste
+  description: API per la gestione del progetto WebShop di Sviluppo Web Avanzato.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/disim_swa-1.0/
+    description: Server locale
+
+paths:
+  /utenti:
+    get:
+      summary: Recupera utenti filtrati per email, username e accettato
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: email
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: username
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: accettato
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Lista filtrata di utenti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utente'
+        '404':
+          description: Nessun utente trovato
+        '400':
+          description: Non sei l'amministratore
+
+  /utenti/{anno}/{mese}:
+    get:
+      summary: Recupera utenti per anno e mese
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: anno
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: mese
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di utenti in base alla registrazione
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utente'
+        '404':
+          description: Nessun utente trovato
+        '400':
+          description: Non sei l'amministratore
+
+  /utenti/gruppo/{id}:
+    get:
+      summary: Recupera utenti per gruppo
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di utenti nel gruppo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utente'
+        '404':
+          description: Nessun utente nel gruppo specificato trovato
+        '400':
+          description: Non sei l'amministratore
+
+  /utenti/gruppo/{nome}:
+    get:
+      summary: Recupera utenti per gruppo
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista di utenti nel gruppo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utente'
+        '404':
+          description: Nessun utente nel gruppo specificato trovato
+        '400':
+          description: Non sei l'amministratore
+
+  /utenti/{id}:
+    get:
+      summary: Recupera un utente specifico
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettagli dell'utente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utente'
+        '404':
+          description: Nessun utente trovato
+        '400':
+          description: Non sei l'amministratore
+
+  /utenti/{id}/accetta:
+    post:
+      summary: Accetta un utente
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Utente è stato accettato
+        '404':
+          description: Utente non trovato
+        '400':
+          description: Non sei l'amministratore
+        '500':
+          description: Errore generico
+
+  /utenti/{id}/assumi:
+    post:
+      summary: Assumi cliente a tecnico / licenzia tecnico a cliente
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: ruolo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Ruolo utente cambiato
+        '404':
+          description: Ruolo utente non cambiato
+        '400':
+          description: Non sei l'amministratore
+        '500':
+          description: Errore generico
+
+  /utenti/me:
+    get:
+      summary: Recupera informazioni sull'utente loggato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dettagli dell'utente loggato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utente'
+
+    put:
+      summary: Modifica le informazioni dell'utente loggato
+      security:
+        - bearerToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Utente'
+      responses:
+        '204':
+          description: Utente aggiornato con successo
+        '404':
+          description: Utente non trovato
+        '400':
+          description: Il profilo da modificare non è il tuo
+        '500':
+          description: Errore generico
+
+  /utenti/me/modifica:
+    post:
+      summary: Modifica utente loggato
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                param1:
+                  type: integer
+                param2:
+                  type: string
+                param3:
+                  type: string
+                param4:
+                  type: string
+                param5: 
+                  type: string
+                param6:
+                  type: string
+                param7:
+                  type: integer
+                param8:
+                  type: string
+                param9:
+                  type: integer
+                param10:
+                  type: string
+                param11:
+                  type: integer
+      responses:
+        '204':
+          description: Utente loggato modificato
+        '404':
+          description: Utente non trovato
+        '400':
+          description: Nessun campo aggiornato / Il profilo da modificare non è il tuo / La password corrente non corrisponde / Email già presente nel sistema
+        '500':
+          description: Errore generico
+
+  /utenti/me/notifiche:
+    get:
+      summary: Recupera le notifiche dell'utente loggato
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: letto
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: tipo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista filtrata di notifiche
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notifica'
+        '404':
+          description: Nessuna notifica trovata
+
+    post:
+      summary: Imposta notifica come letta / non letta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Notifica aggiornata con successo
+        '404':
+          description: Notifica non trovata
+        '500':
+          description: Errore generico
+
+    put:
+      summary: Modifica una notifica dell'utente loggato
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificaUpdate'
+      responses:
+        '204':
+          description: Notifica aggiornata con successo
+        '404':
+          description: Notifica non trovata
+        '500':
+          description: Errore generico
+
+    delete:
+      summary: Elimina notifica
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Notifica eliminata con successo
+        '404':
+          description: Notifica non trovata
+        '500':
+          description: Errore generico 
+
+  /utenti/me/notifiche/{id}:
+    get:
+      summary: Recupera notifica specifica dell'utente loggato
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Notifica cercata
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Notifica'
+        '404':
+          description: Nessuna notifica trovata
+
+  /utenti/me/notifiche/cancellatutto:
+    delete:
+      summary: Elimina tutte le notifiche dell'utente loggato
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Tutte le notifiche eliminate con successo
+        '404':
+          description: Nessuna notifica trovata
+        '500':
+          description: Errore generico
+
+  /utenti/me/gruppo:
+    get:
+      summary: Recupera il gruppo dell'utente loggato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dettagli del gruppo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gruppo'
+  
+  /utenti/me/gruppo/nome:
+    get:
+      summary: Recupera il nome del gruppo dell'utente loggato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Nome del gruppo
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /utenti/me/gruppo/servizi:
+    get:
+      summary: Recupera tutti i servizi disponibili per il gruppo dell'utente loggato
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista dei servizi del gruppo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Servizio'
+        
+  /utenti/me/gruppo/servizi/{id}:
+    get:
+      summary: Recupera un servizo tra quelli disponibili per il gruppo dell'utente loggato
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Servizio cercato
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Servizio'
+        '404'
+          description: Nessun servizio trovato
+
+  /utenti/me/gruppo/servizi/{script}:
+    get:
+      summary: Recupera un servizo tra quelli disponibili per il gruppo dell'utente loggato
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: script
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Servizio cercato
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Servizio'
+        '404'
+          description: Nessun servizio trovato
+
+  /categorie:
+    get:
+      summary: Recupera le categorie
+      responses:
+        '200':
+          description: Lista di categorie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+
+    put:
+      summary: Modifica una categoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaUpdate'
+      responses:
+        '204':
+          description: Categoria aggiornata con successo
+        '404':
+          description: Categoria non trovata
+        '409':
+          description: Problemi di autorizzazione
+
+  /categorie/{idCategoria}:
+    get:
+      summary: Recupera una categoria specifica
+      parameters:
+        - name: idCategoria
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettagli della categoria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+        '404':
+          description: Categoria non trovata
+
+    delete:
+      summary: Elimina una categoria
+      parameters:
+        - name: idCategoria
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Categoria eliminata con successo
+        '404':
+          description: Categoria non trovata
+        '409':
+          description: Problemi di autorizzazione
+
+  /richieste:
+    get:
+      summary: Recupera le richieste
+      parameters:
+        - name: ordinante
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: tecnico
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: categoria
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: statoRichiesta
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: statoOrdine
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista di richieste
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Richiesta'
+
+    post:
+      summary: Crea una nuova richiesta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RichiestaCreate'
+      responses:
+        '201':
+          description: Richiesta creata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Richiesta'
+        '404':
+          description: Errore generico
+        '409':
+          description: Problemi di autorizzazione
+
+  /richieste/{idRichiesta}:
+    get:
+      summary: Recupera una richiesta specifica
+      parameters:
+        - name: idRichiesta
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettagli della richiesta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Richiesta'
+        '404':
+          description: Richiesta non trovata
+
+    put:
+      summary: Modifica una richiesta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RichiestaUpdate'
+      responses:
+        '204':
+          description: Richiesta aggiornata con successo
+        '404':
+          description: Richiesta non trovata
+        '409':
+          description: Problemi di autorizzazione
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Utente:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        username:
+          type: string
+          example: "username"
+        email:
+          type: string
+          example: "email@example.com"
+        accettato:

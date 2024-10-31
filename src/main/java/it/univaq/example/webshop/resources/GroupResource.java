@@ -7,7 +7,6 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
 
 import it.univaq.example.webshop.business.GroupResourceDB;
 import it.univaq.example.webshop.model.Group;
@@ -37,18 +36,6 @@ public class GroupResource {
     public Response getGroupName(@Context ContainerRequestContext req) throws RESTWebApplicationException {
         setGroup(Integer.parseInt(req.getProperty("userid").toString()));
         return Response.ok(group.getName()).build();
-    }
-
-    @Logged
-    @GET
-    @Path("tutti")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroups() throws RESTWebApplicationException {
-        List<Group> groups = GroupResourceDB.getGroups();
-        if(groups.size() > 0)
-            return Response.ok(groups).build();
-        else
-            return Response.status(Response.Status.NOT_FOUND).entity("Nessun gruppo trovato").build();
     }
 
     @Path("servizi")

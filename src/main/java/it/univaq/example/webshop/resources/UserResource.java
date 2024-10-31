@@ -65,7 +65,7 @@ public class UserResource {
                 UserResourceDB.setUser(user2);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Utente non trovato").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -122,7 +122,7 @@ public class UserResource {
                 } else
                     return Response.status(Response.Status.BAD_REQUEST).entity("Nessun campo aggiornato").build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Utente non trovato").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!

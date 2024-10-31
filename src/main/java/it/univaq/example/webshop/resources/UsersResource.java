@@ -179,10 +179,9 @@ public class UsersResource {
                     }
                     return Response.ok(u.getUsername() + " è stato " + text).build();
                 } else
-                    return Response.noContent().build();
-
+                    return Response.status(Response.Status.NOT_FOUND).entity("Utente non trovato").build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Utente non trovato").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -214,7 +213,7 @@ public class UsersResource {
                 return Response.noContent().build();
 
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("User role not changed").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Ruolo utente non cambiato").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!

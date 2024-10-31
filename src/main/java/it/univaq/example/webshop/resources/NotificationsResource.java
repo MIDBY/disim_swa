@@ -73,7 +73,7 @@ public class NotificationsResource {
             NotificationResourceDB.setNotification(notification);
             return Response.noContent().build();
         } catch (NotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Notification not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Notifica non trovata").build();
         } catch (RESTWebApplicationException ex) {
             return Response.serverError()
                     .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -92,7 +92,7 @@ public class NotificationsResource {
             NotificationResourceDB.setNotification(notification);
             return Response.noContent().build();
         } catch (NotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Notification not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Notifica non trovata").build();
         } catch (RESTWebApplicationException ex) {
             return Response.serverError()
                     .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -109,7 +109,7 @@ public class NotificationsResource {
             NotificationResourceDB.deleteNotification(getSingleNotification(notification_key));
             return Response.noContent().build();
         } catch (NotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Notification not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Notifica non trovata").build();
         } catch (RESTWebApplicationException ex) {
             return Response.serverError()
                     .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -128,7 +128,7 @@ public class NotificationsResource {
                 NotificationResourceDB.deleteNotification(n);
             return Response.noContent().build();
         } catch (NotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Notification not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Nessuna notifica trovata").build();
         } catch (RESTWebApplicationException ex) {
             return Response.serverError()
                     .entity(ex.getMessage()) //NEVER IN PRODUCTION!

@@ -16,7 +16,6 @@ utenti/me?id&username&email&currentPassword&newPassword&indirizzo&numero&citta&c
 Gruppo
 utenti/me/gruppo 																					✔			(GET)
 utenti/me/gruppo/nome																				✔			(GET)
-utenti/me/gruppo/tutti																				✔			(GET)
 
 Servizio
 utenti/me/gruppo/servizi																			✔			(GET)
