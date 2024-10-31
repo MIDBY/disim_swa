@@ -9,7 +9,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -27,6 +27,9 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import it.univaq.example.webshop.business.ImageResourceDB;
 import it.univaq.example.webshop.model.Image;
@@ -76,9 +79,10 @@ public class ImagesResource {
     }   
     
     @Logged
-    @POST
+    @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response setImage(//@FormDataParam("immagine") InputStream q, @FormDataParam("immagine") FormDataContentDisposition file_detail,
+    public Response setImage(
+                            @FormDataParam("immagine") InputStream uploaded, @FormDataParam("immagine") FormDataContentDisposition file_detail,
                             @Context HttpServletRequest request,
                             @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException, ServletException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.AMMINISTRATORE.toString())) {

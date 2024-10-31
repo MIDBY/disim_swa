@@ -184,7 +184,6 @@ function Restest(testall = true) {
         var char = {};
         var listChars;
         var image;
-        const formData = new FormData();
         Swal.fire({
             title: "Edita categoria",
             html:`
@@ -290,7 +289,6 @@ function Restest(testall = true) {
                 if(!category.categoria_padre)
                     category.categoria_padre = {};
                 category.categoria_padre.id = document.getElementById('fatherCategory').value ? document.getElementById('fatherCategory').value : 0;
-                formData.append("immagine", document.getElementById('imageInsert').files[0]);
                 image = document.getElementById('imageInsert').files[0];
                 const keys = document.getElementsByName('characteristicKey[]');
                 const names = document.getElementsByName('characteristicName[]');
@@ -307,12 +305,14 @@ function Restest(testall = true) {
                     listChars += char.id+"ç"+char.nome+"ç"+char.categoria.id+"ç"+char.valori_default+"§";
                 }/*
                 TODO: da reinserire una volta che il caricamento delle immagini funziona
-                if(!category.id || !category.nome || !category.categoria_padre.id || !listChars || !(category.immagine || formData.get("immagine"))) 
+                if(!category.id || !category.nome || !category.categoria_padre.id || !listChars || !(category.immagine || image)) 
                     Swal.showValidationMessage("Campi con valori mancanti");*/
             }
         }).then((result) => {
             if (result.isConfirmed) {
                 if(image) {
+                    const form = new FormData();
+                    form.append("immagine", image);
                     sendRestRequest(
                         "post", "rest/immagini",
                         function (callResponse, callStatus) {
@@ -337,7 +337,7 @@ function Restest(testall = true) {
                             }
                         },
                         null,
-                        formData,
+                        form,
                         "multipart/form-data",
                         bearer_token);
                 } else {

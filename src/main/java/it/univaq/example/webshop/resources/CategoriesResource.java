@@ -42,28 +42,6 @@ public class CategoriesResource {
         for(Category c : categories) {
             c.setCharacteristics(CharacteristicResourceDB.getCharacteristicsByCategory(c.getKey()));
         }
-
-        /*
-        List<Map<String,Object>> result = new ArrayList<>();
-        for(Category c : categories) {
-            Map<String, Object> e = new LinkedHashMap<>();
-            e.put("id", c.getKey());
-            e.put("nome", c.getName());
-            e.put("categoria_padre", c.getFatherCategory());
-            URI uri = uriinfo.getBaseUriBuilder()
-                .path(CategoriesResource.class)
-                .path(CategoriesResource.class, "getCategory")
-                .build(c.getKey());
-            e.put("caratteristiche", uri);
-            URI uri2 = uriinfo.getBaseUriBuilder()
-            .path(ImagesResource.class)
-            .path(ImagesResource.class, "getImageByCategory")
-            .queryParam("id", c.getKey())
-            .build();
-            e.put("immagine", uri2);
-            e.put("versione", c.getVersion());
-            result.add(e);
-        }*/
         if(categories.size() > 0)
             return Response.ok(categories).build();
         else
@@ -80,14 +58,6 @@ public class CategoriesResource {
         else
             return Response.status(Response.Status.NOT_FOUND).entity("Nessuna categoria trovata").build();
     }
-/*
-    @GET
-    @Path("figlidi/{id: [0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getCategoriesSonsOf(@PathParam("id") int category_key) throws RESTWebApplicationException {
-        List<Category> result = CategoryResourceDB.getCategoriesSonsOf(category_key);
-        return Response.ok(result).build();
-    } */
 
     @GET
     @Path("piuvendute")

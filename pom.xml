@@ -64,6 +64,11 @@
             <artifactId>jersey-container-servlet</artifactId>
             <version>3.1.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>3.1.8</version>
+        </dependency>
         <!-- Dipendenze per un'applicazione che usa JAX-RS -->
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
@@ -73,6 +78,11 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
+            <version>3.1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
             <version>3.1.8</version>
         </dependency>
         <!-- per la serializzazione JSON in JAX-RS -->
@@ -104,7 +114,6 @@
             <version>8.2.0</version>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
