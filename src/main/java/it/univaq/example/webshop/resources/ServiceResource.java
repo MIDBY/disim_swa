@@ -29,7 +29,10 @@ public class ServiceResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getServices(@Context ContainerRequestContext req) throws RESTWebApplicationException {
         setService(Integer.parseInt(req.getProperty("userid").toString()));
-        return Response.ok(services).build();
+        if(services.size() > 0)
+            return Response.ok(services).build();
+        else
+            return Response.status(Response.Status.NOT_FOUND).entity("Nessun servizio disponibile").build();
     }
 
     @Logged

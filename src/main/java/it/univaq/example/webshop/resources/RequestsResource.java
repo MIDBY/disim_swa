@@ -44,8 +44,8 @@ public class RequestsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRequests(@QueryParam("ordinante") int ordering_key, @QueryParam("tecnico") int technician_key,
-                                @QueryParam("categoria") int category_key, @QueryParam("statoRichiesta") String requestState,
-                                @QueryParam("statoOrdine") String orderState,
+                                @QueryParam("categoria") int category_key, @QueryParam("stato_richiesta") String requestState,
+                                @QueryParam("stato_ordine") String orderState,
                                 @Context UriInfo uriinfo, @Context ContainerRequestContext req) throws RESTWebApplicationException {
         List<Request> requests = new ArrayList<>();
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.ORDINANTE.toString()))
@@ -107,7 +107,6 @@ public class RequestsResource {
                 return Response.status(Response.Status.NOT_FOUND).entity("Nessuna richiesta trovata").build();
         } else
             return Response.status(Response.Status.BAD_REQUEST).entity("Non sei l'amministratore, non puoi accedere a queste informazioni").build();
-
     }
 
     @Logged
@@ -155,7 +154,7 @@ public class RequestsResource {
                 }
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!

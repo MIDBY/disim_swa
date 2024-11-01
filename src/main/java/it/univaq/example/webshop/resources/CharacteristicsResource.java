@@ -75,7 +75,7 @@ public class CharacteristicsResource {
     }
 
     @GET
-    @Path("{id: [0-9]+}")
+    @Path("caratteristiche/{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCharacteristic(@PathParam("id") int characteristic_key) throws RESTWebApplicationException {
         Characteristic characteristic = getSingleCharacteristic(characteristic_key);
@@ -114,7 +114,7 @@ public class CharacteristicsResource {
                 CharacteristicResourceDB.setCharacteristic(characteristic);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Characteristic not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Caratteristica non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -133,7 +133,7 @@ public class CharacteristicsResource {
                 CharacteristicResourceDB.deleteCharacteristic(getSingleCharacteristic(characteristic_key));
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Characteristic not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Caratteristica non trovata").build();
             } catch (RESTWebApplicationException | DataException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!

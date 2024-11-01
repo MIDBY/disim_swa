@@ -30,6 +30,7 @@ public class ProposalResource {
         this.proposal = proposal;
     }
 
+    @Logged
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProposal() throws RESTWebApplicationException {
@@ -59,7 +60,7 @@ public class ProposalResource {
                     Utility.sendNotification(proposal.getRequest().getOrdering(), "Request: "+proposal.getRequest().getTitle()+".\n Our technician has edited proposal, go to check it!", NotificationTypeEnum.MODIFICATO, "requests"); 
                     return Response.noContent().build();
                 } catch (NotFoundException ex) {
-                    return Response.status(Response.Status.NOT_FOUND).entity("Proposal not found").build();
+                    return Response.status(Response.Status.NOT_FOUND).entity("Proposta non trovata").build();
                 } catch (RESTWebApplicationException ex) {
                     return Response.serverError()
                             .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -68,7 +69,7 @@ public class ProposalResource {
             } else
                 return Response.status(Response.Status.BAD_REQUEST).entity("Utente non autorizzato").build();
         } else
-            return Response.status(Response.Status.NOT_FOUND).entity("Proposta non esistente, metodo sbagliato").build();
+            return Response.status(Response.Status.CONFLICT).entity("Proposta non esistente, metodo sbagliato").build();
     }
 
     @Logged
@@ -89,7 +90,7 @@ public class ProposalResource {
                 ProposalResourceDB.setProposal(proposal);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Proposal not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Proposta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!

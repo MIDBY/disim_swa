@@ -38,10 +38,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Utente'
-        '404':
-          description: Nessun utente trovato
         '400':
           description: Non sei l'amministratore
+        '404':
+          description: Nessun utente trovato
 
   /utenti/{anno}/{mese}:
     get:
@@ -68,10 +68,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Utente'
-        '404':
-          description: Nessun utente trovato
         '400':
           description: Non sei l'amministratore
+        '404':
+          description: Nessun utente trovato
 
   /utenti/gruppo/{id}:
     get:
@@ -86,17 +86,18 @@ paths:
             type: integer
       responses:
         '200':
-          description: Lista di utenti nel gruppo
+          description: Lista utenti nel gruppo
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Utente'
-        '404':
-          description: Nessun utente nel gruppo specificato trovato
         '400':
           description: Non sei l'amministratore
+        '404':
+          description: Nessun utente nel gruppo specificato trovato
+        
 
   /utenti/gruppo/{nome}:
     get:
@@ -118,11 +119,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Utente'
-        '404':
-          description: Nessun utente nel gruppo specificato trovato
         '400':
           description: Non sei l'amministratore
-
+        '404':
+          description: Nessun utente nel gruppo specificato trovato
+        
   /utenti/{id}:
     get:
       summary: Recupera un utente specifico
@@ -141,11 +142,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Utente'
-        '404':
-          description: Nessun utente trovato
         '400':
           description: Non sei l'amministratore
-
+        '404':
+          description: Nessun utente trovato
+        
   /utenti/{id}/accetta:
     post:
       summary: Accetta un utente
@@ -160,10 +161,10 @@ paths:
       responses:
         '200':
           description: Utente è stato accettato
-        '404':
-          description: Utente non trovato
         '400':
           description: Non sei l'amministratore
+        '404':
+          description: Utente non trovato
         '500':
           description: Errore generico
 
@@ -186,10 +187,10 @@ paths:
       responses:
         '204':
           description: Ruolo utente cambiato
-        '404':
-          description: Ruolo utente non cambiato
         '400':
           description: Non sei l'amministratore
+        '404':
+          description: Ruolo utente non cambiato
         '500':
           description: Errore generico
 
@@ -209,7 +210,7 @@ paths:
     put:
       summary: Modifica le informazioni dell'utente loggato
       security:
-        - bearerToken: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -219,10 +220,10 @@ paths:
       responses:
         '204':
           description: Utente aggiornato con successo
-        '404':
-          description: Utente non trovato
         '400':
           description: Il profilo da modificare non è il tuo
+        '404':
+          description: Utente non trovato
         '500':
           description: Errore generico
 
@@ -263,10 +264,14 @@ paths:
       responses:
         '204':
           description: Utente loggato modificato
+        '400':
+          description: |
+            - Nessun campo aggiornato 
+            - Il profilo da modificare non è il tuo 
+            - La password corrente non corrisponde 
+            - Email già presente nel sistema
         '404':
           description: Utente non trovato
-        '400':
-          description: Nessun campo aggiornato / Il profilo da modificare non è il tuo / La password corrente non corrisponde / Email già presente nel sistema
         '500':
           description: Errore generico
 
@@ -299,7 +304,7 @@ paths:
           description: Nessuna notifica trovata
 
     post:
-      summary: Imposta notifica come letta / non letta
+      summary: Imposta notifica come letta o non letta
       security:
         - bearerAuth: []
       parameters:
@@ -325,7 +330,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NotificaUpdate'
+              $ref: '#/components/schemas/Notifica'
       responses:
         '204':
           description: Notifica aggiornata con successo
@@ -359,19 +364,17 @@ paths:
         - bearerAuth: []
       parameters:
         - name: id
-          in: query
-          required: false
+          in: path
+          required: true
           schema:
             type: integer
       responses:
         '200':
-          description: Notifica cercata
+          description: Dettagli notifica
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/Notifica'
+                $ref: '#/components/schemas/Notifica'
         '404':
           description: Nessuna notifica trovata
 
@@ -410,13 +413,13 @@ paths:
         '200':
           description: Nome del gruppo
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
 
   /utenti/me/gruppo/servizi:
     get:
-      summary: Recupera tutti i servizi disponibili per il gruppo dell'utente loggato
+      summary: Recupera lista servizi disponibili per il gruppo dell'utente loggato
       security:
         - bearerAuth: []
       responses:
@@ -428,6 +431,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Servizio'
+        '404':
+          description: Nessun servizio disponibile
         
   /utenti/me/gruppo/servizi/{id}:
     get:
@@ -442,14 +447,12 @@ paths:
             type: integer
       responses:
         '200':
-          description: Servizio cercato
+          description: Dettagli servizio
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/Servizio'
-        '404'
+                $ref: '#/components/schemas/Servizio'
+        '404':
           description: Nessun servizio trovato
 
   /utenti/me/gruppo/servizi/{script}:
@@ -465,54 +468,137 @@ paths:
             type: string
       responses:
         '200':
-          description: Servizio cercato
+          description: Dettagli servizio
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/Servizio'
-        '404'
+                $ref: '#/components/schemas/Servizio'
+        '404':
           description: Nessun servizio trovato
 
   /categorie:
     get:
-      summary: Recupera le categorie
+      summary: Recupera lista categorie disponibili
       responses:
         '200':
-          description: Lista di categorie
+          description: Lista categorie
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Categoria'
+        '404':
+          description: Nessuna categoria trovata
 
     put:
-      summary: Modifica una categoria
+      summary: Modifica categoria
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CategoriaUpdate'
+              $ref: '#/components/schemas/Categoria'
       responses:
         '204':
           description: Categoria aggiornata con successo
         '404':
           description: Categoria non trovata
-        '409':
-          description: Problemi di autorizzazione
-
-  /categorie/{idCategoria}:
-    get:
-      summary: Recupera una categoria specifica
+        '400':
+          description: Non sei l'amministratore
+        '500':
+          description: Errore generico
+    
+    post:
+      summary: Modifica utente loggato
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                param1:
+                  type: integer
+                param2:
+                  type: string
+                param3:
+                  type: integer
+                param4:
+                  type: integer
+                param5: 
+                  type: string
+      responses:
+        '204':
+          description: Categoria modificata con successo
+        '400':
+          description: Non sei l'amministratore
+        '500':
+          description: Errore generico
+    
+    delete:
+      summary: Elimina categoria
+      security:
+        - bearerAuth: []
       parameters:
-        - name: idCategoria
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Categoria eliminata con successo
+        '400':
+          description: Non sei l'amministratore
+        '404':
+          description: Categoria non trovata
+        '500':
+          description: Errore generico 
+          
+  /categorie/genitori:
+    get:
+      summary: Recupera tutte le categorie genitori (senza genitore_padre)
+      responses:
+        '200':
+          description: Lista categorie genitori
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+        '404':
+          description: Nessuna categoria trovata
+
+  /categorie/piuvendute:
+    get:
+      summary: Recupera le 3 categorie più vendute
+      responses:
+        '200':
+          description: Lista categorie più vendute
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+        '404':
+          description: Nessuna categoria trovata
+
+  /categorie/{id}:
+    get:
+      summary: Recupera categoria specifica
+      parameters:
+        - name: id
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: Dettagli della categoria
@@ -520,93 +606,385 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Categoria'
-        '404':
-          description: Categoria non trovata
 
-    delete:
-      summary: Elimina una categoria
+    put:
+      summary: Modifica una caratteristica della categoria
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Caratteristica'
       parameters:
-        - name: idCategoria
+        - name: id
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '204':
-          description: Categoria eliminata con successo
+          description: Caratteristica modificata con successo
+        '400':
+          description: Non sei l'amministratore
         '404':
           description: Categoria non trovata
-        '409':
-          description: Problemi di autorizzazione
-
+        '500':
+          description: Errore generico
+        
+    delete:
+      summary: Elimina una categoria
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Caratteristica della categoria eliminata con successo
+        '400':
+          description: Non sei l'amministratore
+        '404':
+          description: Caratteristica non trovata
+        '500':
+          description: Errore generico
+          
+  /categorie/{id}/caratteristiche:
+    get:
+      summary: Recupera le caratteristiche della categoria specificata
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista delle caratteristiche
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Caratteristica'
+        '404':
+          description: Nessuna caratteristica trovata
+          
+  /categorie/{id}/caratteristiche/{idCaratteristica}:
+    get:
+      summary: Recupera caratteristica della categoria specificata
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idCaratteristica
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettagli della caratteristica
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Caratteristica'
+        '404':
+          description: Nessuna caratteristica trovata
+  
+  /categorie/{id}/caratteristiche/albero:
+    get:
+      summary: Recupera caratteristiche della categoria specificata più quelle delle sue categorie padre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista caratteristiche
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Caratteristica'
+        '404':
+          description: Nessuna caratteristica trovata
+  
+  /immagini:
+    get:
+      summary: Recupera lista immagini
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista immagini
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Immagine' 
+        '404':
+          description: Nessuna immagine trovata
+  
+    put:
+      summary: Carica l'immagine
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: string
+                  format: binary
+      responses:
+        '204':
+          description: Immagine caricata con successo
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: Non sei l'amministratore
+        '404':
+          description: Immagine non trovata
+        '500':
+          description: Errore generico
+          
+    delete:
+      summary: Cancella immagine
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '204': 
+          description: Immagine cancellata con successo
+        '400':
+          description: Non sei l'amministratore
+        '404':
+          description: Immagine non trovata
+        '500':
+          description: Errore generico
+          
+  /immagini/{id}:
+    get:
+      summary: Recupera l'immagine specificata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettagli immagine
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Immagine' 
+        '404':
+          description: Nessuna immagine trovata
+          
+  /immagini/categoria:
+    get:
+      summary: Recupera l'immagine in base alla categoria
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettagli immagine 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Immagine' 
+        '404':
+          description: Nessuna immagine trovata     
+  
+  /immagini/download:
+    get:
+      summary: Restituisce l'immagine da visualizzare
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Binario dell'immagine 
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                description: Used only with `image/jpeg` and `image/png` responses
+                example: attachment; filename="name.pdf"
+        '404':
+          description: Immagine non trovata  
+  
   /richieste:
     get:
       summary: Recupera le richieste
+      security:
+        - bearerAuth: []
       parameters:
         - name: ordinante
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: tecnico
           in: query
           required: false
           schema:
-            type: string
+            type: integer
         - name: categoria
           in: query
           required: false
           schema:
-            type: string
-        - name: statoRichiesta
+            type: integer
+        - name: stato_richiesta
           in: query
           required: false
           schema:
             type: string
-        - name: statoOrdine
+        - name: stato_ordine
           in: query
           required: false
           schema:
             type: string
       responses:
         '200':
-          description: Lista di richieste
+          description: Lista filtrata di richieste
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Richiesta'
-
-    post:
+        '404':
+          description: Nessuna richiesta trovata
+  
+    put:
       summary: Crea una nuova richiesta
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RichiestaCreate'
+              $ref: '#/components/schemas/Richiesta'
       responses:
-        '201':
-          description: Richiesta creata con successo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Richiesta'
+        '204':
+          description: Richiesta aggiunta con successo
+        '400':
+          description: Non sei un cliente, non puoi creare richieste
         '404':
+          description: Richiesta non trovata
+        '500':
           description: Errore generico
-        '409':
-          description: Problemi di autorizzazione
 
-  /richieste/{idRichiesta}:
+  /richieste/{anno}/{mese}:
     get:
-      summary: Recupera una richiesta specifica
+      summary: Recupera le richieste per data
+      security:
+        - bearerAuth: []
       parameters:
-        - name: idRichiesta
+        - name: anno
           in: path
           required: true
           schema:
-            type: string
+            type: integer
+        - name: mese
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista filtrata di richieste
+          content:
+            application/json:
+              schema:              
+                type: array
+                items:
+                  $ref: '#/components/schemas/Richiesta'
+        '400':
+          description: Non sei l'amministratore, non puoi accedere a queste informazioni
+        '404':
+          description: Nessuna richiesta trovata
+        
+  /richieste/nonassegnate:
+    get:
+      summary: Recupera le richieste senza tecnici
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista richieste non assegnate
+          content:
+            application/json:
+              schema:              
+                type: array
+                items:
+                  $ref: '#/components/schemas/Richiesta'
+        '400':
+          description: Non sei un tecnico in cerca di lavoro
+        '404':
+          description: Nessuna richiesta trovata
+        
+  /richieste/{id}:
+    get:
+      summary: Recupera una richiesta specifica
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: Dettagli della richiesta
@@ -614,24 +992,437 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Richiesta'
-        '404':
-          description: Richiesta non trovata
-
+        '400':
+          description: Utente non autorizzato
+          
     put:
-      summary: Modifica una richiesta
+      summary: Modifica una richiesta esistente
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RichiestaUpdate'
+              $ref: '#/components/schemas/Richiesta'
       responses:
         '204':
           description: Richiesta aggiornata con successo
+        '400':
+          description: Questa richiesta non è tua, non puoi modificarla
+        '404':
+          description: Richiesta non trovata
+        '500':
+          description: Errore generico
+          
+    post:
+      summary: Modifica stato ordine di richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: stato_ordine
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Richiesta modificata con successo
+        '400':
+          description: Questa richiesta non è tua, non puoi modificarla
+        '404':
+          description: Parametro non valido / Richiesta non trovata
+        '500':
+          description: Errore generico
+    
+    delete:
+      summary: Annullamento richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Richiesta annullata con successo
+        '400':
+          description: Questa richiesta non è tua, non puoi annullarla
+        '404':
+          description: Richiesta non trovata
+        '500':
+          description: Errore generico 
+
+  /richieste/{id}/assegna:
+    post:
+      summary: Assegna la richiesta al tecnico loggato
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Richiesta assegnata con successo
+        '400':
+          description: Non sei un tecnico, non puoi assegnarti la richiesta
         '404':
           description: Richiesta non trovata
         '409':
-          description: Problemi di autorizzazione
+          description: Richiesta già assegnata
+        '500':
+          description: Errore generico
+          
+  /richieste/{id}/proposte:
+    get:
+      summary: Recupera proposte della richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: tecnico
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: stato
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista filtrata di proposte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proposta'
+        '404':
+          description: Nessuna proposta trovata
+          
+    put:
+      summary: Crea nuova proposta
+      security:
+       - bearerAuth: []
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Proposta'
+      responses:
+        '204':
+          description: Proposta creata con successo
+        '400':
+          description: Tecnico non autorizzato
+        '404':
+          description: Utente non autorizzato
+        '409':
+          description: Proposta già esistente, metodo sbagliato
+        '500':
+          description: Errore generico
+
+  /richieste/{id}/proposte/{anno}/{mese}:
+    get:
+      summary: Recupera le proposte della richiesta in base alla creazione
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: anno
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: mese
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista filtrata di proposte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proposta'
+        '404':
+          description: Nessuna proposta trovata
+          
+  /richieste/{id}/proposte/ultima:
+    get:
+      summary: Recupera l'ultima proposta della richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ultima proposta della richiesta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proposta'
+        '404':
+          description: Nessuna proposta trovata
+  
+  /richieste/{id}/proposte/{idProposta}:
+    get:
+      summary: Recupera una proposta specifica della richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idProposta
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Proposta richiesta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proposta'
+        '404':
+          description: Nessuna proposta trovata
+    
+    put:
+      summary: Modifica proposta
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idProposta
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Proposta'
+      responses:
+        '204':
+          description: Proposta modificata con successo
+        '400':
+          description: Utente non autorizzato
+        '404':
+          description: Proposta non trovata
+        '409':
+          description: Proposta non esistente, metodo sbagliato
+        '500':
+          description: Errore generale
+    
+    post:
+      summary: Modifica stato della proposta
+      security: 
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idProposta
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: stato_proposta
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: motivazione
+          in: query
+          required: false
+          schema: 
+            type: string
+      responses: 
+        '200':
+          description: Proposta modificata con successo
+        '400':
+          description: Utente non autorizzato
+        '404':
+          description: Proposta non trovata
+        '500':
+          description: Errore generico
+          
+  /richieste/{id}/caratteristiche:
+    get:
+      summary: Recupera lista caratteristiche della richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista caratteristiche
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RichiestaCaratteristica'
+        '404':
+          description: Nessuna caratteristica richiesta trovata
+    
+    put:
+      summary: Aggiungi caratteristica alla richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RichiestaCaratteristica'
+      responses:
+        '204':
+          description: Caratteristica richiesta modificata con successo
+        '400':
+          description: Utente non autorizzato
+        '404':
+          description: Caratteristica richiesta non trovata
+        '500':
+          description: Errore generico
+    
+    post:
+      summary: Aggiungi lista caratteristiche alla richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RichiestaCaratteristica'
+      responses:
+        '204':
+          description: Caratteristiche richiesta modificate con successo
+        '400':
+          description: Utente non autorizzato
+        '404':
+          description: Caratteristica richiesta non trovata
+        '500':
+          description: Errore generico
+    
+    delete:
+      summary: Elimina caratteristica della richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Caratteristica richiesta eliminata con successo
+        '400':
+          description: Utente non autorizzato
+        '404':
+          description: Caratteristica richiesta non trovata
+        '500':
+          description: Errore generico
+    
+  /richieste/{id}/caratteristiche/{idCaratteristica}:
+    get:
+      summary: Recupera lista caratteristiche della richiesta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idCaratteristica
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio caratteristica
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RichiestaCaratteristica'
+        '404':
+          description: Caratteristica richiesta non trovata
 
 components:
   securitySchemes:
@@ -644,12 +1435,263 @@ components:
       type: object
       properties:
         id:
-          type: string
-          example: "1"
+          type: integer
+          example: 1
         username:
           type: string
-          example: "username"
+          example: "Ugo"
         email:
           type: string
-          example: "email@example.com"
+          example: "ugo@example.com"
+        password:
+          type: string
+          example: "ugo"
+        data_iscrizione:
+          type: string
+          format: date
+        indirizzo:
+          type: string
+          example: "Via capri, 245, Capri, 255, Germany(DE)"
         accettato:
+          type: boolean
+          example: true
+        notifiche:
+          type: array
+          items:
+            $ref: "#/components/schemas/Notifica"
+        
+    Notifica:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        destinatario:
+          type: object
+          items:
+            $ref: "#/components/schemas/Utente"
+        messaggio:
+          type: string
+          example: "Ciao!"
+        link:
+          type: string
+          example: "www.google.com"
+        tipo:
+          type: string
+          enum:
+            - INFO
+            - NUOVO
+            - MODIFICATO
+            - CHIUSO
+            - ANNULLATO
+        data_creazione:
+          type: string
+          format: date-time
+        letto:
+          type: boolean
+          example: false
+          
+    Gruppo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          enum:
+            - AMMINISTRATORE
+            - TECNICO
+            - ORDINANTE
+        utenti:
+          type: array
+          items:
+            $ref: "#/components/schemas/Utente"
+        servizi:
+          type: array
+          items:
+            $ref: "#/components/schemas/Servizio"
+            
+    Servizio:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        script:
+          type: string
+          example: "homepage"
+          
+    Categoria:
+      type: object
+      properties:
+        id: 
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: "Pc"
+        immagine: 
+          type: object
+          items:
+            $ref: "#/components/schemas/Immagine"
+        categoria_padre:
+          type: object
+          items:
+            $ref: "#/components/schemas/Categoria"
+        caratteristiche:
+          type: array
+          items:
+            $ref: "#/components/schemas/Caratteristica"
+        cancellato:
+          type: boolean
+          example: false
+          
+    Caratteristica:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: "Memoria RAM"
+        categoria:
+          type: object
+          items:
+            $ref: "#/components/schemas/Categoria"
+        valori_default:
+          type: string
+          example: "12Gb, 24Gb, 36Gb"
+          
+    Immagine:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        didascalia:
+          type: string
+          example: "Immagine pc"
+        tipo_immagine:
+          type: string
+          example: "jpeg"
+        nome_file_immagine:
+          type: string
+        grandezza_file:
+          type: number
+          example: 2000000
+          
+    Richiesta:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        titolo:
+          type: string
+          example: "Richiesta#20241203"
+        descrizione:
+          type: string
+          example: "Pc strabello"
+        categoria:
+          type: object
+          items:
+            $ref: "#/components/schemas/Categoria"
+        ordinante:
+          type: object
+          items:
+            $ref: "#/components/schemas/Utente"
+        tecnico:
+          type: object
+          items:
+            $ref: "#/components/schemas/Utente"
+        data_creazione:
+          type: string
+          format: date
+        stato_richiesta:
+          type: string
+          enum:
+            - NUOVO
+            - PRESOINCARICO
+            - ORDINATO
+            - CHIUSO
+            - ANNULLATO
+        stato_ordine:
+          type: string
+          enum:
+            - SPEDITO
+            - ACCETTATO
+            - RESPINTONONCONFORME
+            - RESPINTONONFUNZIONANTE
+            - EMPTY
+        caratteristiche:
+          type: array
+          items:
+            $ref: "#/components/schemas/RichiestaCaratteristica"
+        proposte:
+          type: array
+          items:
+            $ref: "#/components/schemas/Proposta"
+        note:
+          type: string
+          
+    Proposta:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        richiesta:
+          type: object
+          items:
+            $ref: "#/components/schemas/Richiesta"
+        tecnico:
+          type: object
+          items:
+            $ref: "#/components/schemas/Utente"
+        nome_prodotto:
+          type: string
+          example: "Asus Zenfone"
+        nome_produttore:
+          type: string
+          example: "Asus"
+        descrizione_prodotto:
+          type: string
+          example: "Potentissimo"
+        prezzo_prodotto:
+          type: number
+          example: 10.00
+        url:
+          type: string
+          example: "https://www.google.com"
+        note:
+          type: string
+        data_creazione:
+          type: string
+          format: date-time
+        stato_proposta:
+          type: string
+          enum:
+            - INATTESA
+            - APPROVATO
+            - RESPINTO
+        motivazione: 
+          type: string
+          
+    RichiestaCaratteristica:
+      type: object
+      properties:
+        id: 
+          type: integer
+          example: 1
+        richiesta:
+          type: object
+          items:
+            $ref: "#/components/schemas/Richiesta"
+        caratteristica:
+          type: object
+          items:
+            $ref: "#/components/schemas/Caratteristica"
+        valore:
+          type: string

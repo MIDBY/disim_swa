@@ -3,7 +3,6 @@ package it.univaq.example.webshop.resources;
 import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -15,12 +14,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import it.univaq.example.webshop.business.ProposalResourceDB;
 import it.univaq.example.webshop.business.RequestResourceDB;
@@ -41,33 +36,22 @@ public class ProposalsResource {
         this.proposals = proposals;
     }
 
+    @Logged
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProposalsByRequest(@QueryParam("tecnico") int technician_key, @QueryParam("stato") String proposalState,
                                         @Context UriInfo uriinfo) throws RESTWebApplicationException {
-        List<Map<String, Object>> result = new ArrayList<>();
         if(technician_key > 0)
             proposals.removeIf(p -> (p.getTechnician().getKey() != technician_key));
         if(!proposalState.isEmpty() && ProposalStateEnum.isValidEnumValue(proposalState))
             proposals.removeIf(p -> (!p.getProposalState().equals(ProposalStateEnum.valueOf(proposalState))));
-        for(Proposal p : proposals){
-            Map<String, Object> e = new LinkedHashMap<>();
-            e.put("id", p.getKey());
-            e.put("nome_prodotto", p.getProductName());
-            URI uri = uriinfo.getBaseUriBuilder()
-                .path(getClass())
-                .path(getClass(), "getProposal")
-                .build(p.getKey());
-            e.put("proposta", uri);
-            e.put("stato", p.getProposalState());
-            result.add(e);
-        }
         if(proposals.size() > 0)
-            return Response.ok(result).build();
+            return Response.ok(proposals).build();
         else
             return Response.status(Response.Status.NOT_FOUND).entity("Nessuna proposta trovata").build();
     }
 
+    @Logged
     @GET
     @Path("{anno: [1-9][0-9][0-9][0-9]}/{mese: [1]?[0-9]}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -84,9 +68,9 @@ public class ProposalsResource {
     @Path("{id: [0-9]+}")
     public ProposalResource getProposal(@PathParam("id") int proposal_key) throws RESTWebApplicationException {
         return new ProposalResource(getSingleProposal(proposal_key));
-
     }   
 
+    @Logged
     @GET
     @Path("ultima")
     @Produces(MediaType.APPLICATION_JSON)
@@ -123,8 +107,6 @@ public class ProposalsResource {
                         Utility.sendMail(sc,proposal2.getRequest().getOrdering().getEmail(), "Info mail: \nYour request: "+proposal2.getRequest().getTitle()+" has received a new proposal, go to check it!");
                         Utility.sendNotification(proposal2.getRequest().getOrdering(), "Request: "+proposal2.getRequest().getTitle()+".\n Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, "requests"); 
                         return Response.noContent().build();
-                    } catch (NotFoundException ex) {
-                        return Response.status(Response.Status.NOT_FOUND).entity("Proposal not found").build();
                     } catch (RESTWebApplicationException ex) {
                         return Response.serverError()
                                 .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -133,9 +115,9 @@ public class ProposalsResource {
                 } else
                     return Response.status(Response.Status.BAD_REQUEST).entity("Tecnico non autorizzato").build();
             } else
-                return Response.status(Response.Status.BAD_REQUEST).entity("Proposta già esistente, metodo sbagliato").build();
+                return Response.status(Response.Status.CONFLICT).entity("Proposta già esistente, metodo sbagliato").build();
         } else
-            return Response.status(Response.Status.BAD_REQUEST).entity("Utente non autorizzato").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Utente non autorizzato").build();
     }
 
     private Proposal getSingleProposal(int proposal_key) {

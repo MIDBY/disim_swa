@@ -4,6 +4,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -15,11 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import it.univaq.example.webshop.business.RequestCharacteristicResourceDB;
 import it.univaq.example.webshop.model.RequestCharacteristic;
@@ -35,40 +32,26 @@ public class RequestCharacteristicsResource {
         this.characteristics = characteristics;
     }
 
+    @Logged
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRequestCharacteristicsByRequest() throws RESTWebApplicationException {
-        List<Map<String, Object>> result = new ArrayList<>();
-        for(RequestCharacteristic rc : characteristics) {
-            Map<String, Object> e = new LinkedHashMap<>();
-            e.put("id", rc.getKey());
-            e.put("nome", rc.getCharacteristic().getName());
-            e.put("valore", rc.getValue());
-            e.put("valori_default", rc.getCharacteristic().getDefaultValues());
-            result.add(e);
-        }
-        if(result.size() > 0)
-            return Response.ok(result).build();
+        if(characteristics.size() > 0)
+            return Response.ok(characteristics).build();
         else
-            return Response.status(Response.Status.NOT_FOUND).entity("Nessuna caratteristica trovata").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Nessuna caratteristica richiesta trovata").build();
     }
 
+    @Logged
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRequestCharacteristic(@PathParam("id") int requestCharacteristic_key, @Context UriInfo uriinfo) throws RESTWebApplicationException {
-        Map<String, Object> e = new LinkedHashMap<>();
         RequestCharacteristic rc = getSingleRequestCharacteristic(requestCharacteristic_key);
-        e.put("id", rc.getKey());
-        URI uri = uriinfo.getBaseUriBuilder()
-            .path(RequestsResource.class)
-            .path(RequestsResource.class, "getRequest")
-            .build(rc.getRequest().getKey());
-        e.put("richiesta", uri);
-        e.put("nome", rc.getCharacteristic().getName());
-        e.put("valore", rc.getValue());
-        e.put("valori_default", rc.getCharacteristic().getDefaultValues());
-        return Response.ok(e).build();
+        if(rc != null)
+            return Response.ok(rc).build();
+        else
+            return Response.status(Response.Status.NOT_FOUND).entity("Caratteristica richiesta non trovata").build();
     }   
     
     @Logged
@@ -81,7 +64,7 @@ public class RequestCharacteristicsResource {
                 RequestCharacteristicResourceDB.setRequestCharacteristic(requestCharacteristic);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request characteristic not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Caratteristica richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -92,7 +75,7 @@ public class RequestCharacteristicsResource {
     }
 
     @Logged
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setRequestCharacteristics(List<RequestCharacteristic> requestCharacteristics, @Context ContainerRequestContext req) throws RESTWebApplicationException {
         int user_key = Integer.parseInt(req.getProperty("userid").toString());
@@ -102,7 +85,7 @@ public class RequestCharacteristicsResource {
                     RequestCharacteristicResourceDB.setRequestCharacteristic(rc);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request characteristic not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Caratteristica richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -124,7 +107,7 @@ public class RequestCharacteristicsResource {
                     RequestCharacteristicResourceDB.deleteRequestCharacteristic(rc);
                     return Response.noContent().build();
                 } catch (NotFoundException ex) {
-                    return Response.status(Response.Status.NOT_FOUND).entity("Request characteristic not found").build();
+                    return Response.status(Response.Status.NOT_FOUND).entity("Caratteristica richiesta non trovata").build();
                 } catch (RESTWebApplicationException | DataException ex) {
                     return Response.serverError()
                             .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -133,7 +116,7 @@ public class RequestCharacteristicsResource {
             } else
                 return Response.status(Response.Status.BAD_REQUEST).entity("Utente non autorizzato").build();    
         } else
-            return Response.status(Response.Status.NOT_FOUND).entity("Nessuna caratteristica trovata").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Caratteristica richiesta non trovata").build();
     }
 
     private RequestCharacteristic getSingleRequestCharacteristic(int requestCharacteristic_key) {

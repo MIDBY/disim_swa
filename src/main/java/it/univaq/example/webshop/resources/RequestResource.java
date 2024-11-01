@@ -90,7 +90,7 @@ public class RequestResource {
                 }
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -108,21 +108,24 @@ public class RequestResource {
         int key = Integer.parseInt(req.getProperty("userid").toString());
         if(GroupResourceDB.getGroupByUser(key).getName().equals(UserRoleEnum.TECNICO)) {
             try {
-                request.setTechnician(UserResourceDB.getUser(key));
-                request.setRequestState(RequestStateEnum.PRESOINCARICO);
-                RequestResourceDB.setRequest(request);
-                Utility.sendMail(sc,request.getOrdering().getEmail(), "Info mail: \nYour request: "+request.getTitle()+"\n has been taken in charge by one of our operators. \nYou will soon receive a proposal from our operator.");
-                Utility.sendNotification(request.getOrdering(), "Great news! Your request "+request.getTitle()+" has been taken in charge by one of our operators!", NotificationTypeEnum.INFO, "homepage");
-                return Response.noContent().build();
+                if(request.getTechnician() == null) {
+                    request.setTechnician(UserResourceDB.getUser(key));
+                    request.setRequestState(RequestStateEnum.PRESOINCARICO);
+                    RequestResourceDB.setRequest(request);
+                    Utility.sendMail(sc,request.getOrdering().getEmail(), "Info mail: \nYour request: "+request.getTitle()+"\n has been taken in charge by one of our operators. \nYou will soon receive a proposal from our operator.");
+                    Utility.sendNotification(request.getOrdering(), "Great news! Your request "+request.getTitle()+" has been taken in charge by one of our operators!", NotificationTypeEnum.INFO, "homepage");
+                    return Response.noContent().build();
+                } else
+                    return Response.status(Response.Status.CONFLICT).entity("Richiesta già assegnata").build(); 
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
                         .build();
             }
         } else
-            return Response.status(Response.Status.BAD_REQUEST).entity("Questa richiesta non è tua, non puoi modificarla").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Non sei un tecnico, non puoi assegnarti la richiesta").build();
     }
 
     @Logged
@@ -143,9 +146,9 @@ public class RequestResource {
                     RequestResourceDB.setRequest(request);
                     return Response.noContent().build();
                 } else
-                    return Response.status(Response.Status.NOT_FOUND).entity("Parameter not valid").build();
+                    return Response.status(Response.Status.NOT_FOUND).entity("Parametro non valido").build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -166,13 +169,13 @@ public class RequestResource {
                 RequestResourceDB.setRequest(request);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
                         .build();
             }
         } else
-            return Response.status(Response.Status.BAD_REQUEST).entity("Questa richiesta non è tua, non puoi modificarla").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Questa richiesta non è tua, non puoi annullarla").build();
     }
 }

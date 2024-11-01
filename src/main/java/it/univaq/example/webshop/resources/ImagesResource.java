@@ -46,6 +46,7 @@ import it.univaq.framework.security.Logged;
 )
 public class ImagesResource {
 
+    @Logged
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getImages() throws RESTWebApplicationException {
@@ -56,6 +57,7 @@ public class ImagesResource {
             return Response.status(Response.Status.NOT_FOUND).entity("Nessuna immagine trovata").build();
     }
 
+    @Logged
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -67,6 +69,7 @@ public class ImagesResource {
             return Response.status(Response.Status.NOT_FOUND).entity("Nessuna immagine trovata").build();
     } 
     
+    @Logged
     @GET
     @Path("categoria")
     @Produces(MediaType.APPLICATION_JSON)
@@ -108,9 +111,9 @@ public class ImagesResource {
                     image = ImageResourceDB.setImage(image);
                     return Response.ok(image.getKey()).build();
                 } else
-                    return Response.status(Response.Status.NOT_FOUND).entity("Image not found").build();
+                    return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
             } catch (NotFoundException | DataException | IOException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Image not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -129,7 +132,7 @@ public class ImagesResource {
                 ImageResourceDB.deleteImage(ImageResourceDB.getImage(image_key));
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Image not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
             } catch (RESTWebApplicationException | DataException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -144,11 +147,14 @@ public class ImagesResource {
     @Produces({"image/jpeg", "image/png"})
     public Response download(@QueryParam("id") int image_key, @Context ServletContext sc) {
         Image image = ImageResourceDB.getImage(image_key);
-        String path = sc.getInitParameter("images.directory");
-		File file = new File(path + "\\" + image.getFilename());
-        return Response
-                .ok((Object) file)
-                .header("content-disposition", "attachment; filename="+image.getFilename())
-                .build();
+        if(image != null) {
+            String path = sc.getInitParameter("images.directory");
+            File file = new File(path + "\\" + image.getFilename());
+            return Response
+                    .ok((Object) file)
+                    .header("content-disposition", "attachment; filename="+image.getFilename())
+                    .build();
+        } else
+            return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
     }
 }

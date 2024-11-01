@@ -91,7 +91,7 @@ public class CategoriesResource {
                 CategoryResourceDB.setCategory(category);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Category not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Categoria non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
@@ -144,7 +144,6 @@ public class CategoriesResource {
                         CharacteristicResourceDB.setCharacteristic(characteristic);
                     }
                 }
-
                 CategoryResourceDB.setCategory(category);
                 return Response.noContent().build();
             } catch (RESTWebApplicationException ex) {
@@ -165,7 +164,7 @@ public class CategoriesResource {
                 CategoryResourceDB.deleteCategory(category_key);
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Category not found").build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Categoria non trovata").build();
             } catch (RESTWebApplicationException | DataException ex) {
                 return Response.serverError()
                         .entity(ex.getMessage()) //NEVER IN PRODUCTION!
