@@ -132,9 +132,7 @@ public class ImagesResource {
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
             } catch (RESTWebApplicationException ex) {
-                return Response.serverError()
-                        .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                        .build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
             }
         } else 
             return Response.status(Response.Status.BAD_REQUEST).entity("Non sei l'amministratore").build();
@@ -151,9 +149,7 @@ public class ImagesResource {
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
             } catch (RESTWebApplicationException | DataException ex) {
-                return Response.serverError()
-                        .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                        .build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
             }
         } else 
             return Response.status(Response.Status.BAD_REQUEST).entity("Non sei l'amministratore").build();

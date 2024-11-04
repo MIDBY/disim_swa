@@ -92,9 +92,7 @@ public class RequestResource {
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
-                return Response.serverError()
-                        .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                        .build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
             }
         } else
             return Response.status(Response.Status.BAD_REQUEST).entity("Questa richiesta non è tua, non puoi modificarla").build();
@@ -120,9 +118,7 @@ public class RequestResource {
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
-                return Response.serverError()
-                        .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                        .build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
             }
         } else
             return Response.status(Response.Status.BAD_REQUEST).entity("Non sei un tecnico, non puoi assegnarti la richiesta").build();
@@ -150,9 +146,7 @@ public class RequestResource {
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
-                return Response.serverError()
-                        .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                        .build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
             }
         } else
             return Response.status(Response.Status.BAD_REQUEST).entity("Questa richiesta non è tua, non puoi modificarla").build();
@@ -174,9 +168,7 @@ public class RequestResource {
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {
-                return Response.serverError()
-                        .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                        .build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
             }
         } else
             return Response.status(Response.Status.BAD_REQUEST).entity("Questa richiesta non è tua, non puoi annullarla").build();

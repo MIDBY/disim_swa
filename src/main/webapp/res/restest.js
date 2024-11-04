@@ -5,6 +5,7 @@ function Restest(testall = true) {
     let tests_ok_count = 0;
     let tests_error_count = 0;
     let token_waiting_list = [];
+    let newOpening = true;
     let THIS = this;
 
     this.getErrors = function () {
@@ -159,6 +160,22 @@ function Restest(testall = true) {
             null,
             null,
             bearer_token, false);
+
+        let tryTech = string1.split(",")[1];
+        if(tryTech === "TECNICO" && newOpening) {
+            newOpening = false;
+            sendRestRequest(
+                "get", "rest/richieste/nonassegnate",
+                function (callResponse, callStatus) {
+                    if (callStatus === 200) {
+                        const richieste = JSON.parse(callResponse);
+                        if(richieste.length > 0) {
+                            newTechOpening()
+                        }
+                    }
+                },
+                null, null, null, bearer_token);
+        }
     };
 
     let createCategory = function() {
@@ -1727,6 +1744,14 @@ function Restest(testall = true) {
             }
         });
     }
+
+    function newTechOpening(){
+        Swal.fire({
+            title: "Buongiorno!",
+            text: "Sono arrivate nuove richieste nel sistema!",
+            icon: "success"
+            });
+        }
     
     ///////////////////// public object methods
 
@@ -1886,7 +1911,7 @@ function Restest(testall = true) {
         let nazione = document.getElementById("nazioneUser").value;
         if(id && username && indirizzo && numero && cap && nazione) {
             sendRestRequest(
-                "post", "rest/utenti/modifica",
+                "post", "rest/utenti/me/modifica",
                 function (callResponse, callStatus) {
                     if (callStatus === 204) {
                         Swal.fire({title: "Congrats", text: "Le informazioni dell'account sono state aggiornate con successo", icon: "success"}).then(() => {
@@ -1913,7 +1938,7 @@ function Restest(testall = true) {
         if(password != password2) {
             if(id && (email || password || password2)) {
                 sendRestRequest(
-                    "post", "rest/utenti/modifica",
+                    "post", "rest/utenti/me/modifica",
                     function (callResponse, callStatus) {
                         if (callStatus === 204) {
                             Swal.fire({title: "Congrats", text: "Le credenziali di sicurezza sono state cambiate con successo! \nOra verrai scollegato per ripetere l'accesso", icon: "success"}).then(() => {

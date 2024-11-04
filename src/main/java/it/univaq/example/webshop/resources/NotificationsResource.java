@@ -75,9 +75,7 @@ public class NotificationsResource {
         } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity("Notifica non trovata").build();
         } catch (RESTWebApplicationException ex) {
-            return Response.serverError()
-                    .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                    .build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
         }
     }
 
@@ -94,9 +92,7 @@ public class NotificationsResource {
         } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity("Notifica non trovata").build();
         } catch (RESTWebApplicationException ex) {
-            return Response.serverError()
-                    .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                    .build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
         }
     }
 
@@ -111,9 +107,7 @@ public class NotificationsResource {
         } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity("Notifica non trovata").build();
         } catch (RESTWebApplicationException ex) {
-            return Response.serverError()
-                    .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                    .build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
         }
     }
 
@@ -130,9 +124,7 @@ public class NotificationsResource {
         } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity("Nessuna notifica trovata").build();
         } catch (RESTWebApplicationException ex) {
-            return Response.serverError()
-                    .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                    .build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
         }
     }
 

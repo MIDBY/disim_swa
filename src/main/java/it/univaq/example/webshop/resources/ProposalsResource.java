@@ -108,9 +108,7 @@ public class ProposalsResource {
                         Utility.sendNotification(proposal2.getRequest().getOrdering(), "Request: "+proposal2.getRequest().getTitle()+".\n Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, "requests"); 
                         return Response.noContent().build();
                     } catch (RESTWebApplicationException ex) {
-                        return Response.serverError()
-                                .entity(ex.getMessage()) //NEVER IN PRODUCTION!
-                                .build();
+                        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();
                     }
                 } else
                     return Response.status(Response.Status.BAD_REQUEST).entity("Tecnico non autorizzato").build();
