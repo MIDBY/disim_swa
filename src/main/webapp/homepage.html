@@ -141,7 +141,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti"><small>GET rest/utenti</small></a></td>
-                                                        <td  class="output">Informazioni profilo utenti</td>
+                                                        <td class="output">Informazioni profilo utenti</td>
                                                     </tr>
                                                     <tr>
                                                         <td>utenti/{id}</td>
@@ -150,7 +150,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/33"><small>GET rest/utenti/33</small></a></td>
-                                                        <td  class="output">Informazioni utente attraverso id</td>
+                                                        <td class="output">Informazioni utente attraverso id</td>
                                                     </tr>
                                                     <tr>
                                                         <td>utenti?email={email}</td>
@@ -159,7 +159,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?email=pippo@gmail.com"><small>GET rest/utenti?email=pippo@gmail.com</small></a></td>
-                                                        <td  class="output">Informazioni utente attraverso email</td>
+                                                        <td class="output">Informazioni utente attraverso email</td>
                                                     </tr>
                                                     <tr>
                                                         <td>utenti?username={username}</td>
@@ -168,7 +168,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?username=Pippo"><small>GET rest/utenti?username=Pippo</small></a></td>
-                                                        <td  class="output">Informazioni utente attraverso username</td>
+                                                        <td class="output">Informazioni utente attraverso username</td>
                                                     </tr>
                                                     <tr>
                                                         <td>utenti?accettato={accettato}</td>
@@ -177,7 +177,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?accettato=1"><small>GET rest/utenti?accettato=1</small></a></td>
-                                                        <td  class="output">Informazioni utente attraverso username</td>
+                                                        <td class="output">Informazioni utente attraverso username</td>
                                                     </tr>
                                                     <tr>
                                                         <td>utenti?username={username}&amp;accettato={accettato}</td>
@@ -185,8 +185,8 @@
                                                         <td>{username}: String, {accettato}: Integer</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a  data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?username=Pippo&accettato=1"><small>GET rest/utenti?username=Pippo&accettato=1</small></a></td>
-                                                        <td  class="output">Informazioni utente attraverso username</td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti?username=Pippo&accettato=1"><small>GET rest/utenti?username=Pippo&accettato=1</small></a></td>
+                                                        <td class="output">Informazioni utente attraverso username</td>
                                                     </tr>
                                                     <tr>
                                                         <td>utenti/modifica</td>
@@ -197,16 +197,16 @@
                                                         <td><span data-rest-test-target data-rest-test-url="rest/utenti/modifica" data-rest-test-method="put" 
                                                             data-rest-test-content-type="application/json" data-rest-test-status="204" data-rest-test-auth="1000"
                                                             data-rest-test-payload='{ "id" : 65, "username" : "Gino", "email" : "gino@gmail.com", "password" : "gino", "indirizzo" : "Via da Cane, 1, Barisciano, 24582, Spain(ES)", "data_iscrizione" : "27/9/2024", "versione" : 1 }'></span></td>
-                                                        <td  class="output">Utente modificato</td>
+                                                        <td class="output">Utente modificato</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>utenti/accetta/{id}</td>
-                                                        <td>PUT</td>
+                                                        <td>utenti/{id}/accetta</td>
+                                                        <td>POST</td>
                                                         <td>{id}: Integer</td>
                                                         <td></td>
                                                         <td>Bearer token</td>
-                                                        <td><span data-rest-test-target data-rest-test-url="rest/utenti/accetta/65" data-rest-test-auth="1000"
-                                                            data-rest-test-method="put" data-rest-test-status="204"><small>PUT rest/utenti/accetta/65</small></span></td>
+                                                        <td><span data-rest-test-target data-rest-test-url="rest/utenti/65/accetta" data-rest-test-auth="1000"
+                                                            data-rest-test-method="post" data-rest-test-status="204"><small>POST rest/utenti/65/accetta</small></span></td>
                                                         <td  class="output">Accettazione/rifiuto utente</td>
                                                     </tr>
                                                     <tr>
@@ -228,22 +228,31 @@
                                                         <td  class="output">Lista utenti attraverso id gruppo</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>utenti/gruppo/{nome}</td>
+                                                        <td>utenti/me/gruppo/servizi</td>
                                                         <td>GET</td>
-                                                        <td>{nome}: String</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/gruppo/ORDINANTE"><small>GET rest/utenti/gruppo/ORDINANTE</small></a></td>
-                                                        <td  class="output">Lista utenti attraverso nome gruppo</td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/me/gruppo/servizi"><small>GET rest/utenti/me/gruppo/servizi</small></a></td>
+                                                        <td  class="output">Lista servizi dell'utente</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>utenti/gruppo?id={id}&amp;ruolo={nome}</td>
-                                                        <td>PUT</td>
+                                                        <td>utenti/me/notifiche</td>
+                                                        <td>GET</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/utenti/me/notifiche"><small>GET rest/utenti/me/notifiche</small></a></td>
+                                                        <td  class="output">Lista servizi dell'utente</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>utenti/{id}/assumi?ruolo={nome}</td>
+                                                        <td>POST</td>
                                                         <td>{id}: Integer, {nome}: String</td>
                                                         <td></td>
                                                         <td>Bearer token</td>
-                                                        <td><span data-rest-test-target data-rest-test-url="rest/utenti/gruppo?id=65&ruolo=ORDINANTE"
-                                                             data-rest-test-method="put" data-rest-test-status="204" data-rest-test-auth="1000"><small>PUT rest/utenti/gruppo?id=65&ruolo=ORDINANTE</small></span></td>
+                                                        <td><span data-rest-test-target data-rest-test-url="rest/utenti/65/assumi?ruolo=ORDINANTE"
+                                                             data-rest-test-method="post" data-rest-test-status="204" data-rest-test-auth="1000"><small>POST rest/utenti/65/assumi?ruolo=ORDINANTE</small></span></td>
                                                         <td  class="output">Assunzione/licenziamento utente</td>
                                                     </tr>
                                                 </tbody>
@@ -283,7 +292,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target href="rest/categorie"><small>GET rest/categorie</small></a></td>
-                                                        <td  class="output">Lista categorie</td>
+                                                        <td class="output">Lista categorie</td>
                                                     </tr>
                                                     <tr>
                                                         <td>categorie/{id}</td>
@@ -292,7 +301,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target href="rest/categorie/15"><small>GET rest/categorie/15</small></a></td>
-                                                        <td  class="output">Informazioni categoria attraverso id</td>
+                                                        <td class="output">Informazioni categoria attraverso id</td>
                                                     </tr>                 
                                                     <tr>
                                                         <td>categorie</td>
@@ -303,7 +312,7 @@
                                                         <td><span data-rest-test-target data-rest-test-auth data-rest-test-method="put" data-rest-test-url="rest/categorie"
                                                                   data-rest-test-content-type="application/json" data-rest-test-status="204"
                                                                   data-rest-test-payload='{ "id" : 24, "nome" : "Fucile", "categoria_padre" : "null", "immagine" : { "id" : 19 }, "cancellato" : false }'></span></td>
-                                                        <td  class="output">Categoria aggiunta/modificata</td>
+                                                        <td class="output">Categoria aggiunta/modificata</td>
                                                     </tr>
                                                     <tr>
                                                         <td>categorie?id={id}</td>
@@ -312,7 +321,7 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><span data-rest-test-target data-rest-test-auth="" data-rest-test-method="delete" data-rest-test-status="204" data-rest-test-url="rest/categorie?id=20"></span></td>
-                                                        <td  class="output">Categoria eliminata</td>
+                                                        <td class="output">Categoria eliminata</td>
                                                     </tr>
                                                     <tr>
                                                         <td>categorie/genitori</td>
@@ -321,16 +330,16 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target href="rest/categorie/genitori"><small>GET rest/categorie/genitori</small></a></td>
-                                                        <td  class="output">Lista categorie senza genitori</td>
+                                                        <td class="output">Lista categorie senza genitori</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>categorie/figlidi/{id}</td>
+                                                        <td>categorie/piuvendute</td>
                                                         <td>GET</td>
-                                                        <td>{id}: Integer</td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-target href="rest/categorie/figlidi/15"><small>GET rest/categorie/figlidi/15</small></a></td>
-                                                        <td  class="output">Lista categorie figlie della categoria con id 15</td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-target href="rest/categorie/piuvendute"><small>GET rest/categorie/piuvendute</small></a></td>
+                                                        <td class="output">Lista 3 categorie più vendute</td>
                                                     </tr>
                                                     <tr>
                                                         <td>categorie/categoriepiuvendute</td>
@@ -339,7 +348,25 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td><a data-rest-test-target href="rest/categorie/categoriepiuvendute"><small>GET rest/categorie/categoriepiuvendute</small></a></td>
-                                                        <td  class="output">Lista 3 categorie più vendute</td>
+                                                        <td class="output">Lista 3 categorie più vendute</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>categorie/{id}/caratteristiche</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-target href="rest/categorie/15/caratteristiche"><small>GET rest/categorie/15/caratteristiche</small></a></td>
+                                                        <td class="output">Lista caratteristiche della caegoria specificata</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>immagini/categoria?id={id}</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-target data-rest-test-auth="1000" href="rest/immagini/categoria?id=15"><small>GET rest/immagini/categoria?id=15</small></a></td>
+                                                        <td class="output">Dettagli immagine della caegoria specificata</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -381,13 +408,49 @@
                                                         <td  class="output">Lista Richieste</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>notifiche</td>
+                                                        <td>richieste/nonassegnate</td>
                                                         <td>GET</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><a data-rest-test-auth data-rest-test-target data-rest-test-method="post" href="rest/utenti/me/notifiche?id=60"><small>GET rest/notifiche</small></a></td>
-                                                        <td  class="output">Lista Notifiche</td>
+                                                        <td><a data-rest-test-auth data-rest-test-target href="rest/richieste/nonassegnate"><small>GET rest/richieste/nonassegnate</small></a></td>
+                                                        <td  class="output">Lista Richieste non assegnate</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>richieste/{id}/proposte</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-auth data-rest-test-target href="rest/richieste/14/proposte"><small>GET rest/richieste/14/proposte</small></a></td>
+                                                        <td  class="output">Lista proposte della richesta</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>richieste/{id}/proposte/ultima</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-auth data-rest-test-target href="rest/richieste/14/proposte/ultima"><small>GET rest/richieste/14/proposte/ultima</small></a></td>
+                                                        <td  class="output">Ultima proposta della richesta</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>richieste/{id}/caratteristiche</td>
+                                                        <td>GET</td>
+                                                        <td>{id}: integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><a data-rest-test-auth data-rest-test-target href="rest/richieste/14/caratteristiche"><small>GET rest/richieste/14/caratteristiche</small></a></td>
+                                                        <td  class="output">Lista caratteristiche della richesta</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>richieste/15</td>
+                                                        <td>DELETE</td>
+                                                        <td>{id}: Integer</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><span data-rest-test-target data-rest-test-auth="" data-rest-test-method="delete" data-rest-test-status="204" data-rest-test-url="rest/richieste/15"></span></td>
+                                                        <td class="output">Annulla richiesta</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

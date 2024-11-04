@@ -4,7 +4,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -20,12 +19,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -84,35 +84,52 @@ public class ImagesResource {
     @Logged
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response setImage(
                             @FormDataParam("immagine") InputStream uploaded, @FormDataParam("immagine") FormDataContentDisposition file_detail,
-                            @Context HttpServletRequest request,
+                            @FormDataParam("titolo") String titolo, @Context HttpServletRequest request,
                             @Context ContainerRequestContext req, @Context ServletContext sc) throws RESTWebApplicationException, ServletException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.AMMINISTRATORE.toString())) {
             try {
-                Part file_da_caricare = request.getPart("immagine");
-                if(file_da_caricare != null && file_da_caricare.getSubmittedFileName() != "") {
-                    Image image = new Image();
-                    
-                    image.setFilename(AuthHelpers.sanitizeFilename(((Part) file_da_caricare).getSubmittedFileName()));
-                    image.setImageType(((Part) file_da_caricare).getContentType());
-                    image.setImageSize(((Part) file_da_caricare).getSize());
-                    image.setCaption("Image");
-                    if(image.getImageSize() > 0 && !image.getFilename().isEmpty()) {
-                        java.nio.file.Path target = Paths.get(sc.getInitParameter("images.directory") + File.separator + image.getFilename());
-                        int guess = 0;
-                        while(Files.exists(target, LinkOption.NOFOLLOW_LINKS))
-                            target = Paths.get(sc.getInitParameter("images.directory") + File.separator + (++guess) + "_" + image.getFilename());
-                        try (InputStream temp_upload = ((Part) file_da_caricare).getInputStream()) {
-                            Files.copy(temp_upload, target, StandardCopyOption.REPLACE_EXISTING);
-                        }
-                        image.setImageData(((Part) file_da_caricare).getInputStream());
-                    }
-                    image = ImageResourceDB.setImage(image);
-                    return Response.ok(image.getKey()).build();
-                } else
+                if (file_detail == null || file_detail.getFileName() == null || file_detail.getFileName().isEmpty()) {
                     return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
-            } catch (NotFoundException | DataException | IOException ex) {
+                }
+
+                Image image = new Image();
+                image.setFilename(AuthHelpers.sanitizeFilename(file_detail.getFileName()));
+                image.setImageType("image/" + image.getFilename().split("\\.")[1]);
+                image.setImageSize(file_detail.getSize());
+                image.setCaption(titolo + " image");
+                if(image.getImageSize() > 0 || !file_detail.getFileName().isEmpty()) {
+                    java.nio.file.Path target = Paths.get(sc.getInitParameter("images.directory") + File.separator + image.getFilename());
+                    // save it
+                    int guess = 0;
+                    while(Files.exists(target, LinkOption.NOFOLLOW_LINKS))
+                        target = Paths.get(sc.getInitParameter("images.directory") + File.separator + (++guess) + "_" + image.getFilename());
+                    try {
+                        OutputStream out = null;
+                        int read = 0;
+                        byte[] bytes = new byte[1024];
+                        long fileSize = 0;
+
+                        out = new FileOutputStream(new File(target.toString()));
+                        while ((read = uploaded.read(bytes)) != -1) {
+                            out.write(bytes, 0, read);
+                            fileSize += read;
+                        }
+                        out.flush();
+                        out.close();
+
+                        if(fileSize > image.getImageSize())
+                            image.setImageSize(fileSize);
+
+                    } catch (IOException e) {
+                        return Response.status(Response.Status.CONFLICT).entity("Caricamento file fallito: " + e.getMessage()).build();
+                    }
+                }
+                image = ImageResourceDB.setImage(image);
+                return Response.ok(image).build();
+            } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();
             } catch (RESTWebApplicationException ex) {
                 return Response.serverError()
@@ -129,7 +146,7 @@ public class ImagesResource {
     public Response deleteImage(@QueryParam("id") int image_key, @Context ContainerRequestContext req) throws RESTWebApplicationException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.AMMINISTRATORE.toString())) {
             try {
-                ImageResourceDB.deleteImage(ImageResourceDB.getImage(image_key));
+                ImageResourceDB.deleteImage(ImageResourceDB.getImage(image_key).getKey());
                 return Response.noContent().build();
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Immagine non trovata").build();

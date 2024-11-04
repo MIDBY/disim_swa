@@ -9,8 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Image  extends DataItemImpl<Integer> {
 
@@ -56,25 +54,18 @@ public class Image  extends DataItemImpl<Integer> {
     }
 
     public void setImageData(InputStream is) throws DataException {
-
-        OutputStream os = null;
-        try {
+        try (OutputStream os = new FileOutputStream(imageFilename);
+                InputStream inputStream = is) { // If 'is' is not already a resource, you might want to manage its lifecycle
+    
             byte[] buffer = new byte[1024];
-            os = new FileOutputStream(imageFilename);
             int read;
-            while ((read = is.read(buffer)) > 0) {
+            while ((read = inputStream.read(buffer)) > 0) {
                 os.write(buffer, 0, read);
             }
         } catch (FileNotFoundException ex) {
             throw new DataException("Error storing image file", ex);
         } catch (IOException ex) {
             throw new DataException("Error storing image file", ex);
-        } finally {
-            try {
-                os.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Image.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 

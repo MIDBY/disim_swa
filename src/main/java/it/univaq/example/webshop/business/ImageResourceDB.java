@@ -12,7 +12,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import it.univaq.example.webshop.model.Image;
 import it.univaq.framework.data.DataException;
-import it.univaq.framework.data.OptimisticLockException;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
 
 public class ImageResourceDB {
@@ -150,14 +149,12 @@ public class ImageResourceDB {
     }
 
     
-    public static void deleteImage(Image image) throws DataException {
+    public static void deleteImage(int image_key) throws DataException {
         try {
-            if (image.getKey() != null && image.getKey() > 0) { //delete
+            if (image_key > 0) { //delete
                 try ( Connection connection = getPooledConnection();  PreparedStatement ps = connection.prepareStatement(dImage)) {
-                    ps.setInt(1, image.getKey());
-                    if (ps.executeUpdate() == 0) {
-                        throw new OptimisticLockException(image);
-                    }
+                    ps.setInt(1, image_key);
+                    ps.executeUpdate();
                 }
             }
         } catch (SQLException ex) {

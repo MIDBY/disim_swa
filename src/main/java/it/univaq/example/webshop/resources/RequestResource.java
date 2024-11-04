@@ -165,9 +165,12 @@ public class RequestResource {
         int key = Integer.parseInt(req.getProperty("userid").toString());
         if(key == request.getOrdering().getKey()) {
             try {
-                request.setRequestState(RequestStateEnum.ANNULLATO);
-                RequestResourceDB.setRequest(request);
-                return Response.noContent().build();
+                if(request.getRequestState().equals(RequestStateEnum.NUOVO) || request.getRequestState().equals(RequestStateEnum.PRESOINCARICO)) {
+                    request.setRequestState(RequestStateEnum.ANNULLATO);
+                    RequestResourceDB.setRequest(request);
+                    return Response.noContent().build();
+                } else
+                    return Response.status(Response.Status.CONFLICT).entity("Impossibile annullare la richiesta, è stata già accettata").build();
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Richiesta non trovata").build();
             } catch (RESTWebApplicationException ex) {

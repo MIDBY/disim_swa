@@ -177,15 +177,17 @@ function Restest(testall = true) {
     }
 
     let editCategory = function(allCategories, choised) {
-        if(choised)
+        var titolo;
+        if(choised) {
             var category = choised;
-        else
+            titolo = "Edita categoria";
+        } else {
             var category = {};
-        var char = {};
-        var listChars;
+            titolo = "Crea categoria";
+        }
         var image;
         Swal.fire({
-            title: "Edita categoria",
+            title: titolo,
             html:`
                 <div class="row clearfix">
                     <div class="col-sm-6">
@@ -293,44 +295,56 @@ function Restest(testall = true) {
                 const keys = document.getElementsByName('characteristicKey[]');
                 const names = document.getElementsByName('characteristicName[]');
                 const values = document.getElementsByName('characteristicValue[]');
+                var lista = [];
                 if(!category.caratteristiche)
-                    category.caratteristiche = {};
-                listChars = "";
+                    category.caratteristiche = [];
                 for(let k=0;k<names.length;k++){
-                    char.id = keys[k]?keys[k].value:'0';
-                    char.nome = names[k].value;
-                    char.categoria = {};
-                    char.categoria.id = category.id;
-                    char.valori_default = values[k].value;
-                    listChars += char.id+"ç"+char.nome+"ç"+char.categoria.id+"ç"+char.valori_default+"§";
-                }/*
-                TODO: da reinserire una volta che il caricamento delle immagini funziona
-                if(!category.id || !category.nome || !category.categoria_padre.id || !listChars || !(category.immagine || image)) 
-                    Swal.showValidationMessage("Campi con valori mancanti");*/
+                    if(names[k].value !== "") {
+                        var char = {};
+                        char.id = keys[k]?Number(keys[k].value):0;
+                        var c = category.caratteristiche.find(item => item.id === char.id);
+                        if(c && c.id !== 0) {
+                            c.nome = names[k].value;
+                            c.valori_default = values[k].value;
+                            lista.push(c);
+                        } else {
+                            char.nome = names[k].value;
+                            char.categoria = {};
+                            char.categoria.id = category.id;
+                            char.valori_default = values[k].value;
+                            lista.push(char);
+                        }
+                    }
+                }
+                category.caratteristiche = lista;
+                if(!category.id || !category.nome || !category.categoria_padre || category.caratteristiche.length === 0 || !(category.immagine || image)) 
+                    Swal.showValidationMessage("Campi con valori mancanti");
             }
         }).then((result) => {
             if (result.isConfirmed) {
                 if(image) {
                     const form = new FormData();
                     form.append("immagine", image);
+                    form.append("titolo", category.nome);
                     sendRestRequest(
-                        "post", "rest/immagini",
+                        "put", "rest/immagini",
                         function (callResponse, callStatus) {
                             if (callStatus === 200) {
+                                category.immagine = JSON.parse(callResponse);
                                 sendRestRequest(
-                                    "post", "rest/categorie",
+                                    "put", "rest/categorie",
                                     function (callResponse2, callStatus2) {
                                         if (callStatus2 === 204) {
                                             Swal.fire({title: "Congrats", text: "La categoria è stata modificata", icon: "success"}).then(() => {
-                                                handleSeeCategories;
+                                                handleSeeCategories();
                                             });
                                         } else {
                                             Swal.fire({title: "Sorry", text: callStatus2 + ": " + callResponse2, icon: "warning"});
                                         }
                                     },
                                     null,
-                                    "id="+category.id+"&nome="+category.nome+"&idCategoriaPadre="+category.categoria_padre.id+"&immagine="+callResponse+"&caratteristiche="+listChars,
-                                    "application/x-www-form-urlencoded",
+                                    JSON.stringify(category),
+                                    "application/json",
                                     bearer_token);
                             } else {
                                 Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -338,23 +352,23 @@ function Restest(testall = true) {
                         },
                         null,
                         form,
-                        "multipart/form-data",
+                        null,
                         bearer_token);
                 } else {
                     sendRestRequest(
-                        "post", "rest/categorie",
+                        "put", "rest/categorie",
                         function (callResponse2, callStatus2) {
                             if (callStatus2 === 204) {
                                 Swal.fire({title: "Congrats", text: "La categoria è stata modificata", icon: "success"}).then(() => {
-                                    handleSeeCategories;
+                                    handleSeeCategories();
                                 });
                             } else {
                                 Swal.fire({title: "Sorry", text: callStatus2 + ": " + callResponse2, icon: "warning"});
                             }
                         },
                         null,
-                        "id="+category.id+"&nome="+category.nome+"&idCategoriaPadre="+category.categoria_padre.id+"&caratteristiche="+listChars,
-                        "application/x-www-form-urlencoded",
+                        JSON.stringify(category),
+                        "application/json",
                         bearer_token);
                 }
             }
@@ -378,7 +392,7 @@ function Restest(testall = true) {
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
                         Swal.fire({title: "Congrats", text: "Your technician has been promoted to customer.", icon: "success"}).then(() => {
-                            handleSeeUsers;
+                            handleSeeUsers();
                         });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -409,7 +423,7 @@ function Restest(testall = true) {
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
                         Swal.fire({title: "Congrats", text: "Customer has been promoted to technician.", icon: "success"}).then(() => {
-                            handleSeeUsers;
+                            handleSeeUsers();
                         });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -440,7 +454,7 @@ function Restest(testall = true) {
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
                         Swal.fire({title: "Congrats", text: "Your site has a new client.", icon: "success"}).then(() => {
-                            handleSeeUsers;
+                            handleSeeUsers();
                         });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -471,7 +485,7 @@ function Restest(testall = true) {
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
                         Swal.fire({title: "Congrats", text: "Your site has lost a client.", icon: "success"}).then(() => {
-                            handleSeeUsers;
+                            handleSeeUsers();
                         });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -511,7 +525,7 @@ function Restest(testall = true) {
                     function (callResponse, callStatus) {
                         if (callStatus === 204) {
                             Swal.fire({title: "Congrats", text: "Your request has been cancelled.", icon: "success"}).then(() => {
-                                handleSeeOpenRequests;
+                                handleSeeOpenRequests();
                             });
                         } else {
                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -542,7 +556,7 @@ function Restest(testall = true) {
                     function (callResponse, callStatus) {
                         if (callStatus === 204 || callStatus === 200) {
                             Swal.fire({title: "Shipped!", text: "Order is been labeled as shipped.", icon: "success"}).then(() => {
-                                handleSeeShipRequests;
+                                handleSeeShipRequests();
                             });
                         } else {
                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -588,7 +602,7 @@ function Restest(testall = true) {
                     function (callResponse, callStatus) {
                         if (callStatus === 204 || callStatus === 200) {
                             Swal.fire({title: "Congrats!", text: "Your request has been closed.", icon: "success"}).then(() => {
-                                handleSeeShipRequests;
+                                handleSeeShipRequests();
                             });
                         } else {
                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -636,7 +650,7 @@ function Restest(testall = true) {
                     function (callResponse, callStatus) {
                         if (callStatus === 204 || callStatus === 200) {
                             Swal.fire({title: "Congrats!", text: "This request now is yours!", icon: "success"}).then(() => {
-                                handleSeeShipRequests;
+                                handleSeeShipRequests();
                             });
                         } else {
                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -1876,7 +1890,7 @@ function Restest(testall = true) {
                 function (callResponse, callStatus) {
                     if (callStatus === 204) {
                         Swal.fire({title: "Congrats", text: "Le informazioni dell'account sono state aggiornate con successo", icon: "success"}).then(() => {
-                            handleRefreshButton;
+                            handleRefreshButton();
                         });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -1903,7 +1917,7 @@ function Restest(testall = true) {
                     function (callResponse, callStatus) {
                         if (callStatus === 204) {
                             Swal.fire({title: "Congrats", text: "Le credenziali di sicurezza sono state cambiate con successo! \nOra verrai scollegato per ripetere l'accesso", icon: "success"}).then(() => {
-                                handleLogoutButton;
+                                handleLogoutButton();
                             });
                         } else {
                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -1937,7 +1951,7 @@ function Restest(testall = true) {
                                     function (callResponse, callStatus) {
                                         if (callStatus === 204) {
                                             Swal.fire({title: "Congrats", text: "La notifica è stata segnata come letta", icon: "success"}).then(() => {
-                                                handleSeeNotifications;
+                                                handleSeeNotifications();
                                             });
                                         } else {
                                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -1961,7 +1975,7 @@ function Restest(testall = true) {
                                     function (callResponse, callStatus) {
                                         if (callStatus === 204) {
                                             Swal.fire({title: "Congrats", text: "La notifica è stata segnata come non letta", icon: "success"}).then(() => {
-                                                handleSeeNotifications;
+                                                handleSeeNotifications();
                                             });
                                         } else {
                                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -1985,7 +1999,7 @@ function Restest(testall = true) {
                                 function (callResponse, callStatus) {
                                     if (callStatus === 204) {
                                         Swal.fire({title: "Congrats", text: "La notifica è stata cancellata", icon: "success"}).then(() => {
-                                            handleSeeNotifications;
+                                            handleSeeNotifications();
                                         });
                                     } else {
                                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -2153,6 +2167,9 @@ function Restest(testall = true) {
                                 accept.innerHTML = "Accettato";
                             } else {
                                 if(users[i].accettato) {
+                                    if(users[i].richieste_attive > 0) {
+                                        accept.setAttribute("disabled", true);
+                                    }
                                     accept.addEventListener("click", (event) => { convertClientToUser(event, users[i].id, users[i].username, users[i].email, bearer_token)});
                                     accept.innerHTML = "Rifiuta cliente";
                                 } else {
@@ -2269,7 +2286,7 @@ function Restest(testall = true) {
                                                 function (callResponse, callStatus) {
                                                     if (callStatus === 204) {
                                                         Swal.fire({title: "Congrats", text: "La categoria è stata cancellata", icon: "success"}).then(() => {
-                                                            handleSeeCategories;
+                                                            handleSeeCategories();
                                                         });
                                                     } else {
                                                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -2309,9 +2326,7 @@ function Restest(testall = true) {
                           });
                         $(document).ready(function(){
                             $('#tree').DataTable();
-                        });/*
-                        if(document.getElementById("role-text").textContent == "AMMINISTRATORE")
-                            document.getElementById("createCategory").removeAttribute("hidden");*/
+                        });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
                     }

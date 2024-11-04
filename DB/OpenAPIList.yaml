@@ -8,7 +8,106 @@ servers:
     description: Server locale
 
 paths:
-  /utenti:
+  /rest/auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login con successo
+          content:
+            text/plain:
+              schema:
+                type: string
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: token=bearerAuthToken;
+            Authorization:
+              schema:
+                type: string
+                example: Bearer bearerAuthToken
+        '401':
+          description: Non autorizzato
+        '409':
+          description: Conflitto
+  
+  /rest/auth/logout:
+    delete:
+      summary: Elimina bearer auth token
+      responses:
+        '404':
+          description: Eliminato con successo
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: token=;
+    
+  /rest/auth/register:
+    post:
+      summary: Registrazione nuovo utente
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                address:
+                  type: string
+                number:
+                  type: integer
+                city:
+                  type: string
+                cap:
+                  type: integer
+                country:
+                  type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Non autorizzato
+        '409':
+          description: Conflitto
+  
+  /rest/auth/refresh:
+    get:
+      summary: Refresh della sessione
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dettagli utente 
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: token=bearerAuthToken;
+            Authorization:
+              schema:
+                type: string
+                example: Bearer bearerAuthToken
+      
+  /rest/utenti:
     get:
       summary: Recupera utenti filtrati per email, username e accettato
       security:
@@ -43,7 +142,7 @@ paths:
         '404':
           description: Nessun utente trovato
 
-  /utenti/{anno}/{mese}:
+  /rest/utenti/{anno}/{mese}:
     get:
       summary: Recupera utenti per anno e mese
       security:
@@ -73,7 +172,7 @@ paths:
         '404':
           description: Nessun utente trovato
 
-  /utenti/gruppo/{id}:
+  /rest/utenti/gruppo/{id}:
     get:
       summary: Recupera utenti per gruppo
       security:
@@ -99,7 +198,7 @@ paths:
           description: Nessun utente nel gruppo specificato trovato
         
 
-  /utenti/gruppo/{nome}:
+  /rest/utenti/gruppo/{nome}:
     get:
       summary: Recupera utenti per gruppo
       security:
@@ -124,7 +223,7 @@ paths:
         '404':
           description: Nessun utente nel gruppo specificato trovato
         
-  /utenti/{id}:
+  /rest/utenti/{id}:
     get:
       summary: Recupera un utente specifico
       security:
@@ -147,7 +246,7 @@ paths:
         '404':
           description: Nessun utente trovato
         
-  /utenti/{id}/accetta:
+  /rest/utenti/{id}/accetta:
     post:
       summary: Accetta un utente
       security:
@@ -168,7 +267,7 @@ paths:
         '500':
           description: Errore generico
 
-  /utenti/{id}/assumi:
+  /rest/utenti/{id}/assumi:
     post:
       summary: Assumi cliente a tecnico / licenzia tecnico a cliente
       security:
@@ -194,7 +293,7 @@ paths:
         '500':
           description: Errore generico
 
-  /utenti/me:
+  /rest/utenti/me:
     get:
       summary: Recupera informazioni sull'utente loggato
       security:
@@ -227,7 +326,7 @@ paths:
         '500':
           description: Errore generico
 
-  /utenti/me/modifica:
+  /rest/utenti/me/modifica:
     post:
       summary: Modifica utente loggato
       security:
@@ -239,27 +338,27 @@ paths:
             schema:
               type: object
               properties:
-                param1:
+                id:
                   type: integer
-                param2:
+                username:
                   type: string
-                param3:
+                email:
                   type: string
-                param4:
+                currentPassword:
                   type: string
-                param5: 
+                newPassword: 
                   type: string
-                param6:
+                indirizzo:
                   type: string
-                param7:
+                numero:
                   type: integer
-                param8:
+                citta:
                   type: string
-                param9:
+                cap:
                   type: integer
-                param10:
+                nazione:
                   type: string
-                param11:
+                tipo:
                   type: integer
       responses:
         '204':
@@ -275,7 +374,7 @@ paths:
         '500':
           description: Errore generico
 
-  /utenti/me/notifiche:
+  /rest/utenti/me/notifiche:
     get:
       summary: Recupera le notifiche dell'utente loggato
       security:
@@ -357,7 +456,7 @@ paths:
         '500':
           description: Errore generico 
 
-  /utenti/me/notifiche/{id}:
+  /rest/utenti/me/notifiche/{id}:
     get:
       summary: Recupera notifica specifica dell'utente loggato
       security:
@@ -378,7 +477,7 @@ paths:
         '404':
           description: Nessuna notifica trovata
 
-  /utenti/me/notifiche/cancellatutto:
+  /rest/utenti/me/notifiche/cancellatutto:
     delete:
       summary: Elimina tutte le notifiche dell'utente loggato
       security:
@@ -391,7 +490,7 @@ paths:
         '500':
           description: Errore generico
 
-  /utenti/me/gruppo:
+  /rest/utenti/me/gruppo:
     get:
       summary: Recupera il gruppo dell'utente loggato
       security:
@@ -404,7 +503,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Gruppo'
   
-  /utenti/me/gruppo/nome:
+  /rest/utenti/me/gruppo/nome:
     get:
       summary: Recupera il nome del gruppo dell'utente loggato
       security:
@@ -417,7 +516,7 @@ paths:
               schema:
                 type: string
 
-  /utenti/me/gruppo/servizi:
+  /rest/utenti/me/gruppo/servizi:
     get:
       summary: Recupera lista servizi disponibili per il gruppo dell'utente loggato
       security:
@@ -434,7 +533,7 @@ paths:
         '404':
           description: Nessun servizio disponibile
         
-  /utenti/me/gruppo/servizi/{id}:
+  /rest/utenti/me/gruppo/servizi/{id}:
     get:
       summary: Recupera un servizo tra quelli disponibili per il gruppo dell'utente loggato
       security:
@@ -455,7 +554,7 @@ paths:
         '404':
           description: Nessun servizio trovato
 
-  /utenti/me/gruppo/servizi/{script}:
+  /rest/utenti/me/gruppo/servizi/{script}:
     get:
       summary: Recupera un servizo tra quelli disponibili per il gruppo dell'utente loggato
       security:
@@ -476,7 +575,7 @@ paths:
         '404':
           description: Nessun servizio trovato
 
-  /categorie:
+  /rest/categorie:
     get:
       summary: Recupera lista categorie disponibili
       responses:
@@ -511,35 +610,6 @@ paths:
         '500':
           description: Errore generico
     
-    post:
-      summary: Modifica utente loggato
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                param1:
-                  type: integer
-                param2:
-                  type: string
-                param3:
-                  type: integer
-                param4:
-                  type: integer
-                param5: 
-                  type: string
-      responses:
-        '204':
-          description: Categoria modificata con successo
-        '400':
-          description: Non sei l'amministratore
-        '500':
-          description: Errore generico
-    
     delete:
       summary: Elimina categoria
       security:
@@ -560,7 +630,7 @@ paths:
         '500':
           description: Errore generico 
           
-  /categorie/genitori:
+  /rest/categorie/genitori:
     get:
       summary: Recupera tutte le categorie genitori (senza genitore_padre)
       responses:
@@ -575,7 +645,7 @@ paths:
         '404':
           description: Nessuna categoria trovata
 
-  /categorie/piuvendute:
+  /rest/categorie/piuvendute:
     get:
       summary: Recupera le 3 categorie più vendute
       responses:
@@ -590,7 +660,7 @@ paths:
         '404':
           description: Nessuna categoria trovata
 
-  /categorie/{id}:
+  /rest/categorie/{id}:
     get:
       summary: Recupera categoria specifica
       parameters:
@@ -658,7 +728,7 @@ paths:
         '500':
           description: Errore generico
           
-  /categorie/{id}/caratteristiche:
+  /rest/categorie/{id}/caratteristiche:
     get:
       summary: Recupera le caratteristiche della categoria specificata
       parameters:
@@ -679,7 +749,7 @@ paths:
         '404':
           description: Nessuna caratteristica trovata
           
-  /categorie/{id}/caratteristiche/{idCaratteristica}:
+  /rest/categorie/{id}/caratteristiche/{idCaratteristica}:
     get:
       summary: Recupera caratteristica della categoria specificata
       parameters:
@@ -703,7 +773,7 @@ paths:
         '404':
           description: Nessuna caratteristica trovata
   
-  /categorie/{id}/caratteristiche/albero:
+  /rest/categorie/{id}/caratteristiche/albero:
     get:
       summary: Recupera caratteristiche della categoria specificata più quelle delle sue categorie padre
       parameters:
@@ -724,7 +794,7 @@ paths:
         '404':
           description: Nessuna caratteristica trovata
   
-  /immagini:
+  /rest/immagini:
     get:
       summary: Recupera lista immagini
       security:
@@ -751,9 +821,11 @@ paths:
             schema:
               type: object
               properties:
-                filename:
+                immagine:
                   type: string
                   format: binary
+                titolo:
+                  type: string
       responses:
         '204':
           description: Immagine caricata con successo
@@ -765,6 +837,8 @@ paths:
           description: Non sei l'amministratore
         '404':
           description: Immagine non trovata
+        '409':
+          description: Caricamento immagine fallito
         '500':
           description: Errore generico
           
@@ -788,7 +862,7 @@ paths:
         '500':
           description: Errore generico
           
-  /immagini/{id}:
+  /rest/immagini/{id}:
     get:
       summary: Recupera l'immagine specificata
       security:
@@ -809,7 +883,7 @@ paths:
         '404':
           description: Nessuna immagine trovata
           
-  /immagini/categoria:
+  /rest/immagini/categoria:
     get:
       summary: Recupera l'immagine in base alla categoria
       security:
@@ -830,7 +904,7 @@ paths:
         '404':
           description: Nessuna immagine trovata     
   
-  /immagini/download:
+  /rest/immagini/download:
     get:
       summary: Restituisce l'immagine da visualizzare
       security:
@@ -862,7 +936,7 @@ paths:
         '404':
           description: Immagine non trovata  
   
-  /richieste:
+  /rest/richieste:
     get:
       summary: Recupera le richieste
       security:
@@ -925,7 +999,7 @@ paths:
         '500':
           description: Errore generico
 
-  /richieste/{anno}/{mese}:
+  /rest/richieste/{anno}/{mese}:
     get:
       summary: Recupera le richieste per data
       security:
@@ -955,7 +1029,7 @@ paths:
         '404':
           description: Nessuna richiesta trovata
         
-  /richieste/nonassegnate:
+  /rest/richieste/nonassegnate:
     get:
       summary: Recupera le richieste senza tecnici
       security:
@@ -974,7 +1048,7 @@ paths:
         '404':
           description: Nessuna richiesta trovata
         
-  /richieste/{id}:
+  /rest/richieste/{id}:
     get:
       summary: Recupera una richiesta specifica
       security:
@@ -1063,10 +1137,12 @@ paths:
           description: Questa richiesta non è tua, non puoi annullarla
         '404':
           description: Richiesta non trovata
+        '409':
+          description: Impossibile annullare la richiesta, è stata già accettata
         '500':
           description: Errore generico 
 
-  /richieste/{id}/assegna:
+  /rest/richieste/{id}/assegna:
     post:
       summary: Assegna la richiesta al tecnico loggato
       security:
@@ -1089,7 +1165,7 @@ paths:
         '500':
           description: Errore generico
           
-  /richieste/{id}/proposte:
+  /rest/richieste/{id}/proposte:
     get:
       summary: Recupera proposte della richiesta
       security:
@@ -1148,7 +1224,7 @@ paths:
         '500':
           description: Errore generico
 
-  /richieste/{id}/proposte/{anno}/{mese}:
+  /rest/richieste/{id}/proposte/{anno}/{mese}:
     get:
       summary: Recupera le proposte della richiesta in base alla creazione
       security:
@@ -1179,7 +1255,7 @@ paths:
         '404':
           description: Nessuna proposta trovata
           
-  /richieste/{id}/proposte/ultima:
+  /rest/richieste/{id}/proposte/ultima:
     get:
       summary: Recupera l'ultima proposta della richiesta
       security:
@@ -1200,7 +1276,7 @@ paths:
         '404':
           description: Nessuna proposta trovata
   
-  /richieste/{id}/proposte/{idProposta}:
+  /rest/richieste/{id}/proposte/{idProposta}:
     get:
       summary: Recupera una proposta specifica della richiesta
       security:
@@ -1294,7 +1370,7 @@ paths:
         '500':
           description: Errore generico
           
-  /richieste/{id}/caratteristiche:
+  /rest/richieste/{id}/caratteristiche:
     get:
       summary: Recupera lista caratteristiche della richiesta
       security:
@@ -1396,7 +1472,7 @@ paths:
         '500':
           description: Errore generico
     
-  /richieste/{id}/caratteristiche/{idCaratteristica}:
+  /rest/richieste/{id}/caratteristiche/{idCaratteristica}:
     get:
       summary: Recupera lista caratteristiche della richiesta
       security:
