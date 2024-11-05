@@ -105,7 +105,7 @@ public class ProposalsResource {
                     try {
                         ProposalResourceDB.setProposal(proposal2);
                         Utility.sendMail(sc,proposal2.getRequest().getOrdering().getEmail(), "Info mail: \nYour request: "+proposal2.getRequest().getTitle()+" has received a new proposal, go to check it!");
-                        Utility.sendNotification(proposal2.getRequest().getOrdering(), "Request: "+proposal2.getRequest().getTitle()+".\n Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, "requests"); 
+                        Utility.sendNotification(proposal2.getRequest().getOrdering(), proposal2.getRequest().getTitle()+": Our technician has sent a new proposal to you, go to check it!", NotificationTypeEnum.NUOVO, "requests"); 
                         return Response.noContent().build();
                     } catch (RESTWebApplicationException ex) {
                         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Errore generico").build();

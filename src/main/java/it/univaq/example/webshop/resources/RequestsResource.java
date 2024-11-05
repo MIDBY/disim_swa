@@ -86,6 +86,7 @@ public class RequestsResource {
             if(proposal != null)
                 e.put("proposta", proposal);
             e.put("proposte", ProposalResourceDB.getProposalsByRequest(r.getKey()));
+            e.put("note", r.getNotes());
             result.add(e);
         }
         if(result.size() > 0)

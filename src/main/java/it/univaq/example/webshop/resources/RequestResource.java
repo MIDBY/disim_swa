@@ -84,7 +84,7 @@ public class RequestResource {
                 }
                 request.setNotes(request2.getNotes());
                 RequestResourceDB.setRequest(request);
-                if(key == request.getOrdering().getKey()) {
+                if(key == request.getOrdering().getKey() && request.getTechnician() != null) {
                     Utility.sendMail(sc, request.getTechnician().getEmail(), "WebShop: \nUser has edited the request.\nGo to check now!");
                     Utility.sendNotification(request.getTechnician(), "User has updated own request!", NotificationTypeEnum.MODIFICATO, "requests");
                 }

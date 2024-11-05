@@ -1,4 +1,4 @@
-$(function () {
+function Wizard() {
     //Horizontal form basic
     $('#wizard_horizontal').steps({
         headerTag: 'h2',
@@ -33,7 +33,7 @@ $(function () {
         bodyTag: 'fieldset',
         transitionEffect: 'slideLeft',
         onInit: function (event, currentIndex) {
-            //$.AdminAero.input.activate();
+            $.AdminAero.input.activate();
 
             //Set tab width
             var $tab = $(event.currentTarget).find('ul[role="tablist"] li');
@@ -82,7 +82,7 @@ $(function () {
             }
         }
     });
-});
+};
 
 function setButtonWavesEffect(event) {
     $(event.currentTarget).find('[role="menu"] li a').removeClass('waves-effect');

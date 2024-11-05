@@ -22,6 +22,7 @@ import it.univaq.example.webshop.business.CategoryResourceDB;
 import it.univaq.example.webshop.business.CharacteristicResourceDB;
 import it.univaq.example.webshop.business.ImageResourceDB;
 import it.univaq.example.webshop.business.RequestCharacteristicResourceDB;
+import it.univaq.example.webshop.business.RequestResourceDB;
 import it.univaq.example.webshop.model.Category;
 import it.univaq.example.webshop.model.Characteristic;
 import it.univaq.example.webshop.model.RequestCharacteristic;
@@ -167,8 +168,55 @@ public class CategoriesResource {
     public Response deleteCategory(@QueryParam("id") int category_key, @Context ContainerRequestContext req) throws RESTWebApplicationException {
         if(req.getSecurityContext().isUserInRole(UserRoleEnum.AMMINISTRATORE.toString())) {
             try {
-                CategoryResourceDB.deleteCategory(category_key);
-                return Response.noContent().build();
+                Category category = null;
+                if(category_key > 0) {
+                    category = CategoryResourceDB.getCategory(category_key);
+                    category.setCharacteristics(CharacteristicResourceDB.getCharacteristicsByCategory(category_key));
+                }
+                if(category != null) {
+                    int orders = RequestResourceDB.getRequestsByCategory(category_key).size();
+                    List<Category> sons = CategoryResourceDB.getCategoriesSonsOf(category_key);
+                    if(orders > 0) {
+                        for(Category c : sons) {
+                            if(category.getFatherCategory() != null) {
+                                c.setFatherCategory(category.getFatherCategory());
+                            } else {
+                                c.setFatherCategoryNull();
+                            }
+                            CategoryResourceDB.setCategory(c);
+                        }       
+                        category.setDeleted(true);
+                        CategoryResourceDB.setCategory(category);
+                    } else {
+                        boolean saveCategory = false;
+                        for(Characteristic c : category.getCharacteristics()) {
+                            List<RequestCharacteristic> chars = RequestCharacteristicResourceDB.getRequestCharacteristicsByCharacteristic(c.getKey());
+                            if(chars != null && chars.size() > 0){
+                                saveCategory = true;
+                            }
+                        }
+    
+                        for(Category c : sons) {
+                            if(category.getFatherCategory() != null) {
+                                c.setFatherCategory(category.getFatherCategory());
+                            } else {
+                                c.setFatherCategoryNull();
+                            }
+                            CategoryResourceDB.setCategory(c);
+                        }
+                        
+                        if(saveCategory) {
+                            category.setDeleted(true);
+                            CategoryResourceDB.setCategory(category);
+                        } else  {
+                            ImageResourceDB.deleteImage(category.getImage().getKey());
+                            CategoryResourceDB.deleteCategory(category.getKey());
+                        }
+                        
+                    }                
+                    return Response.noContent().build();
+                }
+                return Response.status(Response.Status.NOT_FOUND).entity("Categoria non trovata").build();
             } catch (NotFoundException ex) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Categoria non trovata").build();
             } catch (RESTWebApplicationException | DataException ex) {

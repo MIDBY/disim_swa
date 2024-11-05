@@ -236,7 +236,7 @@ function Restest(testall = true) {
                         </div>` : ''}
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <input type="file" id="imageInsert" accept="image/*" required/>
+                            <input type="file" id="imageInsert" class="dropify" accept="image/*" required/>
                         </div>
                     </div>
                 </div>
@@ -299,7 +299,6 @@ function Restest(testall = true) {
                             </div>
                         </div>`
                     }
-
                 </div>`,
             focusConfirm: false,
             preConfirm: () => {
@@ -336,6 +335,9 @@ function Restest(testall = true) {
                 category.caratteristiche = lista;
                 if(!category.id || !category.nome || !category.categoria_padre || category.caratteristiche.length === 0 || !(category.immagine || image)) 
                     Swal.showValidationMessage("Campi con valori mancanti");
+            },
+            didOpen: () => {
+                $('.dropify').dropify();
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -352,7 +354,7 @@ function Restest(testall = true) {
                                     "put", "rest/categorie",
                                     function (callResponse2, callStatus2) {
                                         if (callStatus2 === 204) {
-                                            Swal.fire({title: "Congrats", text: "La categoria è stata modificata", icon: "success"}).then(() => {
+                                            Swal.fire({title: "Congratulazioni", text: "La categoria è stata modificata", icon: "success"}).then(() => {
                                                 handleSeeCategories();
                                             });
                                         } else {
@@ -376,7 +378,7 @@ function Restest(testall = true) {
                         "put", "rest/categorie",
                         function (callResponse2, callStatus2) {
                             if (callStatus2 === 204) {
-                                Swal.fire({title: "Congrats", text: "La categoria è stata modificata", icon: "success"}).then(() => {
+                                Swal.fire({title: "Congratulazioni", text: "La categoria è stata modificata", icon: "success"}).then(() => {
                                     handleSeeCategories();
                                 });
                             } else {
@@ -401,14 +403,15 @@ function Restest(testall = true) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, convert it!"
+            confirmButtonText: "Yes, convert it!",
+            cancelButtonText: "Annulla",
         }).then((result) => {
             if (result.isConfirmed) {
             sendRestRequest(
                 "post", "rest/utenti/"+iduser+"/assumi?ruolo=ORDINANTE",
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
-                        Swal.fire({title: "Congrats", text: "Your technician has been promoted to customer.", icon: "success"}).then(() => {
+                        Swal.fire({title: "Congratulazioni", text: "Your technician has been promoted to customer.", icon: "success"}).then(() => {
                             handleSeeUsers();
                         });
                     } else {
@@ -432,14 +435,15 @@ function Restest(testall = true) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, convert it!"
+            confirmButtonText: "Yes, convert it!",
+            cancelButtonText: "Annulla"
         }).then((result) => {
             if (result.isConfirmed) {
             sendRestRequest(
                 "post", "rest/utenti/"+iduser+"/assumi?ruolo=TECNICO",
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
-                        Swal.fire({title: "Congrats", text: "Customer has been promoted to technician.", icon: "success"}).then(() => {
+                        Swal.fire({title: "Congratulazioni", text: "Customer has been promoted to technician.", icon: "success"}).then(() => {
                             handleSeeUsers();
                         });
                     } else {
@@ -463,14 +467,15 @@ function Restest(testall = true) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, grant it!"
+            confirmButtonText: "Yes, grant it!",
+            cancelButtonText: "Annulla"
         }).then((result) => {
             if (result.isConfirmed) {
             sendRestRequest(
                 "post", "rest/utenti/"+iduser+"/accetta",
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
-                        Swal.fire({title: "Congrats", text: "Your site has a new client.", icon: "success"}).then(() => {
+                        Swal.fire({title: "Congratulazioni", text: "Your site has a new client.", icon: "success"}).then(() => {
                             handleSeeUsers();
                         });
                     } else {
@@ -494,14 +499,15 @@ function Restest(testall = true) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, refuse it!"
+            confirmButtonText: "Yes, refuse it!",
+            cancelButtonText: "Annulla"
         }).then((result) => {
             if (result.isConfirmed) {
             sendRestRequest(
                 "post", "rest/utenti/"+iduser+"/accetta",
                 function (callResponse, callStatus) {
                     if (callStatus === 204 || callStatus === 200) {
-                        Swal.fire({title: "Congrats", text: "Your site has lost a client.", icon: "success"}).then(() => {
+                        Swal.fire({title: "Congratulazioni", text: "Your site has lost a client.", icon: "success"}).then(() => {
                             handleSeeUsers();
                         });
                     } else {
@@ -534,14 +540,15 @@ function Restest(testall = true) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, cancel it!"
+            confirmButtonText: "Yes, cancel it!",
+            cancelButtonText: "Annulla"
         }).then((result) => {
             if (result.isConfirmed) {
                 sendRestRequest(
                     "delete", "rest/richieste/"+reqId,
                     function (callResponse, callStatus) {
                         if (callStatus === 204) {
-                            Swal.fire({title: "Congrats", text: "Your request has been cancelled.", icon: "success"}).then(() => {
+                            Swal.fire({title: "Congratulazioni", text: "Your request has been cancelled.", icon: "success"}).then(() => {
                                 handleSeeOpenRequests();
                             });
                         } else {
@@ -565,7 +572,8 @@ function Restest(testall = true) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, ship it!"
+            confirmButtonText: "Yes, ship it!",
+            cancelButtonText: "Annulla"
         }).then((result) => {
             if (result.isConfirmed) {
                 sendRestRequest(
@@ -603,6 +611,7 @@ function Restest(testall = true) {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Done!",
+            cancelButtonText: "Annulla",
             inputValidator: function (value) {
                 return new Promise(function (resolve, reject) {
                 if (value !== '') {
@@ -618,7 +627,7 @@ function Restest(testall = true) {
                     "post", "rest/richieste/"+reqId+"?stato_ordine=" + result.value,
                     function (callResponse, callStatus) {
                         if (callStatus === 204 || callStatus === 200) {
-                            Swal.fire({title: "Congrats!", text: "Your request has been closed.", icon: "success"}).then(() => {
+                            Swal.fire({title: "Congratulazioni!", text: "Your request has been closed.", icon: "success"}).then(() => {
                                 handleSeeShipRequests();
                             });
                         } else {
@@ -659,15 +668,16 @@ function Restest(testall = true) {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, accept it!"
+            confirmButtonText: "Yes, accept it!",
+            cancelButtonText: "Annulla"
         }).then((result) => {
             if (result.isConfirmed) {
                 sendRestRequest(
                     "post", "rest/richieste/"+reqId+"/assegna",
                     function (callResponse, callStatus) {
                         if (callStatus === 204 || callStatus === 200) {
-                            Swal.fire({title: "Congrats!", text: "This request now is yours!", icon: "success"}).then(() => {
-                                handleSeeShipRequests();
+                            Swal.fire({title: "Congratulazioni!", text: "This request now is yours!", icon: "success"}).then(() => {
+                                handleSeeUnassignedRequests();
                             });
                         } else {
                             Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
@@ -703,6 +713,7 @@ function Restest(testall = true) {
                         function (callResponse, callStatus) {
                             if (callStatus === 204 || callStatus === 200) {
                                 Swal.fire({title: "Thank you!", text: "Your order will be shipped immediatelly!", icon: "success"});
+                                handleSeeOpenRequests();
                             } else {
                                 Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
                             }
@@ -723,11 +734,12 @@ function Restest(testall = true) {
                     }).then((result2) => {
                         if (result2.isConfirmed){
                             sendRestRequest(
-                                "post", "rest/richieste/"+reqId+"/proposte/"+propId+"?stato_proposta=RESPINTO&motivazione="+result2.valore,
+                                "post", "rest/richieste/"+reqId+"/proposte/"+propId+"?stato_proposta=RESPINTO&motivazione="+result2.value,
                                 function (callResponse, callStatus) {
                                     if (callStatus !== 204 && callStatus !== 200) {
                                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
-                                    }
+                                    } else
+                                        handleSeeOpenRequests();
                                 },
                                 null,
                                 null,
@@ -741,8 +753,8 @@ function Restest(testall = true) {
     }
 
     let populateOpenRequests = function(requestList) {
-        const table = document.getElementById("openRequestsTable");
-        table.innerHTML = "";
+        const table = $("#openTable").DataTable();
+        table.clear().draw();
         var requests = JSON.parse(requestList);
         for(let i=0; i < requests.length; i++) {
             if(requests[i].stato_richiesta == "ORDINATO" || requests[i].stato_richiesta == "CHIUSO" || requests[i].stato_richiesta == "ANNULLATO")
@@ -821,16 +833,23 @@ function Restest(testall = true) {
             cell9.appendChild(look);
             row.appendChild(cell9);
 
-            table.appendChild(row);
+            if(document.getElementById("role-text").textContent == "ORDINANTE" && requests[i].proposta && requests[i].proposta.stato_proposta == 'INATTESA') {
+                row.classList.add("table-info");
+            }
+            if(document.getElementById("role-text").textContent == "TECNICO" && requests[i].proposta && requests[i].proposta.stato_proposta == 'RESPINTO') {
+                row.classList.add("table-warning");
+            }
+            if(document.getElementById("role-text").textContent == "TECNICO" && requests[i].proposte.length == 0) {
+                row.classList.add("table-success");
+            }
+
+            table.row.add(row).draw();
         }
-        $(document).ready(function(){
-            $('#openTable').DataTable();
-        });
     };
 
     let populateShipRequests = function(requestList) {
-        const table = document.getElementById("shipRequestsTable");
-        table.innerHTML = "";
+        const table = $("#shipTable").DataTable();
+        table.clear().draw();
         var requests = JSON.parse(requestList);
         for(let i=0; i < requests.length; i++) {
             if(requests[i].stato_richiesta !== "ORDINATO")
@@ -899,7 +918,7 @@ function Restest(testall = true) {
                     receive.innerText = "Collect";
                 } else {
                     receive.addEventListener("click", (event) => { notShipRequest(event)});
-                    receive.innerText = "Not available";
+                    receive.innerText = "Waiting shipping";
                 }
                 cell8.appendChild(receive);
             }
@@ -912,16 +931,13 @@ function Restest(testall = true) {
             cell8.appendChild(look);
             row.appendChild(cell8);
 
-            table.appendChild(row);
+            table.row.add(row).draw();
         }
-        $(document).ready(function(){
-            $('#shipTable').DataTable();
-        });
     };
 
     let populateCloseRequests = function(requestList) {
-        const table = document.getElementById("closeRequestsTable");
-        table.innerHTML = "";
+        const table = $("#closeTable").DataTable();
+        table.clear().draw();
         var requests = JSON.parse(requestList);
         for(let i=0; i < requests.length; i++) {
             if(requests[i].stato_richiesta == "NUOVO" || requests[i].stato_richiesta == "PRESOINCARICO" || requests[i].stato_richiesta == "ORDINATO")
@@ -946,9 +962,9 @@ function Restest(testall = true) {
             cell3.innerText = requests[i].categoria.nome;
             row.appendChild(cell3);
 
-            var cell9 = document.createElement("td");
-            cell9.innerText = requests[i].proposta.nome_prodotto;
-            row.appendChild(cell9);
+            var cell10 = document.createElement("td");
+            cell10.innerText = requests[i].proposta?requests[i].proposta.nome_prodotto:'';
+            row.appendChild(cell10);
 
             var cell4 = document.createElement("td");
             var ordering = document.createElement("span");
@@ -991,16 +1007,13 @@ function Restest(testall = true) {
             cell9.appendChild(look);
             row.appendChild(cell9);
 
-            table.appendChild(row);
+            table.row.add(row).draw();
         }
-        $(document).ready(function(){
-            $('#closeTable').DataTable();
-        });
     };
 
     let populateUnassignedRequests = function(requestList) {
-        const table = document.getElementById("unassignedRequestsTable");
-        table.innerHTML = "";
+        const table = $("#unassignedTable").DataTable();
+        table.clear().draw();
         var requests = JSON.parse(requestList);
         for(let i=0; i < requests.length; i++) {
 
@@ -1044,11 +1057,8 @@ function Restest(testall = true) {
             cell6.appendChild(scegli);
             row.appendChild(cell6);
 
-            table.appendChild(row);
+            table.row.add(row).draw();
         }
-        $(document).ready(function(){
-            $('#closeTable').DataTable();
-        });
     };
 
     let createRequest = function(category, bearer_token) {
@@ -1127,6 +1137,7 @@ function Restest(testall = true) {
                         confirmButtonColor: "#008000",
                         cancelButtonColor: "#d33",
                         confirmButtonText: "Conferma creazione",
+                        cancelButtonText: "Annulla",
                         preConfirm: () => {
                             request.descrizione = document.getElementById("descrizione").value; 
                             request.categoria = category;
@@ -1152,7 +1163,7 @@ function Restest(testall = true) {
                                 "put", "rest/richieste",
                                 function (callResponse2, callStatus2) {
                                     if (callStatus2 === 204) {
-                                        Swal.fire({title: "Congrats", text: "La richiesta è stata creata con successo", icon: "success"});
+                                        Swal.fire({title: "Congratulazioni", text: "La richiesta è stata creata con successo", icon: "success"});
                                     } else {
                                         Swal.fire({title: "Sorry", text: callStatus2 + ": " + callResponse2, icon: "warning"});
                                     }
@@ -1183,7 +1194,7 @@ function Restest(testall = true) {
                     if(!request.titolo)
                         request.titolo = "Nuova richiesta";
 
-                    if(request.proposte.length > 0) {
+                    if(request.proposte.length > 0 || document.getElementById("role-text").textContent == "TECNICO") {
                         Swal.fire({
                             title: request.titolo,
                             html: 
@@ -1260,8 +1271,9 @@ function Restest(testall = true) {
                             confirmButtonColor: "#008000",
                             denyButtonColor: "#3085d6",
                             cancelButtonColor: "#d33",
-                            confirmButtonText: "Conferma",
+                            confirmButtonText: editable?"Conferma":"Ok",
                             denyButtonText: "Vedi proposte",
+                            cancelButtonText: "Esci",
                             preConfirm: () => {
                                 request.descrizione = document.getElementById("descrizione").value; 
                                 request.note = document.getElementById("note").value;
@@ -1291,7 +1303,7 @@ function Restest(testall = true) {
                                     "put", "rest/richieste/"+request.id,
                                     function (callResponse2, callStatus2) {
                                         if (callStatus2 === 204) {
-                                            Swal.fire({title: "Congrats", text: "La richiesta è stata modificata", icon: "success"});
+                                            Swal.fire({title: "Congratulazioni", text: "La richiesta è stata modificata", icon: "success"});
                                         } else {
                                             Swal.fire({title: "Sorry", text: callStatus2 + ": " + callResponse2, icon: "warning"});
                                         }
@@ -1381,6 +1393,7 @@ function Restest(testall = true) {
                             confirmButtonColor: "#008000",
                             cancelButtonColor: "#d33",
                             confirmButtonText: "Conferma",
+                            cancelButtonText: "Annulla",
                             preConfirm: () => {
                                 request.descrizione = document.getElementById("descrizione").value; 
                                 request.note = document.getElementById("note").value;
@@ -1410,7 +1423,8 @@ function Restest(testall = true) {
                                     "put", "rest/richieste/"+request.id,
                                     function (callResponse2, callStatus2) {
                                         if (callStatus2 === 204) {
-                                            Swal.fire({title: "Congrats", text: "La richiesta è stata modificata", icon: "success"});
+                                            Swal.fire({title: "Congratulazioni", text: "La richiesta è stata modificata", icon: "success"});
+                                            handleSeeOpenRequests();
                                         } else {
                                             Swal.fire({title: "Sorry", text: callStatus2 + ": " + callResponse2, icon: "warning"});
                                         }
@@ -1434,7 +1448,7 @@ function Restest(testall = true) {
 
     let showProposals = function(passedRequest, requestEditable, bearer_token) {
         var request = passedRequest;
-        if(request.proposte) {
+        if(request.proposte && request.proposte.length > 0) {
             var proposals = request.proposte.sort((a, b) => a.id - b.id);
             if(document.getElementById("role-text").textContent == "ORDINANTE" && request.proposta.stato_proposta === "INATTESA") {
                 Swal.fire({
@@ -1454,7 +1468,7 @@ function Restest(testall = true) {
                                         <p><Strong>Prodotto: </Strong> ${element.nome_prodotto}</p>
                                         <p><Strong>Produttore: </Strong> ${element.nome_produttore}</p>
                                         <p><Strong>Descrizione: </Strong> ${element.descrizione_prodotto}</p>
-                                        <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto} €</p>
+                                        <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto.toFixed(2)} €</p>
                                         <p><Strong>Url: </Strong> ${element.url}</p>
                                         <p><Strong>Note: </Strong> ${element.note}</p>
                                     </div>
@@ -1477,7 +1491,8 @@ function Restest(testall = true) {
                     denyButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Rispondi alla proposta",
-                    denyButtonColor: "Torna alla richiesta"
+                    denyButtonText: "Torna alla richiesta",
+                    cancelButtonText: "Esci",
                 }).then((result) => {
                     if (result.isConfirmed)
                         answerProposal(request.id, request.proposta.id, bearer_token);
@@ -1510,7 +1525,7 @@ function Restest(testall = true) {
                                                 <p><Strong>Prodotto: </Strong> ${element.nome_prodotto}</p>
                                                 <p><Strong>Produttore: </Strong> ${element.nome_produttore}</p>
                                                 <p><Strong>Descrizione: </Strong> ${element.descrizione_prodotto}</p>
-                                                <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto} €</p>
+                                                <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto.toFixed(2)} €</p>
                                                 <p><Strong>Url: </Strong> ${element.url}</p>
                                                 <p><Strong>Note: </Strong> ${element.note}</p>
                                             </div>
@@ -1533,7 +1548,8 @@ function Restest(testall = true) {
                             denyButtonColor: "#3085d6",
                             cancelButtonColor: "#d33",
                             confirmButtonText: comandoTecnico,
-                            denyButtonText: "Torna alla richiesta"
+                            denyButtonText: "Torna alla richiesta",
+                            cancelButtonText: "Esci"
                         }).then((result) => {
                             if (result.isConfirmed) 
                                 editProposal(request, requestEditable, bearer_token);
@@ -1553,7 +1569,8 @@ function Restest(testall = true) {
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Inserisci proposta"
+                    confirmButtonText: "Inserisci proposta",
+                    cancelButtonText: "Annulla"
                   }).then((result) => {
                     if (result.isConfirmed) {
                         editProposal(request, requestEditable, bearer_token);
@@ -1585,7 +1602,7 @@ function Restest(testall = true) {
                                         <p><Strong>Prodotto: </Strong> ${element.nome_prodotto}</p>
                                         <p><Strong>Produttore: </Strong> ${element.nome_produttore}</p>
                                         <p><Strong>Descrizione: </Strong> ${element.descrizione_prodotto}</p>
-                                        <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto} €</p>
+                                        <p><Strong>Prezzo: </Strong> ${element.prezzo_prodotto.toFixed(2)} €</p>
                                         <p><Strong>Url: </Strong> ${element.url}</p>
                                         <p><Strong>Note: </Strong> ${element.note}</p>
                                     </div>
@@ -1606,6 +1623,7 @@ function Restest(testall = true) {
                 confirmButtonColor: "#008000",
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Torna alla richiesta",
+                cancelButtonText: "Esci"
             }).then((result) => {
                 if(result.isConfirmed)
                     showRequest(request, requestEditable, bearer_token);
@@ -1617,72 +1635,94 @@ function Restest(testall = true) {
 
     let editProposal = function(passedRequest, requestEditable, bearer_token) {
         var request = passedRequest;
-        var proposal = request.proposta;
+        var proposal;
+        if(request.proposta && request.proposta.stato_proposta == "INATTESA")
+            proposal = request.proposta;
+
         Swal.fire({
             title: request.titolo,
             html: 
-                `<table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="2">
-                                <label>Descrizione: ${request.descrizione}</label><br>
-                                <label>Categoria: ${request.categoria.nome}</label><br>
-                                ${request.note?'<label>Note: ' + request.note + '</label><br>':''}
-                                <label>${request.caratteristiche?'Lista caratteristiche':''}</label><br>
-                                <label>
-                                    ${request.caratteristiche.map( (element, index) => {
-                                        return index + ') ' + element.caratteristica.nome + ': ' + element.valore;
-                                    }).join('</label><br><label>')}
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><strong>Edita Proposta</strong>
-                        </tr>
-                        <tr>
-                            <td><label for="nome_prodotto">Nome prodotto: </label></td>
-                            <td>
-                                <input type="text" id="nome_prodotto" name="nome_prodotto" class="swal2-input" value="${proposal?proposal.nome_prodotto:''}" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="nome_produttore">Nome produttore: </label></td>
-                            <td>
-                                <input type="text" id="nome_produttore" name="nome_produttore" class="swal2-input" value="${proposal?proposal.nome_produttore:''}" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="descrizione_prodotto">Descrizione prodotto: </label></td>
-                            <td>
-                                <textarea id="descrizione_prodotto" name="descrizione_prodotto" class="swal2-textarea" rows="4" spellcheck="false" class="not-split-text" required>${proposal?proposal.descrizione_prodotto:''}</textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="prezzo_prodotto">Prezzo prodotto: </label></td>
-                            <td>
-                                <input type="number" id="prezzo_prodotto" name="prezzo_prodotto" class="swal2-input" min="0.00" max="100000.00" step="0.01" value="${proposal?proposal.prezzo_prodotto:''}" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="url">Url: </label></td>
-                            <td>
-                                <input type="url" id="url" name="url" class="swal2-input" value="${proposal && proposal.url?proposal.url:''}">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="note">Note: </label></td>
-                            <td>
-                                <textarea id="note" name="note" class="swal2-textarea" rows="4" spellcheck="false" class="not-split-text">${proposal && proposal.note?proposal.note:''}</textarea>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>`,
+                `<div class="body">
+                    <small class="text-muted">Titolo: </small>
+                    <p>${request.titolo}</p>
+                    <hr>
+                    <small class="text-muted">Categoria: </small>
+                    <p>${request.categoria.nome}</p>
+                    <hr>
+                    <small class="text-muted">Descrizione: </small>
+                    <p>${request.descrizione}</p>
+                    <hr>
+                    ${request.caratteristiche.map( (element, index) => {
+                        return "<small class='text-muted'>Caratteristica " + index + ': ' + element.caratteristica.nome + '</small>' +
+                                '<p>' + element.valore + '</p>';
+                    }).join('<hr>')}
+                    <hr>
+                    ${request.note?'<small class="text-muted">Note: </small>' +
+                                    '<p>' + request.note + '</p><hr>':''}
+                    <small class="text-muted">Creato il: </small>
+                    <p>${request.data_creazione}</p>
+                </div>
+                
+                <div id="wizard_horizontal" class="body">
+                    <h2>Info Prodotto</h2>
+                    <section>
+                        <div class="row clearfix">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="input-group form-group">
+                                    <input type="text" id="nome_prodotto" class="form-control" placeholder="Nome Prodotto" name="nome_prodotto" value="${proposal?proposal.nome_prodotto:''}" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="zmdi zmdi-card-giftcard"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="input-group form-group">
+                                    <input type="text" id="nome_produttore" class="form-control" placeholder="Nome Produttore" name="nome_produttore" value="${proposal?proposal.nome_produttore:''}" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="zmdi zmdi-balance"></i></span>
+                                    </div>
+                                </div>
+                            </div>  
+                            <div class="col-lg-12 col-md-12">
+                                <div class="input-group form-group">
+                                    <textarea spellcheck="false" name="descrizione_prodotto" id="descrizione_prodotto" cols="30" rows="3" placeholder="Descrizione Prodotto" class="form-control no-resize" required>${proposal?proposal.descrizione_prodotto:''}</textarea>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="zmdi zmdi-menu"></i></span>
+                                    </div>
+                                </div>
+                            </div>  
+                            <div class="col-lg-12 col-md-12">
+                                <div class="input-group form-group">
+                                    <input type="number" id="prezzo_prodotto" min="0.00" max="10000.00" step="0.01" class="form-control" placeholder="Prezzo" name="prezzo_prodotto" value="${proposal?proposal.prezzo_prodotto.toFixed(2):''}" required/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="zmdi zmdi-money"></i></span>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>      
+                    </section>
+                    <h2>Info Extra</h2>
+                    <section>
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="input-group form-group">
+                                    <input type="text" id="url" class="form-control" placeholder="Url" name="url" value="${proposal && proposal.url?proposal.url:''}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="zmdi zmdi-link"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="input-group form-group">
+                                    <textarea spellcheck="false" name="note" id="note" cols="30" rows="3" placeholder="Notes" class="form-control no-resize">${proposal && proposal.note?proposal.note:''}</textarea>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="zmdi zmdi-comment-text"></i></span>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                    </section>
+                </div>`,
             width: 'auto',   
             showDenyButton: true,
             showCancelButton: true,
@@ -1691,8 +1731,9 @@ function Restest(testall = true) {
             cancelButtonColor: "#d33",
             confirmButtonText: "Conferma",
             denyButtonText: "Vedi richiesta",
+            cancelButtonText: "Esci",
             preConfirm: () => {
-                if(!request.proposta) {
+                if(!proposal) {
                     proposal = {};
                     proposal.richiesta = {};
                     proposal.richiesta.id = request.id;
@@ -1706,6 +1747,9 @@ function Restest(testall = true) {
 
                 if(!proposal.nome_prodotto || !proposal.nome_produttore || !proposal.descrizione_prodotto || !proposal.prezzo_prodotto) 
                     Swal.showValidationMessage("Campi con valori mancanti");
+            },
+            didOpen: () => {
+                new Wizard()
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -1714,7 +1758,8 @@ function Restest(testall = true) {
                         "put", "rest/richieste/"+request.id+"/proposte/"+proposal.id,
                         function (callResponse2, callStatus2) {
                             if (callStatus2 === 204) {
-                                Swal.fire({title: "Congrats", text: "La proposta è stata modificata", icon: "success"});
+                                Swal.fire({title: "Congratulazioni", text: "La proposta è stata modificata", icon: "success"});
+                                handleSeeOpenRequests();
                             } else {
                                 Swal.fire({title: "Sorry", text: callStatus2 + ": " + callResponse2, icon: "warning"});
                             }
@@ -1728,7 +1773,8 @@ function Restest(testall = true) {
                         "put", "rest/richieste/"+request.id+"/proposte",
                         function (callResponse2, callStatus2) {
                             if (callStatus2 === 204) {
-                                Swal.fire({title: "Congrats", text: "La proposta è stata creata", icon: "success"});
+                                Swal.fire({title: "Congratulazioni", text: "La proposta è stata creata", icon: "success"});
+                                handleSeeOpenRequests();
                             } else {
                                 Swal.fire({title: "Sorry", text: callStatus2 + ": " + callResponse2, icon: "warning"});
                             }
@@ -1862,7 +1908,7 @@ function Restest(testall = true) {
                 "post", "rest/auth/register",
                 function (callResponse, callStatus) {
                     if (callStatus === 200) {
-                        Swal.fire({title: "Congrats", text: "Registration with success. You'll receive an e-mail when authorized to enter!", icon: "success"}).then(() => {
+                        Swal.fire({title: "Congratulazioni", text: "Registration with success. You'll receive an e-mail when authorized to enter!", icon: "success"}).then(() => {
                             document.location.href = "login.html";
                         });
                     } else {
@@ -1914,7 +1960,7 @@ function Restest(testall = true) {
                 "post", "rest/utenti/me/modifica",
                 function (callResponse, callStatus) {
                     if (callStatus === 204) {
-                        Swal.fire({title: "Congrats", text: "Le informazioni dell'account sono state aggiornate con successo", icon: "success"}).then(() => {
+                        Swal.fire({title: "Congratulazioni", text: "Le informazioni dell'account sono state aggiornate con successo", icon: "success"}).then(() => {
                             handleRefreshButton();
                         });
                     } else {
@@ -1941,7 +1987,7 @@ function Restest(testall = true) {
                     "post", "rest/utenti/me/modifica",
                     function (callResponse, callStatus) {
                         if (callStatus === 204) {
-                            Swal.fire({title: "Congrats", text: "Le credenziali di sicurezza sono state cambiate con successo! \nOra verrai scollegato per ripetere l'accesso", icon: "success"}).then(() => {
+                            Swal.fire({title: "Congratulazioni", text: "Le credenziali di sicurezza sono state cambiate con successo! \nOra verrai scollegato per ripetere l'accesso", icon: "success"}).then(() => {
                                 handleLogoutButton();
                             });
                         } else {
@@ -1961,37 +2007,14 @@ function Restest(testall = true) {
                 "get", "rest/utenti/me/notifiche",
                 function (callResponse, callStatus) {
                     if (callStatus === 200) {
-                        const table = document.getElementById("notificationsTable");
-                        table.innerHTML = "";
+                        const table = $("#notificationTable").DataTable();
+                        table.clear().draw();
                         var notifications = JSON.parse(callResponse);
                         for(let i=0; i < notifications.length; i++) {
                             var row = document.createElement("tr");
                             var cell = document.createElement("td");
                             if(!notifications[i].letto) {
-                                var lettura = document.createElement("button");
-                                lettura.classList.add("btn", "btn-success", "waves-effect", "waves-float", "btn-sm", "waves-green");
-                                lettura.addEventListener("click", () => {    
-                                    sendRestRequest(
-                                    "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
-                                    function (callResponse, callStatus) {
-                                        if (callStatus === 204) {
-                                            Swal.fire({title: "Congrats", text: "La notifica è stata segnata come letta", icon: "success"}).then(() => {
-                                                handleSeeNotifications();
-                                            });
-                                        } else {
-                                            Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
-                                        }
-                                    },
-                                    null,
-                                    null,
-                                    null,
-                                    bearer_token);
-                                });
-                                var letturaIcon = document.createElement("i");
-                                letturaIcon.classList.add("zmdi", "zmdi-markunread-mailbox");
-                                lettura.appendChild(letturaIcon);
-                                cell.appendChild(lettura);
-                            } else {
+                                row.classList.add("table-info");
                                 var lettura = document.createElement("button");
                                 lettura.classList.add("btn", "btn-warning", "waves-effect", "waves-float", "btn-sm", "waves-amber");
                                 lettura.addEventListener("click", () => {    
@@ -1999,7 +2022,7 @@ function Restest(testall = true) {
                                     "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
                                     function (callResponse, callStatus) {
                                         if (callStatus === 204) {
-                                            Swal.fire({title: "Congrats", text: "La notifica è stata segnata come non letta", icon: "success"}).then(() => {
+                                            Swal.fire({title: "Congratulazioni", text: "La notifica è stata segnata come letta", icon: "success"}).then(() => {
                                                 handleSeeNotifications();
                                             });
                                         } else {
@@ -2012,7 +2035,31 @@ function Restest(testall = true) {
                                     bearer_token);
                                 });
                                 var letturaIcon = document.createElement("i");
-                                letturaIcon.classList.add("zmdi", "zmdi-eye-off");
+                                letturaIcon.classList.add("zmdi", "zmdi-email");
+                                lettura.appendChild(letturaIcon);
+                                cell.appendChild(lettura);
+                            } else {
+                                var lettura = document.createElement("button");
+                                lettura.classList.add("btn", "btn-success", "waves-effect", "waves-float", "btn-sm", "waves-green");
+                                lettura.addEventListener("click", () => {    
+                                    sendRestRequest(
+                                    "post", "rest/utenti/me/notifiche?id=" + notifications[i].id,
+                                    function (callResponse, callStatus) {
+                                        if (callStatus === 204) {
+                                            Swal.fire({title: "Congratulazioni", text: "La notifica è stata segnata come non letta", icon: "success"}).then(() => {
+                                                handleSeeNotifications();
+                                            });
+                                        } else {
+                                            Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
+                                        }
+                                    },
+                                    null,
+                                    null,
+                                    null,
+                                    bearer_token);
+                                });
+                                var letturaIcon = document.createElement("i");
+                                letturaIcon.classList.add("zmdi", "zmdi-email-open");
                                 lettura.appendChild(letturaIcon);
                                 cell.appendChild(lettura);
                             }
@@ -2023,7 +2070,7 @@ function Restest(testall = true) {
                                 "delete", "rest/utenti/me/notifiche?id=" + notifications[i].id,
                                 function (callResponse, callStatus) {
                                     if (callStatus === 204) {
-                                        Swal.fire({title: "Congrats", text: "La notifica è stata cancellata", icon: "success"}).then(() => {
+                                        Swal.fire({title: "Congratulazioni", text: "La notifica è stata cancellata", icon: "success"}).then(() => {
                                             handleSeeNotifications();
                                         });
                                     } else {
@@ -2096,11 +2143,8 @@ function Restest(testall = true) {
                             cell6.appendChild(link);
                             row.appendChild(cell6);
 
-                            table.appendChild(row);
+                            table.row.add(row).draw();
                         }
-                        $(document).ready(function(){
-                            $('#notificationTable').DataTable();
-                        });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
                     }
@@ -2113,8 +2157,8 @@ function Restest(testall = true) {
                 "get", "rest/utenti",
                 function (callResponse, callStatus) {
                     if (callStatus === 200) {
-                        const table = document.getElementById("usersTable");
-                        table.innerHTML = "";
+                        const table = $("#userTable").DataTable();
+                        table.clear().draw();
                         var users = JSON.parse(callResponse);
                         for(let i=0; i < users.length; i++) {
                             var row = document.createElement("tr");
@@ -2229,11 +2273,8 @@ function Restest(testall = true) {
                             cell8.appendChild(assume);
                             row.appendChild(cell8);
 
-                            table.appendChild(row);
+                            table.row.add(row).draw();
                         }
-                        $(document).ready(function(){
-                            $('#userTable').DataTable();
-                        });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});
                     }
@@ -2246,8 +2287,8 @@ function Restest(testall = true) {
                 "get", "rest/categorie",
                 function (callResponse, callStatus) {
                     if (callStatus === 200) {
-                        const table = document.getElementById("categoriesTable");
-                        table.innerHTML = "";
+                        const table = $("#tree").DataTable();
+                        table.clear().row();
                         var categories = JSON.parse(callResponse);
                         for(let i=0; i < categories.length; i++) {
                             var row = document.createElement("tr");
@@ -2259,7 +2300,7 @@ function Restest(testall = true) {
 
                             var cell2 = document.createElement("td");
                             var immagine = document.createElement("img");
-                            immagine.classList.add("width-50");
+                            //immagine.classList.add("width-50");
                             immagine.src = "rest/immagini/download?id=" + categories[i].immagine.id;
                             cell2.appendChild(immagine);
                             row.appendChild(cell2);
@@ -2310,7 +2351,7 @@ function Restest(testall = true) {
                                                 "delete", "rest/categorie?id=" + categories[i].id,
                                                 function (callResponse, callStatus) {
                                                     if (callStatus === 204) {
-                                                        Swal.fire({title: "Congrats", text: "La categoria è stata cancellata", icon: "success"}).then(() => {
+                                                        Swal.fire({title: "Congratulazioni", text: "La categoria è stata cancellata", icon: "success"}).then(() => {
                                                             handleSeeCategories();
                                                         });
                                                     } else {
@@ -2344,13 +2385,10 @@ function Restest(testall = true) {
                             }
                             row.appendChild(cell5);
 
-                            table.appendChild(row);
+                            table.row.add(row).draw();
                         }
                         $(document).ready(function()  {
                             $("#tree").treeTable();
-                          });
-                        $(document).ready(function(){
-                            $('#tree').DataTable();
                         });
                     } else {
                         Swal.fire({title: "Sorry", text: callStatus + ": " + callResponse, icon: "warning"});

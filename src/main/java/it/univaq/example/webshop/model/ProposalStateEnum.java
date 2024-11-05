@@ -4,7 +4,7 @@ public enum ProposalStateEnum {
     INATTESA, APPROVATO, RESPINTO;
 
     public static boolean isValidEnumValue(String value) {
-        for (NotificationTypeEnum enumValue : NotificationTypeEnum.values()) {
+        for (ProposalStateEnum enumValue : ProposalStateEnum.values()) {
             if (enumValue.name().equals(value)) {
                 return true;
             }

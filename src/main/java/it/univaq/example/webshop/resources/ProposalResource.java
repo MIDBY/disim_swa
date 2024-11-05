@@ -14,9 +14,11 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import it.univaq.example.webshop.business.ProposalResourceDB;
+import it.univaq.example.webshop.business.RequestResourceDB;
 import it.univaq.example.webshop.model.NotificationTypeEnum;
 import it.univaq.example.webshop.model.Proposal;
 import it.univaq.example.webshop.model.ProposalStateEnum;
+import it.univaq.example.webshop.model.RequestStateEnum;
 import it.univaq.example.webshop.model.UserRoleEnum;
 import it.univaq.example.webshop.model.Utility;
 import it.univaq.framework.exceptions.RESTWebApplicationException;
@@ -57,7 +59,7 @@ public class ProposalResource {
                 try {
                     ProposalResourceDB.setProposal(proposal);
                     Utility.sendMail(sc,proposal.getRequest().getOrdering().getEmail(), "Info mail: \nProposal of your request: "+proposal.getRequest().getTitle()+" has been edited, go to check it!");
-                    Utility.sendNotification(proposal.getRequest().getOrdering(), "Request: "+proposal.getRequest().getTitle()+".\n Our technician has edited proposal, go to check it!", NotificationTypeEnum.MODIFICATO, "requests"); 
+                    Utility.sendNotification(proposal.getRequest().getOrdering(), proposal.getRequest().getTitle()+": Our technician has edited proposal, go to check it!", NotificationTypeEnum.MODIFICATO, "requests"); 
                     return Response.noContent().build();
                 } catch (NotFoundException ex) {
                     return Response.status(Response.Status.NOT_FOUND).entity("Proposta non trovata").build();
@@ -82,8 +84,13 @@ public class ProposalResource {
                     Utility.sendNotification(proposal.getTechnician(), proposal.getRequest().getOrdering().getUsername() + " responded to your proposal!", NotificationTypeEnum.MODIFICATO, "requests");
                 }
             if(stato_proposta != null)
-                if(ProposalStateEnum.isValidEnumValue(stato_proposta))
+                if(ProposalStateEnum.isValidEnumValue(stato_proposta)) {
                     proposal.setProposalState(ProposalStateEnum.valueOf(stato_proposta));
+                    if(proposal.getProposalState().equals(ProposalStateEnum.APPROVATO)) {
+                        proposal.getRequest().setRequestState(RequestStateEnum.ORDINATO);
+                        RequestResourceDB.setRequest(proposal.getRequest());
+                    }
+                }
             try {
                 ProposalResourceDB.setProposal(proposal);
                 return Response.noContent().build();
