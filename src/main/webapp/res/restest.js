@@ -1642,86 +1642,95 @@ function Restest(testall = true) {
         Swal.fire({
             title: request.titolo,
             html: 
-                `<div class="body">
-                    <small class="text-muted">Titolo: </small>
-                    <p>${request.titolo}</p>
-                    <hr>
-                    <small class="text-muted">Categoria: </small>
-                    <p>${request.categoria.nome}</p>
-                    <hr>
-                    <small class="text-muted">Descrizione: </small>
-                    <p>${request.descrizione}</p>
-                    <hr>
-                    ${request.caratteristiche.map( (element, index) => {
-                        return "<small class='text-muted'>Caratteristica " + index + ': ' + element.caratteristica.nome + '</small>' +
-                                '<p>' + element.valore + '</p>';
-                    }).join('<hr>')}
-                    <hr>
-                    ${request.note?'<small class="text-muted">Note: </small>' +
-                                    '<p>' + request.note + '</p><hr>':''}
-                    <small class="text-muted">Creato il: </small>
-                    <p>${request.data_creazione}</p>
-                </div>
-                
-                <div id="wizard_horizontal" class="body">
-                    <h2>Info Prodotto</h2>
-                    <section>
-                        <div class="row clearfix">
-                            <div class="col-lg-6 col-md-12">
-                                <div class="input-group form-group">
-                                    <input type="text" id="nome_prodotto" class="form-control" placeholder="Nome Prodotto" name="nome_prodotto" value="${proposal?proposal.nome_prodotto:''}" required>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="zmdi zmdi-card-giftcard"></i></span>
-                                    </div>
-                                </div>
+                `
+                <div style="display: flex;">
+                    <div class="body">
+                        <small class="text-muted">Titolo: </small>
+                        <p>${request.titolo}</p>
+                        <hr>
+                        <small class="text-muted">Categoria: </small>
+                        <p>${request.categoria.nome}</p>
+                        <hr>
+                        <small class="text-muted">Descrizione: </small>
+                        <p>${request.descrizione}</p>
+                        <hr>
+                        ${request.caratteristiche.map( (element, index) => {
+                            return "<small class='text-muted'>Caratteristica " + index + ': ' + element.caratteristica.nome + '</small>' +
+                                    '<p>' + element.valore + '</p>';
+                        }).join('<hr>')}
+                        <hr>
+                        ${request.note?'<small class="text-muted">Note: </small>' +
+                                        '<p>' + request.note + '</p><hr>':''}
+                        <small class="text-muted">Creato il: </small>
+                        <p>${request.data_creazione}</p>
+                    </div>
+                    <div>
+                        <div class="">
+                            <div class="form-group">
+                                <img class="max-width-50" src="res/assets/images/slogan3.svg" alt="Logo">
                             </div>
-                            <div class="col-lg-6 col-md-12">
-                                <div class="input-group form-group">
-                                    <input type="text" id="nome_produttore" class="form-control" placeholder="Nome Produttore" name="nome_produttore" value="${proposal?proposal.nome_produttore:''}" required>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="zmdi zmdi-balance"></i></span>
-                                    </div>
-                                </div>
-                            </div>  
-                            <div class="col-lg-12 col-md-12">
-                                <div class="input-group form-group">
-                                    <textarea spellcheck="false" name="descrizione_prodotto" id="descrizione_prodotto" cols="30" rows="3" placeholder="Descrizione Prodotto" class="form-control no-resize" required>${proposal?proposal.descrizione_prodotto:''}</textarea>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="zmdi zmdi-menu"></i></span>
-                                    </div>
-                                </div>
-                            </div>  
-                            <div class="col-lg-12 col-md-12">
-                                <div class="input-group form-group">
-                                    <input type="number" id="prezzo_prodotto" min="0.00" max="10000.00" step="0.01" class="form-control" placeholder="Prezzo" name="prezzo_prodotto" value="${proposal?proposal.prezzo_prodotto.toFixed(2):''}" required/>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="zmdi zmdi-money"></i></span>
-                                    </div>
-                                </div>
-                            </div>  
-                        </div>      
-                    </section>
-                    <h2>Info Extra</h2>
-                    <section>
-                        <div class="row clearfix">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="input-group form-group">
-                                    <input type="text" id="url" class="form-control" placeholder="Url" name="url" value="${proposal && proposal.url?proposal.url:''}">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="zmdi zmdi-link"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12 col-md-12">
-                                <div class="input-group form-group">
-                                    <textarea spellcheck="false" name="note" id="note" cols="30" rows="3" placeholder="Notes" class="form-control no-resize">${proposal && proposal.note?proposal.note:''}</textarea>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="zmdi zmdi-comment-text"></i></span>
-                                    </div>
-                                </div>
-                            </div>  
                         </div>
-                    </section>
+                        <div id="wizard_horizontal" class="wizard" style="margin-left: 10px">
+                            <h2>Info Prodotto</h2>
+                            <section>
+                                <div class="row clearfix">
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="input-group form-group">
+                                            <input type="text" id="nome_prodotto" class="form-control" placeholder="Nome Prodotto" name="nome_prodotto" value="${proposal?proposal.nome_prodotto:''}" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="zmdi zmdi-card-giftcard"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="input-group form-group">
+                                            <input type="text" id="nome_produttore" class="form-control" placeholder="Nome Produttore" name="nome_produttore" value="${proposal?proposal.nome_produttore:''}" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="zmdi zmdi-balance"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="input-group form-group">
+                                            <textarea spellcheck="false" name="descrizione_prodotto" id="descrizione_prodotto" cols="30" rows="3" placeholder="Descrizione Prodotto" class="form-control no-resize" required>${proposal?proposal.descrizione_prodotto:''}</textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="zmdi zmdi-menu"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="input-group form-group">
+                                            <input type="number" id="prezzo_prodotto" min="0.00" max="10000.00" step="0.01" class="form-control" placeholder="Prezzo" name="prezzo_prodotto" value="${proposal?proposal.prezzo_prodotto.toFixed(2):''}" required/>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="zmdi zmdi-money"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>      
+                            </section>
+                            <h2>Info Extra</h2>
+                            <section>
+                                <div class="row clearfix">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="input-group form-group">
+                                            <input type="text" id="url" class="form-control" placeholder="Url" name="url" value="${proposal && proposal.url?proposal.url:''}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="zmdi zmdi-link"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="input-group form-group">
+                                            <textarea spellcheck="false" name="note" id="note" cols="30" rows="3" placeholder="Notes" class="form-control no-resize">${proposal && proposal.note?proposal.note:''}</textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="zmdi zmdi-comment-text"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </section>
+                        </div>
+                    </div>
                 </div>`,
             width: 'auto',   
             showDenyButton: true,
