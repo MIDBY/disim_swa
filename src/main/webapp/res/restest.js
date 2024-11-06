@@ -354,7 +354,11 @@ function Restest(testall = true) {
                                     "put", "rest/categorie",
                                     function (callResponse2, callStatus2) {
                                         if (callStatus2 === 204) {
-                                            Swal.fire({title: "Congratulazioni", text: "La categoria è stata modificata", icon: "success"}).then(() => {
+                                            var testo = "creata";
+                                            if(category.id > 0)
+                                                testo = "modificata";
+
+                                            Swal.fire({title: "Congratulazioni", text: "La categoria è stata " + testo, icon: "success"}).then(() => {
                                                 handleSeeCategories();
                                             });
                                         } else {
@@ -1392,7 +1396,7 @@ function Restest(testall = true) {
                             showCancelButton: true,
                             confirmButtonColor: "#008000",
                             cancelButtonColor: "#d33",
-                            confirmButtonText: "Conferma",
+                            confirmButtonText: editable?"Conferma":"Ok",
                             cancelButtonText: "Annulla",
                             preConfirm: () => {
                                 request.descrizione = document.getElementById("descrizione").value; 
@@ -2118,10 +2122,10 @@ function Restest(testall = true) {
                                     tipoIcon.classList.add("zmdi", "zmdi-edit");
                                     tipo.appendChild(tipoIcon);
                                 break;
-                                case "CHISO":
+                                case "CHIUSO":
                                     tipo.classList.add("icon-circle", "bg-purple", "waves-effect", "waves-float", "btn-sm", "waves-purple");
                                     var tipoIcon = document.createElement("i");
-                                    tipoIcon.classList.add("zmdi", "zmdi-shopping-chart");
+                                    tipoIcon.classList.add("zmdi", "zmdi-shopping-cart");
                                     tipo.appendChild(tipoIcon);
                                 break;
                                 case "ANNULLATO":
@@ -2296,7 +2300,13 @@ function Restest(testall = true) {
                 "get", "rest/categorie",
                 function (callResponse, callStatus) {
                     if (callStatus === 200) {
-                        const table = $("#tree").DataTable();
+                        var table;
+                        if ( $.fn.dataTable.isDataTable( '#tree' ) ) {
+                            table = $('#tree').DataTable();
+                        }
+                        else {
+                            table = $('#tree').DataTable({ paging: false });
+                        }
                         table.clear().row();
                         var categories = JSON.parse(callResponse);
                         for(let i=0; i < categories.length; i++) {
